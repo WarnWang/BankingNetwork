@@ -15,3 +15,9 @@ class Constants(PathInfo):
     CRSP_DATE = 'date'
     CRSP_CUSIP = 'CUSIP'
     CRSP_PRICE = 'PRC'
+
+    FF_MKT_RF = 'Mkt-RF'
+    FF_SMB = 'SMB'
+    FF_HML = 'HML'
+    FF_RF = 'RF'
+    FF_MOM = 'Mom'
