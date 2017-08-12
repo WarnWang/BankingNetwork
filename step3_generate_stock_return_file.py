@@ -23,11 +23,14 @@ def reformat_file(input_path, save_path):
 
 
 def reformat_cusip_file(file_name):
-    return reformat_file(const.CUSIP_STOCK_PRICE_PATH, const.CUSIP_STOCK_RETURN_PATH)
+    return reformat_file(os.path.join(const.CUSIP_STOCK_PRICE_PATH, file_name),
+                         os.path.join(const.CUSIP_STOCK_RETURN_PATH, file_name))
 
 
 def reformat_ticker_file(file_name):
-    return reformat_file(const.TICKER_STOCK_PRICE_PATH, const.TICKER_STOCK_RETURN_PATH)
+    return reformat_file(os.path.join(const.TICKER_STOCK_PRICE_PATH, file_name),
+                         os.path.join(const.TICKER_STOCK_RETURN_PATH, file_name))
+
 
 
 if __name__ == '__main__':
