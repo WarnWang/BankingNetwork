@@ -16,17 +16,17 @@ from constants import Constants as const
 
 def save_file(df, save_path):
     tmp_df = df.set_index(const.CRSP_DATE)
-    save_name = df.iloc[0, 0]
+    save_name = tmp_df.iloc[0, 0]
     mve_series = tmp_df[const.CRSP_MVE]
     mve_series.to_pickle(os.path.join(save_path, save_name))
 
 
 def save_file_cusip(df):
-    return save_file(df, const.CUSIP_MARKET_VALUE_PATH)
+    return save_file(df[[const.CRSP_DATE, const.CRSP_CUSIP, const.CRSP_MVE]], const.CUSIP_MARKET_VALUE_PATH)
 
 
 def save_file_ticker(df):
-    return save_file(df, const.TICKER_MARKET_VALUE_PATH)
+    return save_file(df[[const.CRSP_DATE, const.CRSP_CUSIP, const.CRSP_MVE]], const.TICKER_MARKET_VALUE_PATH)
 
 
 if __name__ == '__main__':
