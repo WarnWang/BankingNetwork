@@ -31,4 +31,4 @@ if __name__ == '__main__':
     # save price file to different files based on cusip info
     df[[const.CRSP_DATE, const.CRSP_CUSIP, const.CRSP_PRICE]].dropna(subset=[const.CRSP_CUSIP]).groupby(
         const.CRSP_CUSIP).apply(lambda x: x.to_pickle(os.path.join(const.CUSIP_STOCK_PRICE_PATH,
-                                                                    '{}.p'.format(x.iloc[0, 1]))))
+                                                                   '{}.p'.format(x.iloc[0, 1]))))

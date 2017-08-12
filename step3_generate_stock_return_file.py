@@ -18,7 +18,8 @@ def reformat_file(input_path, save_path):
     df = pd.read_pickle(input_path)
     df = df.pct_change().dropna()
     df.name = const.CRSP_RETURN
-    df.to_pickle(save_path)
+    if not df.empty:
+        df.to_pickle(save_path)
     return 1
 
 
@@ -30,7 +31,6 @@ def reformat_cusip_file(file_name):
 def reformat_ticker_file(file_name):
     return reformat_file(os.path.join(const.TICKER_STOCK_PRICE_PATH, file_name),
                          os.path.join(const.TICKER_STOCK_RETURN_PATH, file_name))
-
 
 
 if __name__ == '__main__':
