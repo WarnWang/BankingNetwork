@@ -60,7 +60,7 @@ def car(stock_symbol, event_date, factor_number, period_start_days, period_end_d
     if len(before_event_days) < -period_start_days or len(post_event_days) < period_end_days:
         return np.nan, 'Not enough date to calculate'
 
-    if len(before_event_days) < 10:
+    if len(before_event_days) <= 10:
         return np.nan, 'Not enough training data'
 
     elif len(before_event_days) < 210:
@@ -124,3 +124,4 @@ if __name__ == '__main__':
 
     car_df = mna_df.merge(mna_df.apply(calculate_car_info, axis=1), left_index=True, right_index=True)
     car_df.to_pickle(os.path.join(const.TEMP_PATH, '20180812_SDC_MnA_add_car_1986_2016.p'))
+    car_df.to_csv(os.path.join(const.RESULT_PATH, '20180812_SDC_MnA_add_car_1986_2016.csv'), index=False)
