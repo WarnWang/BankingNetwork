@@ -51,7 +51,7 @@ def car(stock_symbol, event_date, factor_number, period_start_days, period_end_d
     data = pd.merge(ff_factor_df, pd.DataFrame(stock_price), right_index=True, left_index=True, how='inner')
     trading_days = data.index
 
-    if trading_days[-1] < event_date:
+    if data.empty or trading_days[-1] < event_date:
         return np.nan, 'Not enough data'
     event_trading_date = trading_days[trading_days >= event_date][0]
     post_event_days = trading_days[trading_days > event_trading_date]
