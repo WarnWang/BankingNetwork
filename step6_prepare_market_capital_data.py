@@ -26,7 +26,7 @@ def save_file_cusip(df):
 
 
 def save_file_ticker(df):
-    return save_file(df[[const.CRSP_DATE, const.CRSP_CUSIP, const.CRSP_MVE]], const.TICKER_MARKET_VALUE_PATH)
+    return save_file(df[[const.CRSP_DATE, const.CRSP_TICKER, const.CRSP_MVE]], const.TICKER_MARKET_VALUE_PATH)
 
 
 if __name__ == '__main__':
@@ -47,5 +47,5 @@ if __name__ == '__main__':
     # mve_df.to_pickle(os.path.join(const.TEMP_PATH, '20170812_market_value.p'))
     mve_df = pd.read_pickle(os.path.join(const.TEMP_PATH, '20170812_market_value.p'))
 
-    mve_df.dropna(subset=const.CRSP_TICKER).groupby(const.CRSP_TICKER).apply(save_file_ticker)
-    mve_df.dropna(subset=const.CRSP_CUSIP).groupby(const.CRSP_CUSIP).apply(save_file_cusip)
+    mve_df.dropna(subset=[const.CRSP_TICKER]).groupby(const.CRSP_TICKER).apply(save_file_ticker)
+    mve_df.dropna(subset=[const.CRSP_CUSIP]).groupby(const.CRSP_CUSIP).apply(save_file_cusip)
