@@ -47,5 +47,5 @@ if __name__ == '__main__':
     # mve_df.to_pickle(os.path.join(const.TEMP_PATH, '20170812_market_value.p'))
     mve_df = pd.read_pickle(os.path.join(const.TEMP_PATH, '20170812_market_value.p'))
 
-    mve_df.groupby(const.CRSP_TICKER).apply(save_file_ticker)
-    mve_df.groupby(const.CRSP_CUSIP).apply(save_file_cusip)
+    mve_df.dropna(subset=const.CRSP_TICKER).groupby(const.CRSP_TICKER).apply(save_file_ticker)
+    mve_df.dropna(subset=const.CRSP_CUSIP).groupby(const.CRSP_CUSIP).apply(save_file_cusip)
