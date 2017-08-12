@@ -41,7 +41,7 @@ def calculate_runup(stock_symbol, event_date, period_start_days=-210, period_end
 
     trading_days = data_df.index
 
-    if data_df.empty or trading_days[-1] < event_date:
+    if trading_days[-1] < event_date:
         return np.nan, 'Not enough data'
     event_trading_date = trading_days[trading_days >= event_date][0]
     post_event_days = trading_days[trading_days > event_trading_date]
@@ -59,9 +59,19 @@ def calculate_runup(stock_symbol, event_date, period_start_days=-210, period_end
     event_start_date = get_detail_date(period_start_days)
     event_end_date = get_detail_date(period_end_days)
 
-    s_pct = (stock_price.loc[event_end_date] - stock_price.loc[event_start_date]) / stock_price.loc[event_start_date]
-    m_pct = (ff_4_factor_df.loc[event_end_date]
-             - ff_4_factor_df.loc[event_start_date]) / ff_4_factor_df.loc[event_start_date]
+    # print(event_start_date)
+    # print(stock_price[event_start_date])
+    try:
+        stock_start_price = float(stock_price[event_start_date])
+        stock_end_price = float(stock_price[event_end_date])
+
+        s_pct = (stock_end_price - stock_start_price) / stock_start_price
+
+        market_start_price = float(ff_4_factor_df[event_start_date])
+        market_end_price = float(ff_4_factor_df[event_end_date])
+        m_pct = (market_end_price - market_start_price) / market_start_price
+    except Exception:
+        return np.nan, "Invalid data"
 
     return s_pct - m_pct, stock_info
 

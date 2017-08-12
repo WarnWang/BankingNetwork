@@ -20,6 +20,7 @@ if __name__ == '__main__':
                          const.CRSP_DATE: str, const.CRSP_CUSIP: str, const.CRSP_TICKER: str, const.CRSP_PRICE: np.float
                      })
     df[const.CRSP_DATE] = pd.to_datetime(df[const.CRSP_DATE], format='%Y%m%d')
+    df = df[df[const.CRSP_CUSIP] != '32054860']
 
     df[const.CRSP_CUSIP] = df[const.CRSP_CUSIP].dropna().apply(lambda x: x[:-2])
 
