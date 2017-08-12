@@ -117,9 +117,11 @@ def calculate_car_info(row):
 
 if __name__ == '__main__':
     # this step is used to format cusip data
-    mna_df = pd.read_excel(os.path.join(const.DATA_PATH, '20170808_SDC_MnA_clean_1986_2016.xlsx'))
-    mna_df[const.ACQUIRER_CUSIP] = mna_df[const.ACQUIRER_CUSIP].dropna().apply(str)
-    mna_df[const.TARGET_CUSIP] = mna_df[const.TARGET_CUSIP].dropna().apply(str)
+    mna_df = pd.read_csv(os.path.join(const.DATA_PATH, '20170812_SDC_bank_merger_controls_clean_target.csv'),
+                         dtype={const.ACQUIRER_CUSIP: str, const.TARGET_CUSIP: str, const.ANNOUNCED_DATE: str})
+    mna_df[const.ACQUIRER_CUSIP] = mna_df[const.ACQUIRER_CUSIP].dropna().apply(lambda x: x.zfill(6))
+    mna_df[const.TARGET_CUSIP] = mna_df[const.TARGET_CUSIP].dropna().apply(lambda x: x.zfill(6))
+    mna_df[const.ANNOUNCED_DATE] = pd.to_datetime(mna_df[const.ANNOUNCED_DATE].dropna())
     mna_df.to_pickle(os.path.join(const.TEMP_PATH, '20180812_SDC_MnA_clean_1986_2016.p'))
 
     car_df = mna_df.merge(mna_df.apply(calculate_car_info, axis=1), left_index=True, right_index=True)
