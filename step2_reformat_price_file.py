@@ -16,7 +16,8 @@ from constants import Constants as const
 
 def reformat_file(file_path):
     df = pd.read_pickle(file_path)
-    df = df.set_index(const.CRSP_DATE)[const.CRSP_PRICE]
+    df = df.set_index(const.CRSP_DATE)[const.CRSP_PRICE].dropna()
+    df = df[df > 0]
     df.to_pickle(file_path)
     return 1
 

@@ -16,7 +16,7 @@ from constants import Constants as const
 
 def reformat_file(input_path, save_path):
     df = pd.read_pickle(input_path)
-    df = df.pct_change()[1:]
+    df = df.pct_change().dropna()
     df.name = const.CRSP_RETURN
     df.to_pickle(save_path)
     return 1
