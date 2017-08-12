@@ -18,7 +18,11 @@ def reformat_file(file_path):
     df = pd.read_pickle(file_path)
     if hasattr(df, 'set_index'):
         df = df.set_index(const.CRSP_DATE)[const.CRSP_PRICE]
+
+    # there may be some negative value in crsp data. Details can be found in
+    # http://faq.library.princeton.edu/econ/faq/11159
     df = df.dropna().apply(abs)
+
     if not df.empty:
         df.to_pickle(file_path)
     return 1

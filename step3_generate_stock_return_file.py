@@ -15,11 +15,15 @@ from constants import Constants as const
 
 
 def reformat_file(input_path, save_path):
-    df = pd.read_pickle(input_path)
-    df = df.pct_change().dropna()
-    df.name = const.CRSP_RETURN
-    if not df.empty:
-        df.to_pickle(save_path)
+    try:
+        df = pd.read_pickle(input_path)
+        df = df.pct_change().dropna()
+        df.name = const.CRSP_RETURN
+        if not df.empty:
+            df.to_pickle(save_path)
+    except Exception as err:
+        print(input_path)
+        raise Exception(err)
     return 1
 
 
