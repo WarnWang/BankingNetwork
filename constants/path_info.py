@@ -17,5 +17,8 @@ class PathInfo(object):
     CUSIP_STOCK_PRICE_PATH = os.path.join(DATA_PATH, 'price_cusip')
     TICKER_STOCK_PRICE_PATH = os.path.join(DATA_PATH, 'price_ticker')
 
+    CUSIP_STOCK_RETURN_PATH = os.path.join(DATA_PATH, 'return_cusip')
+    TICKER_STOCK_RETURN_PATH = os.path.join(DATA_PATH, 'return_ticker')
+
     TEMP_PATH = os.path.join(ROOT_PATH, 'temp')
     RESULT_PATH = os.path.join(ROOT_PATH, 'result')
