@@ -16,6 +16,10 @@ class Constants(PathInfo):
     CRSP_CUSIP = 'CUSIP'
     CRSP_PRICE = 'PRC'
     CRSP_RETURN = 'Return'
+    CRSP_SHROUT = 'SHROUT'
+
+    # market value of common equity (MVE)
+    CRSP_MVE = 'MVE'
 
     FF_MKT_RF = 'Mkt-RF'
     FF_SMB = 'SMB'
