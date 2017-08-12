@@ -26,9 +26,9 @@ def calculate_runup(stock_symbol, event_date, period_start_days=-210, period_end
     ff_4_factor_df = pd.read_pickle(os.path.join(const.DATA_PATH,
                                                  'fama_french_3factors_mom', '4_factors.p'))[const.FF_MKT_RF]
 
-    if os.path.isfile(os.path.join(const.CUSIP_STOCK_PRICE_PATH, '{}.p'.format(stock_symbol))):
+    if os.path.isfile(os.path.join(const.CUSIP_STOCK_PRICE_PATH, '{}10.p'.format(stock_symbol))):
         stock_info = 'cusip'
-        stock_price = pd.read_pickle(os.path.join(const.CUSIP_STOCK_PRICE_PATH, '{}.p'.format(stock_symbol)))
+        stock_price = pd.read_pickle(os.path.join(const.CUSIP_STOCK_PRICE_PATH, '{}10.p'.format(stock_symbol)))
     elif os.path.isfile(os.path.join(const.TICKER_STOCK_PRICE_PATH, '{}.p'.format(stock_symbol))):
         stock_info = 'ticker'
         stock_price = pd.read_pickle(os.path.join(const.TICKER_STOCK_PRICE_PATH, '{}.p'.format(stock_symbol)))
