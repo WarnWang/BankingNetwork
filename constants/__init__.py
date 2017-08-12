@@ -25,7 +25,7 @@ class Constants(PathInfo):
 
     ACQUIRER_CUSIP = 'Acquirer_CUSIP'
     ACQUIRER_TICKER = 'Acquirer_Ticker'
-    TARGET_TICKER = 'Target_Ticker'
+    TARGET_TICKER = 'Target_Ticker_Symbol'
     TARGET_CUSIP = 'Target_CUSIP'
     ANNOUNCED_DATE = 'Date_Announced'
 
