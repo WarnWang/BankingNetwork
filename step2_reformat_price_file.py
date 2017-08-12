@@ -17,7 +17,7 @@ from constants import Constants as const
 def reformat_file(file_path):
     df = pd.read_pickle(file_path)
     if hasattr(df, 'set_index'):
-        df = df.set_index(const.CRSP_DATE)[const.CRSP_PRICE].dropna()
+        df = df.set_index(const.CRSP_DATE)[const.CRSP_PRICE]
     df = df[df > 0].dropna()
     df.to_pickle(file_path)
     return 1
