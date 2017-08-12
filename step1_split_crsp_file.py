@@ -21,6 +21,8 @@ if __name__ == '__main__':
                      })
     df[const.CRSP_DATE] = pd.to_datetime(df[const.CRSP_DATE], format='%Y%m%d')
 
+    df[const.CRSP_CUSIP] = df[const.CRSP_CUSIP].dropna().apply(lambda x: x[:-2])
+
     # save price file to different files based on ticker info
     df[[const.CRSP_DATE, const.CRSP_TICKER, const.CRSP_PRICE]].dropna(subset=[const.CRSP_TICKER]).groupby(
         const.CRSP_TICKER).apply(lambda x: x.to_pickle(os.path.join(const.TICKER_STOCK_PRICE_PATH,
