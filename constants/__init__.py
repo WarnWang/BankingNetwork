@@ -23,4 +23,11 @@ class Constants(PathInfo):
     FF_RF = 'RF'
     FF_MOM = 'Mom'
 
+    ACQUIRER_CUSIP = 'Acquirer_CUSIP'
+    ACQUIRER_TICKER = 'Acquirer_Ticker'
+    TARGET_TICKER = 'Target_Ticker'
+    TARGET_CUSIP = 'Target_CUSIP'
+    ANNOUNCED_DATE = 'Date_Announced'
 
+    ACQUIRER = 'Acquirer'
+    TARGET = 'Target'
