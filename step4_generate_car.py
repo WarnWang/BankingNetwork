@@ -39,10 +39,10 @@ def car(stock_symbol, event_date, factor_number, period_start_days, period_end_d
 
     useful_col = [const.FF_MKT_RF, const.FF_SMB, const.FF_HML, const.FF_MOM][:factor_number]
     ff_factor_df = ff_4_factor_df[useful_col]
-    if os.path.isfile(os.path.join(const.CUSIP_STOCK_PRICE_PATH, '{}.p'.format(stock_symbol))):
+    if os.path.isfile(os.path.join(const.CUSIP_STOCK_RETURN_PATH, '{}.p'.format(stock_symbol))):
         stock_info = 'cusip'
         stock_price = pd.read_pickle(os.path.join(const.CUSIP_STOCK_RETURN_PATH, '{}.p'.format(stock_symbol)))
-    elif os.path.isfile(os.path.join(const.TICKER_STOCK_PRICE_PATH, '{}.p'.format(stock_symbol))):
+    elif os.path.isfile(os.path.join(const.TICKER_STOCK_RETURN_PATH, '{}.p'.format(stock_symbol))):
         stock_info = 'ticker'
         stock_price = pd.read_pickle(os.path.join(const.TICKER_STOCK_RETURN_PATH, '{}.p'.format(stock_symbol)))
     else:
