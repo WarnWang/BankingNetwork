@@ -7,8 +7,11 @@
 # @Email: wangyouan@gamil.com
 
 
-from path_info import PathInfo
+from constants.path_info import PathInfo
 
 
 class Constants(PathInfo):
-    pass
+    CRSP_TICKER = 'TICKER'
+    CRSP_DATE = 'date'
+    CRSP_CUSIP = 'CUSIP'
+    CRSP_PRICE = 'PRC'
