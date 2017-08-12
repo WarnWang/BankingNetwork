@@ -25,6 +25,8 @@ def reformat_file(file_path):
 
     if not df.empty:
         df.to_pickle(file_path)
+    else:
+        os.remove(file_path)
     return 1
 
 
