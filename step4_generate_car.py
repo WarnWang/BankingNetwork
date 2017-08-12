@@ -60,7 +60,7 @@ def car(stock_symbol, event_date, factor_number, period_start_days, period_end_d
     if len(before_event_days) < -period_start_days or len(post_event_days) < period_end_days:
         return np.nan, 'Not enough date to calculate'
 
-    if len(before_event_days) <= 10:
+    if len(before_event_days) <= 40:
         return np.nan, 'Not enough training data'
 
     elif len(before_event_days) < 210:
