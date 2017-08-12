@@ -104,12 +104,12 @@ def calculate_car_info(row):
             ticker = acq_ticker
 
         for factor_number in [1, 3, 4]:
-            car_value, description = car(cusip, event_date=event_data, factor_number=1, period_start_days=-2,
-                                         period_end_days=2)
+            car_value, description = car(cusip, event_date=event_data, factor_number=factor_number,
+                                         period_start_days=-2, period_end_days=2)
             key = '{}_CAR_Factor{}'.format(model, factor_number)
             if np.isnan(car_value):
-                car_value, description = car(ticker, event_date=event_data, factor_number=1, period_start_days=-2,
-                                             period_end_days=2)
+                car_value, description = car(ticker, event_date=event_data, factor_number=factor_number,
+                                             period_start_days=-2, period_end_days=2)
             result_dict[key] = car_value
 
     return pd.Series(result_dict)
