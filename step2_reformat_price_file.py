@@ -24,7 +24,7 @@ def reformat_file(file_path):
     df = df.dropna().apply(abs)
 
     if not df.empty:
-        df.to_pickle(file_path)
+        df.sort_index().to_pickle(file_path)
     else:
         os.remove(file_path)
     return 1
