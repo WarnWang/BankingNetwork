@@ -27,6 +27,7 @@ class Constants(PathInfo):
     COMPUSTAT_CUSIP = 'cusip'
     COMPUSTAT_TIC = 'tic'
     COMPUSTAT_NET_INCOME = 'niq'
+    COMPUSTAT_TA = 'atq'
 
     FF_MKT_RF = 'Mkt-RF'
     FF_SMB = 'SMB'
@@ -45,6 +46,7 @@ class Constants(PathInfo):
     TARGET_TICKER = 'Target_Ticker_Symbol'
     TARGET_CUSIP = 'Target_CUSIP'
     TARGET_NI = 'Target_Net_Income_Last_Twelve_Months_mil'
+    TARGET_TA = 'Target_Total_Assets_mil'
 
     ACQUIRER = 'Acquirer'
     TARGET = 'Target'
