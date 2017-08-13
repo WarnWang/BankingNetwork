@@ -112,7 +112,7 @@ def calculate_runup_info(row):
 
 if __name__ == '__main__':
     # this step is used to format cusip data
-    mna_df = pd.read_pickle(os.path.join(const.TEMP_PATH, '20180812_SDC_MnA_add_car_1986_2016.p'))
-    car_df = mna_df.merge(mna_df.apply(calculate_runup_info, axis=1), left_index=True, right_index=True)
-    car_df.to_pickle(os.path.join(const.TEMP_PATH, '20180812_SDC_MnA_add_runup_1986_2016.p'))
-    car_df.to_csv(os.path.join(const.RESULT_PATH, '20180812_SDC_MnA_add_runup_1986_2016.csv'), index=False)
+    car_df = pd.read_pickle(os.path.join(const.TEMP_PATH, '20180812_SDC_MnA_add_car_1986_2016.p'))
+    runup_df = car_df.merge(car_df.apply(calculate_runup_info, axis=1), left_index=True, right_index=True)
+    runup_df.to_pickle(os.path.join(const.TEMP_PATH, '20180812_SDC_MnA_add_runup_1986_2016.p'))
+    runup_df.to_csv(os.path.join(const.RESULT_PATH, '20180812_SDC_MnA_add_runup_1986_2016.csv'), index=False)
