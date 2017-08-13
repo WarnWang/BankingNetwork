@@ -34,14 +34,14 @@ def fill_in_total_liabilities(row):
         tmp_df = ltq_df[ltq_df[const.COMPUSTAT_CUSIP] == cusip]
         tmp_df = tmp_df[tmp_df[const.COMPUSTAT_QUARTER] == c_qtr]
         if not tmp_df.empty:
-            return tmp_df.iloc[0, -1] / 1000.
+            return tmp_df.iloc[0, -1]
 
     if hasattr(ticker, 'upper'):
         ticker = ticker.upper()
         tmp_df = ltq_df[ltq_df[const.COMPUSTAT_TIC] == ticker]
         tmp_df = tmp_df[tmp_df[const.COMPUSTAT_QUARTER] == c_qtr]
         if not tmp_df.empty:
-            return tmp_df.iloc[0, -1] / 1000.
+            return tmp_df.iloc[0, -1]
 
     return np.nan
 
