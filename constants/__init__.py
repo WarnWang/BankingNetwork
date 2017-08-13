@@ -40,6 +40,7 @@ class Constants(PathInfo):
 
     ACQUIRER_CUSIP = 'Acquirer_CUSIP'
     ACQUIRER_TICKER = 'Acquirer_Ticker'
+    ACQUIRER_NAME = 'Acquirer_Name'
     ACQUIRER_MVE = 'Acquirer_Market_Value_mil'
     ACQUIRER_LT = 'Acquirer_Total_Liabilities_mil'
     ACQUIRER_NI = 'Acquirer_Net_Income_mil'
@@ -47,6 +48,7 @@ class Constants(PathInfo):
 
     TARGET_TICKER = 'Target_Ticker_Symbol'
     TARGET_CUSIP = 'Target_CUSIP'
+    TARGET_NAME = 'Target_Name'
     TARGET_NI = 'Target_Net_Income_Last_Twelve_Months_mil'
     TARGET_TA = 'Target_Total_Assets_mil'
 

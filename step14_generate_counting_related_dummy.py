@@ -9,22 +9,26 @@
 import os
 
 import pandas as pd
-import numpy as np
 
 from constants import Constants as const
 
 df = pd.read_pickle(os.path.join(const.TEMP_PATH, '20170813_SDC_MnA_fill_in_stock_dummy.p'))
-df = df[[const.YEAR, const.ACQUIRER_CUSIP, const.ACQUIRER_TICKER]]
+df = df[[const.YEAR, const.ACQUIRER_CUSIP, const.ACQUIRER_TICKER, const.ACQUIRER_NAME]]
 
 
 def count_acquire_year_info(row, last_n_year):
     year = row[const.YEAR]
     cusip = row[const.ACQUIRER_CUSIP]
     ticker = row[const.ACQUIRER_TICKER]
+    name = row[const.ACQUIRER_NAME]
 
     start_year = year - last_n_year
-    tmp_df = df[df[const.ACQUIRER_CUSIP] == cusip]
-    tmp_df = tmp_df[tmp_df[const.ACQUIRER_TICKER] == ticker]
+    tmp_df_1 = df[df[const.ACQUIRER_CUSIP] == cusip]
+    tmp_df_2 = df[df[const.ACQUIRER_TICKER] == ticker]
+    tmp_df_3 = df[df[const.ACQUIRER_NAME] == name]
+
+    index_list = list(set(tmp_df_1.index).intersection(tmp_df_2.index).intersection(tmp_df_3.index))
+    tmp_df = df.loc[index_list]
     tmp_df = tmp_df[tmp_df[const.YEAR] >= start_year]
     tmp_df = tmp_df[tmp_df[const.YEAR] <= year]
 
