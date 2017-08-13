@@ -21,6 +21,12 @@ class Constants(PathInfo):
     # market value of common equity (MVE)
     CRSP_MVE = 'MVE'
 
+    COMPUSTAT_DATE = 'datadate'
+    COMPUSTAT_QUARTER = 'datacqtr'
+    COMPUSTAT_LIABILITY = 'ltq'
+    COMPUSTAT_CUSIP = 'cusip'
+    COMPUSTAT_TIC = 'tic'
+
     FF_MKT_RF = 'Mkt-RF'
     FF_SMB = 'SMB'
     FF_HML = 'HML'
@@ -33,6 +39,7 @@ class Constants(PathInfo):
     TARGET_CUSIP = 'Target_CUSIP'
     ANNOUNCED_DATE = 'Date_Announced'
     ACQUIRER_MVE = 'Acquirer_Market_Value_mil'
+    ACQUIRER_LT = 'Acquirer_Total_Liabilities_mil'
 
     ACQUIRER = 'Acquirer'
     TARGET = 'Target'
