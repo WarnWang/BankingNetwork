@@ -37,7 +37,7 @@ def count_target_num(row):
 
 if __name__ == '__main__':
     acquirer_dummy_df = pd.read_pickle(os.path.join(const.TEMP_PATH, '20170813_SDC_MnA_fill_in_acquirer_dummy.p'))
-    acquirer_dummy_df['Acquirer_Acquiring_Other_Target_Dummy_3_Yr'] = acquirer_dummy_df.apply(count_target_num, axis=1)
+    acquirer_dummy_df['Number_Offers_Target_Receives'] = acquirer_dummy_df.apply(count_target_num, axis=1)
 
     acquirer_dummy_df.to_pickle(os.path.join(const.TEMP_PATH, '20170813_SDC_MnA_fill_in_target_offer.p'))
     acquirer_dummy_df.to_csv(os.path.join(const.RESULT_PATH, '20170813_SDC_MnA_fill_in_target_offer.csv'),
