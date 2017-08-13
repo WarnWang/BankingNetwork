@@ -26,6 +26,7 @@ class Constants(PathInfo):
     COMPUSTAT_LIABILITY = 'ltq'
     COMPUSTAT_CUSIP = 'cusip'
     COMPUSTAT_TIC = 'tic'
+    COMPUSTAT_NET_INCOME = 'niq'
 
     FF_MKT_RF = 'Mkt-RF'
     FF_SMB = 'SMB'
