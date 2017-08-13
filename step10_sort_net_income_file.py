@@ -19,5 +19,6 @@ if __name__ == '__main__':
                      dtype={const.COMPUSTAT_CUSIP: str, const.COMPUSTAT_TIC: str})
     df = df.dropna(subset=[const.COMPUSTAT_NET_INCOME]).reset_index(drop=True)
     df[const.COMPUSTAT_CUSIP] = df[const.COMPUSTAT_CUSIP].dropna().apply(lambda x: x[:-1])
+    df[const.COMPUSTAT_TIC] = df[const.COMPUSTAT_TIC].dropna().apply(lambda x: x.split('.')[0])
 
     df.to_pickle(os.path.join(const.DATA_PATH, 'compustat_quarterly_net_income.p'))

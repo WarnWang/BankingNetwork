@@ -36,11 +36,15 @@ class Constants(PathInfo):
 
     ACQUIRER_CUSIP = 'Acquirer_CUSIP'
     ACQUIRER_TICKER = 'Acquirer_Ticker'
-    TARGET_TICKER = 'Target_Ticker_Symbol'
-    TARGET_CUSIP = 'Target_CUSIP'
     ANNOUNCED_DATE = 'Date_Announced'
     ACQUIRER_MVE = 'Acquirer_Market_Value_mil'
     ACQUIRER_LT = 'Acquirer_Total_Liabilities_mil'
+    ACQUIRER_NI = 'Acquirer_Net_Income_mil'
+    ACQUIRER_TA = 'Acquirer_Total_Assets_mil'
+
+    TARGET_TICKER = 'Target_Ticker_Symbol'
+    TARGET_CUSIP = 'Target_CUSIP'
+    TARGET_NI = 'Target_Net_Income_Last_Twelve_Months_mil'
 
     ACQUIRER = 'Acquirer'
     TARGET = 'Target'
