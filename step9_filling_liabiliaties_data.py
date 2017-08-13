@@ -17,7 +17,7 @@ ltq_df = pd.read_pickle(os.path.join(const.DATA_PATH, 'compustat_quarterly_total
 
 
 def fill_in_total_liabilities(row):
-    market_value = row[const.ACQUIRER_MVE]
+    market_value = row[const.ACQUIRER_LT]
 
     if not np.isnan(market_value):
         return market_value
