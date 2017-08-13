@@ -35,9 +35,11 @@ class Constants(PathInfo):
     FF_RF = 'RF'
     FF_MOM = 'Mom'
 
+    ANNOUNCED_DATE = 'Date_Announced'
+    YEAR = 'Year_Announced'
+
     ACQUIRER_CUSIP = 'Acquirer_CUSIP'
     ACQUIRER_TICKER = 'Acquirer_Ticker'
-    ANNOUNCED_DATE = 'Date_Announced'
     ACQUIRER_MVE = 'Acquirer_Market_Value_mil'
     ACQUIRER_LT = 'Acquirer_Total_Liabilities_mil'
     ACQUIRER_NI = 'Acquirer_Net_Income_mil'
