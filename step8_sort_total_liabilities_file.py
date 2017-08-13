@@ -6,6 +6,9 @@
 # @Author: Mark Wang
 # @Email: wangyouan@gamil.com
 
+
+""" The value unit is mil usd """
+
 import os
 
 import pandas as pd
