@@ -9,6 +9,7 @@
 import os
 
 import pandas as pd
+import numpy as np
 
 from constants import Constants as const
 
@@ -24,8 +25,14 @@ def count_acquire_year_info(row, last_n_year):
 
     start_year = year - last_n_year
     tmp_df_1 = df[df[const.ACQUIRER_CUSIP] == cusip]
+    if tmp_df_1.empty:
+        tmp_df_1 = df.copy()
     tmp_df_2 = df[df[const.ACQUIRER_TICKER] == ticker]
+    if tmp_df_2.empty:
+        tmp_df_2 = df.copy()
     tmp_df_3 = df[df[const.ACQUIRER_NAME] == name]
+    if tmp_df_3.empty:
+        tmp_df_3 = df.copy()
 
     index_list = list(set(tmp_df_1.index).intersection(tmp_df_2.index).intersection(tmp_df_3.index))
     tmp_df = df.loc[index_list]

@@ -20,3 +20,4 @@ df = df[[const.TARGET_NAME, const.TARGET_CUSIP, const.TARGET_TICKER]]
 def count_target_num(row):
     cusip = row[const.TARGET_CUSIP]
     ticker = row[const.TARGET_TICKER]
+    name = row[const.TARGET_NAME]
