@@ -23,6 +23,11 @@ def calculate_runup(stock_symbol, event_date, period_start_days=-210, period_end
     if period_start_days > period_end_days:
         return np.nan, 'Invalid period days'
 
+    if hasattr(stock_symbol, 'upper'):
+        stock_symbol = stock_symbol.upper()
+    else:
+        return np.nan, "Invalid stock symbol"
+
     ff_4_factor_df = pd.read_pickle(os.path.join(const.DATA_PATH,
                                                  'fama_french_3factors_mom', '4_factors.p'))[const.FF_MKT_RF]
 

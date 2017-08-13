@@ -37,6 +37,11 @@ def car(stock_symbol, event_date, factor_number, period_start_days, period_end_d
     if period_start_days > period_end_days:
         return np.nan, 'Invalid period days'
 
+    if hasattr(stock_symbol, 'upper'):
+        stock_symbol = stock_symbol.upper()
+    else:
+        return np.nan, "Invalid stock symbol"
+
     useful_col = [const.FF_MKT_RF, const.FF_SMB, const.FF_HML, const.FF_MOM][:factor_number]
     ff_factor_df = ff_4_factor_df[useful_col]
     if os.path.isfile(os.path.join(const.CUSIP_STOCK_RETURN_PATH, '{}10.p'.format(stock_symbol))):
