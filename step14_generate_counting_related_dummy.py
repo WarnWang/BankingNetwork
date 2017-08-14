@@ -23,6 +23,7 @@ def count_acquire_year_info(row, last_n_year):
     cusip = row[const.ACQUIRER_CUSIP]
     ticker = row[const.ACQUIRER_TICKER]
     name = row[const.ACQUIRER_NAME]
+    status = row[const.STATUS]
 
     start_year = year - last_n_year
     tmp_df_1 = df[df[const.ACQUIRER_CUSIP] == cusip]
@@ -40,7 +41,7 @@ def count_acquire_year_info(row, last_n_year):
     tmp_df = tmp_df[tmp_df[const.YEAR] >= start_year]
     tmp_df = tmp_df[tmp_df[const.YEAR] <= year]
 
-    return int(tmp_df.shape[0] > 1)
+    return int(tmp_df.shape[0] > 1) if status == const.COMPLETED else int(not tmp_df.empty)
 
 
 def generate_1_yr_dummy(row):
