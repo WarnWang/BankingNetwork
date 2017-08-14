@@ -30,7 +30,7 @@ def count_acquire_year_info(row, last_n_year):
     tmp_df_2 = df[df[const.ACQUIRER_TICKER] == ticker]
     tmp_df_3 = df[df[const.ACQUIRER_NAME] == name]
     if tmp_df_1.empty and tmp_df_2.empty and tmp_df_3.empty:
-        return False
+        return 0
 
     if tmp_df_1.empty:
         tmp_df_1 = df.copy()
@@ -46,7 +46,7 @@ def count_acquire_year_info(row, last_n_year):
     tmp_df = tmp_df[tmp_df[const.YEAR] >= start_year]
     tmp_df = tmp_df[tmp_df[const.YEAR] <= year]
 
-    return int(tmp_df.shape[0] > 1) if status == const.COMPLETED else int(not tmp_df.empty)
+    return int(tmp_df.shape[0] > 1) if status == const.COMPLETED else 1
 
 
 def generate_1_yr_dummy(row):
