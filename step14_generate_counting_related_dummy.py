@@ -14,7 +14,7 @@ import numpy as np
 from constants import Constants as const
 
 df = pd.read_pickle(os.path.join(const.TEMP_PATH, '20170813_SDC_MnA_fill_in_stock_dummy.p'))
-df = df[df[const.STATUS == const.COMPLETED]]
+df = df[df[const.STATUS] == const.COMPLETED]
 df = df[[const.YEAR, const.ACQUIRER_CUSIP, const.ACQUIRER_TICKER, const.ACQUIRER_NAME]]
 
 
