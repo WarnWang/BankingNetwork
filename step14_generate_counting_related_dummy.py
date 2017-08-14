@@ -27,12 +27,17 @@ def count_acquire_year_info(row, last_n_year):
 
     start_year = year - last_n_year
     tmp_df_1 = df[df[const.ACQUIRER_CUSIP] == cusip]
+    tmp_df_2 = df[df[const.ACQUIRER_TICKER] == ticker]
+    tmp_df_3 = df[df[const.ACQUIRER_NAME] == name]
+    if tmp_df_1.empty and tmp_df_2.empty and tmp_df_3.empty:
+        return False
+
     if tmp_df_1.empty:
         tmp_df_1 = df.copy()
-    tmp_df_2 = df[df[const.ACQUIRER_TICKER] == ticker]
+
     if tmp_df_2.empty:
         tmp_df_2 = df.copy()
-    tmp_df_3 = df[df[const.ACQUIRER_NAME] == name]
+
     if tmp_df_3.empty:
         tmp_df_3 = df.copy()
 
