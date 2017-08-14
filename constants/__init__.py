@@ -48,6 +48,8 @@ class Constants(PathInfo):
     ACQUIRER_LT = 'Acquirer_Total_Liabilities_mil'
     ACQUIRER_NI = 'Acquirer_Net_Income_mil'
     ACQUIRER_TA = 'Acquirer_Total_Assets_mil'
+    ACQUIRER_ROA = 'Acquirer_ROA'
+    ACQUIRER_TOBINQ = 'Acquirer_TobinQ'
 
     TARGET_TICKER = 'Target_Ticker_Symbol'
     TARGET_CUSIP = 'Target_CUSIP'
