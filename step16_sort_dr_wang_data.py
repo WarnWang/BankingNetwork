@@ -42,7 +42,7 @@ if __name__ == '__main__':
                                        'AcquirerMarketCap': const.ACQUIRER_MVE,
                                        'TotalLiabilities_Acq': const.ACQUIRER_LT,
                                        'AcquirerROA': const.ACQUIRER_ROA,
-                                       'Acquirer_TobinQ': const.ACQUIRER_TOBINQ
+                                       'AcquirerTobinQ': const.ACQUIRER_TOBINQ
                                        })
 
     df = df.dropna(subset=[const.ANNOUNCED_DATE, const.YEAR], how='all')
