@@ -37,6 +37,9 @@ class Constants(PathInfo):
 
     ANNOUNCED_DATE = 'Date_Announced'
     YEAR = 'Year_Announced'
+    STATUS = 'Status'
+
+    COMPLETED = 'Completed'
 
     ACQUIRER_CUSIP = 'Acquirer_CUSIP'
     ACQUIRER_TICKER = 'Acquirer_Ticker'
