@@ -23,7 +23,7 @@ def get_information(df):
             result_dict[key] = np.nan
 
         else:
-            result_dict[key] = series[0]
+            result_dict[key] = series.iloc[0]
 
     return pd.Series(result_dict)
 
