@@ -17,7 +17,7 @@ from constants import Constants as const
 def get_information(df):
     result_dict = {}
     for key in [const.ACQUIRER_MVE, const.COMPUSTAT_TIC, const.COMPUSTAT_NET_INCOME, const.COMPUSTAT_LIABILITY,
-                const.COMPUSTAT_LIABILITY]:
+                const.COMPUSTAT_TA, const.ACQUIRER_ROA, const.ACQUIRER_TOBINQ]:
         series = df[key].dropna()
         if series.empty:
             result_dict[key] = np.nan
@@ -72,5 +72,6 @@ if __name__ == '__main__':
     merged_df = pd.concat([acq_df, tar_df], ignore_index=True, axis=0)
 
     cleaned_df = merged_df.groupby([const.YEAR, const.COMPUSTAT_CUSIP]).apply(get_information).dropna(
-        subset=['ltq', 'niq', 'Acquirer_Market_Value_mil'], how='all').reset_index()
+        subset=['ltq', 'niq', 'Acquirer_Market_Value_mil', 'atq', const.ACQUIRER_TOBINQ, const.ACQUIRER_ROA],
+        how='all').reset_index()
     cleaned_df.to_pickle(os.path.join(const.TEMP_PATH, '20170814_dr_wang_previous_result.p'))

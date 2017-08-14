@@ -68,5 +68,12 @@ if __name__ == '__main__':
 
         tar_df[i] = tar_df.apply(func, axis=1)
 
+    for i in tar_field_dict:
+        def func(row):
+            return filling_missing_info(row, i)
+
+
+        tar_df[i] = tar_df.apply(func, axis=1)
+
     tar_df.to_pickle(os.path.join(const.TEMP_PATH, '20170813_SDC_MnA_fill_in_dr_information.p'))
     tar_df.to_csv(os.path.join(const.RESULT_PATH, '20170813_SDC_MnA_fill_in_dr_information.csv'), index=False)
