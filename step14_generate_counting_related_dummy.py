@@ -46,7 +46,7 @@ def count_acquire_year_info(row, last_n_year):
     tmp_df = tmp_df[tmp_df[const.YEAR] >= start_year]
     tmp_df = tmp_df[tmp_df[const.YEAR] <= year]
 
-    return int(tmp_df.shape[0] > 1) if status == const.COMPLETED else 1
+    return int(tmp_df.shape[0] > 1) if status == const.COMPLETED else int(not tmp_df.empty)
 
 
 def generate_1_yr_dummy(row):
