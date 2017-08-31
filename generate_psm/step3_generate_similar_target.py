@@ -70,6 +70,110 @@ def merge_id_with_link(id_df, rssd9364_data_df, rssd9001_data_df):
     return id_df
 
 
+def get_pscore_match_year(df):
+    year = df[const.YEAR].iloc[0]
+    quarter = df[const.QUARTER].iloc[0]
+    if year == 2014:
+        match_file = pd.read_pickle(os.path.join(const.COMMERCIAL_YEAR_PATH, 'call2013.pkl'))
+    else:
+        match_file = pd.read_pickle(os.path.join(const.COMMERCIAL_YEAR_PATH, 'call{}.pkl'.format(year)))
+
+    match_file = match_file.dropna(subset=cov_list, how='any').drop_duplicates(subset=[const.LINK_TABLE_RSSD9001],
+                                                                               keep='last')
+
+    try:
+        # get acquirer index
+        rssd9364_match_file = match_file[match_file[const.COMMERCIAL_RSSD9364] > 0].groupby(
+            const.COMMERCIAL_RSSD9364)[cov_list].sum().reset_index()
+        rssd9364_match_file[const.COMMERCIAL_ID] = rssd9364_match_file[const.COMMERCIAL_RSSD9364]
+        matched_result_9364 = get_psm_index_file(df=df, match_file=rssd9364_match_file, match_type=const.ACQUIRER)
+        rssd9001_match_file = match_file[match_file[const.COMMERCIAL_RSSD9001] > 0]
+        rssd9001_match_file[const.COMMERCIAL_ID] = rssd9001_match_file[const.COMMERCIAL_RSSD9001]
+        matched_result_9001 = get_psm_index_file(df=df, match_file=rssd9001_match_file, match_type=const.ACQUIRER)
+
+        acq_matched_result = pd.concat([matched_result_9001, matched_result_9364], axis=0).drop_duplicates(
+            subset=[const.COMMERCIAL_ID], keep='first')
+
+        # get target index
+        matched_result_9364 = get_psm_index_file(df=df, match_file=rssd9364_match_file, match_type=const.TARGET)
+        matched_result_9001 = get_psm_index_file(df=df, match_file=rssd9001_match_file, match_type=const.TARGET)
+
+        tar_matched_result = pd.concat([matched_result_9001, matched_result_9364], axis=0).drop_duplicates(
+            subset=[const.COMMERCIAL_ID], keep='first')
+
+    except Exception as err:
+        print(err)
+        print('{}-{}'.format(year, quarter))
+        raise Exception(err)
+
+    columns = []
+    for i in [const.ACQUIRER, const.TARGET]:
+        for j in [const.REAL, const.COMMERCIAL_ID]:
+            columns.append('{}_{}'.format(i, j))
+
+    dfs = []
+    for i in df.index:
+        temp_df = pd.DataFrame(columns=columns)
+        real_acq_id = df.loc[i, '{}_{}'.format(const.ACQUIRER, const.LINK_TABLE_RSSD9001)]
+        real_tar_id = df.loc[i, '{}_{}'.format(const.TARGET, const.LINK_TABLE_RSSD9001)]
+        temp_df.loc[temp_df.shape[0]] = {
+            '{}_{}'.format(const.ACQUIRER, const.REAL): 1,
+            '{}_{}'.format(const.TARGET, const.REAL): 1,
+            '{}_{}'.format(const.ACQUIRER, const.COMMERCIAL_ID): real_acq_id,
+            '{}_{}'.format(const.TARGET, const.COMMERCIAL_ID): real_tar_id,
+        }
+        acq_matched_tmp = acq_matched_result[acq_matched_result[const.COMMERCIAL_ID] == real_acq_id]
+        tar_matched_tmp = tar_matched_result[tar_matched_result[const.COMMERCIAL_ID] == real_tar_id]
+
+        if acq_matched_tmp.empty and tar_matched_tmp.empty:
+            print('{}-{}'.format(year, quarter))
+            raise ValueError('invalid format')
+
+        if not tar_matched_tmp.empty:
+            for j in range(5):
+                temp_df.loc[temp_df.shape[0]] = {
+                    '{}_{}'.format(const.ACQUIRER, const.REAL): 1,
+                    '{}_{}'.format(const.TARGET, const.REAL): 0,
+                    '{}_{}'.format(const.ACQUIRER, const.COMMERCIAL_ID): real_acq_id,
+                    '{}_{}'.format(const.TARGET, const.COMMERCIAL_ID): tar_matched_tmp[j].iloc[0],
+                }
+
+        if not acq_matched_tmp.empty:
+            for j in range(5):
+                temp_df.loc[temp_df.shape[0]] = {
+                    '{}_{}'.format(const.ACQUIRER, const.REAL): 0,
+                    '{}_{}'.format(const.TARGET, const.REAL): 1,
+                    '{}_{}'.format(const.ACQUIRER, const.COMMERCIAL_ID): acq_matched_tmp[j].iloc[0],
+                    '{}_{}'.format(const.TARGET, const.COMMERCIAL_ID): real_acq_id,
+                }
+
+        if not acq_matched_tmp.empty and not tar_matched_tmp.empty:
+            for j in range(5):
+                for k in range(5):
+                    temp_df.loc[temp_df.shape[0]] = {
+                        '{}_{}'.format(const.ACQUIRER, const.REAL): 0,
+                        '{}_{}'.format(const.TARGET, const.REAL): 0,
+                        '{}_{}'.format(const.ACQUIRER, const.COMMERCIAL_ID): acq_matched_tmp[j].iloc[0],
+                        '{}_{}'.format(const.TARGET, const.COMMERCIAL_ID): tar_matched_tmp[k].iloc[0],
+                    }
+
+        temp_df.loc[:, '{}_{}'.format(const.TARGET, const.LINK_TABLE_RSSD9001)] = real_tar_id
+        temp_df.loc[:, '{}_{}'.format(const.ACQUIRER, const.LINK_TABLE_RSSD9001)] = real_acq_id
+        dfs.append(temp_df)
+
+    generated_index_file = pd.concat(dfs, axis=0, ignore_index=True)
+    generated_index_file.loc[:, const.YEAR] = year
+    generated_index_file.loc[:, const.QUARTER] = quarter
+
+    generated_index_file.to_pickle(os.path.join(const.TEMP_PATH, '20170831_{}_{}_id_file.pkl'.format(year, quarter)))
+
+    merged_data_df = merge_id_with_link(generated_index_file, rssd9364_data_df=rssd9364_match_file,
+                                        rssd9001_data_df=rssd9001_match_file)
+
+    merged_data_df.to_pickle(os.path.join(const.TEMP_PATH, '20170831_{}_{}_data_file.pkl'.format(year, quarter)))
+    return merged_data_df
+
+
 def get_pscore_match(df):
     year = df[const.YEAR].iloc[0]
     quarter = df[const.QUARTER].iloc[0]
@@ -84,6 +188,11 @@ def get_pscore_match(df):
             subset=[const.LINK_TABLE_RSSD9001], keep='last')
 
     elif year == 1986 and quarter == 3:
+        match_file = pd.read_pickle(os.path.join(const.COMMERCIAL_YEAR_PATH, 'call1986.pkl'))
+        match_file = match_file.dropna(subset=cov_list, how='any').drop_duplicates(
+            subset=[const.LINK_TABLE_RSSD9001], keep='last')
+
+    elif year == 1992 and quarter == 4:
         match_file = pd.read_pickle(os.path.join(const.COMMERCIAL_YEAR_PATH, 'call1986.pkl'))
         match_file = match_file.dropna(subset=cov_list, how='any').drop_duplicates(
             subset=[const.LINK_TABLE_RSSD9001], keep='last')
@@ -138,7 +247,7 @@ def get_pscore_match(df):
 
         if acq_matched_tmp.empty and tar_matched_tmp.empty:
             print('{}-{}'.format(year, quarter))
-            raise ValueError('invalid format')
+            return get_pscore_match_year(df)
 
         if not tar_matched_tmp.empty:
             for j in range(5):
