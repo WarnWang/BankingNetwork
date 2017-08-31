@@ -24,7 +24,9 @@ def get_psm_index_file(df, match_file, match_type):
         df['{}_{}'.format(match_type, const.LINK_TABLE_RSSD9001)]).apply(int)
 
     if treatment[treatment == 1].empty:
-        return pd.DataFrame()
+        use_cov_list = cov_list[:]
+        use_cov_list.append(const.COMMERCIAL_ID)
+        return pd.DataFrame(columns=use_cov_list)
 
     covariates = match_file[cov_list]
     pscore = pd.Series(PropensityScore(treatment, covariates).compute('probit'))
@@ -73,8 +75,15 @@ def get_pscore_match(df):
     quarter = df[const.QUARTER].iloc[0]
     if year == 2014:
         match_file = pd.read_pickle(os.path.join(const.COMMERCIAL_YEAR_PATH, 'call2013.pkl'))
-    else:
+        match_file = match_file.dropna(subset=cov_list, how='any').drop_duplicates(
+            subset=[const.LINK_TABLE_RSSD9001], keep='last')
 
+    elif year == 1984 and quarter == 4:
+        match_file = pd.read_pickle(os.path.join(const.COMMERCIAL_YEAR_PATH, 'call1984.pkl'))
+        match_file = match_file.dropna(subset=cov_list, how='any').drop_duplicates(
+            subset=[const.LINK_TABLE_RSSD9001], keep='last')
+
+    else:
         match_file = pd.read_pickle(os.path.join(const.COMMERCIAL_QUARTER_PATH,
                                                  'call{}{:02d}.pkl'.format(year, quarter * 3)))
 
@@ -97,6 +106,7 @@ def get_pscore_match(df):
 
         tar_matched_result = pd.concat([matched_result_9001, matched_result_9364], axis=0).drop_duplicates(
             subset=[const.COMMERCIAL_ID], keep='first')
+
     except Exception as err:
         print(err)
         print('{}-{}'.format(year, quarter))
@@ -120,6 +130,10 @@ def get_pscore_match(df):
         }
         acq_matched_tmp = acq_matched_result[acq_matched_result[const.COMMERCIAL_ID] == real_acq_id]
         tar_matched_tmp = tar_matched_result[tar_matched_result[const.COMMERCIAL_ID] == real_tar_id]
+
+        if acq_matched_tmp.empty and tar_matched_tmp.empty:
+            print('{}-{}'.format(year, quarter))
+            raise ValueError('invalid format')
 
         if not tar_matched_tmp.empty:
             for j in range(5):
