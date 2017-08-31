@@ -27,7 +27,7 @@ def get_psm_index_file(df, match_file, match_type):
         return pd.DataFrame()
 
     covariates = match_file[cov_list]
-    pscore = pd.Series(PropensityScore(treatment, covariates).compute())
+    pscore = pd.Series(PropensityScore(treatment, covariates).compute('probit'))
 
     result_df = pd.DataFrame(columns=[const.COMMERCIAL_ID, 0, 1, 2, 3, 4])
     for i in treatment[treatment == 1].index:
@@ -92,12 +92,7 @@ def get_pscore_match(df):
             subset=[const.COMMERCIAL_ID], keep='first')
 
         # get target index
-        rssd9364_match_file = match_file[match_file[const.COMMERCIAL_RSSD9364] > 0].groupby(
-            const.COMMERCIAL_RSSD9364)[cov_list].sum().reset_index()
-        rssd9364_match_file[const.COMMERCIAL_ID] = rssd9364_match_file[const.COMMERCIAL_RSSD9364]
         matched_result_9364 = get_psm_index_file(df=df, match_file=rssd9364_match_file, match_type=const.TARGET)
-        rssd9001_match_file = match_file[match_file[const.COMMERCIAL_RSSD9001] > 0]
-        rssd9001_match_file[const.COMMERCIAL_ID] = rssd9001_match_file[const.COMMERCIAL_RSSD9001]
         matched_result_9001 = get_psm_index_file(df=df, match_file=rssd9001_match_file, match_type=const.TARGET)
 
         tar_matched_result = pd.concat([matched_result_9001, matched_result_9364], axis=0).drop_duplicates(
