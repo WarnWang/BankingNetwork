@@ -25,3 +25,6 @@ class PathInfo(object):
 
     TEMP_PATH = os.path.join(ROOT_PATH, 'temp')
     RESULT_PATH = os.path.join(ROOT_PATH, 'result')
+
+    COMMERCIAL_QUARTER_PATH = os.path.join(DATA_PATH, 'commercial', 'commercial_csv')
+    COMMERCIAL_YEAR_PATH = os.path.join(DATA_PATH, 'commercial', 'commercial_csv_yearly')
