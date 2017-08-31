@@ -35,8 +35,8 @@ for root_dir, out_put_dir in [(COMMERCIAL_QUARTER_PATH, const.COMMERCIAL_QUARTER
         df = pd.read_csv(os.path.join(root_dir, f))
         # df[const.COMMERCIAL_DATE] = df[const.COMMERCIAL_DATE].dropna().apply(
         #     lambda x: datetime.datetime.strptime(str(int(x)), '%Y%m%d'))
-        df[const.COMMERCIAL_ID1] = pd.to_numeric(df[const.COMMERCIAL_ID1], errors='coerce', downcast='integer')
-        df[const.COMMERCIAL_ID2] = pd.to_numeric(df[const.COMMERCIAL_ID2], errors='coerce', downcast='integer')
+        df[const.COMMERCIAL_RSSD9364] = pd.to_numeric(df[const.COMMERCIAL_RSSD9364], errors='coerce', downcast='integer')
+        df[const.COMMERCIAL_RSSD9001] = pd.to_numeric(df[const.COMMERCIAL_RSSD9001], errors='coerce', downcast='integer')
         date_info = f_name[4:]
         df.loc[:, const.COMMERCIAL_DATE] = date_info
 
