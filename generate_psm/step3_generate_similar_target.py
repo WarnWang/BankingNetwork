@@ -285,10 +285,13 @@ if __name__ == '__main__':
 
     dfs = [tmp_df for _, tmp_df in groups]
 
-    pool = pathos.multiprocessing.ProcessPool(pathos.multiprocessing.cpu_count() - 2)
-    result_dfs = pool.map(get_pscore_match, dfs)
-    pool.close()
-    pool.join()
+    # pool = pathos.multiprocessing.ProcessPool(pathos.multiprocessing.cpu_count() - 2)
+    # result_dfs = pool.map(get_pscore_match, dfs)
+    # pool.close()
+    # pool.join()
+    result_dfs = []
+    for df in dfs:
+        result_dfs.append(get_pscore_match(df))
 
     result_df = pd.concat(result_dfs, ignore_index=True)
     result_df.to_pickle(os.path.join(const.TEMP_PATH, '20170831_CAR_real_fault_file.pkl'))
