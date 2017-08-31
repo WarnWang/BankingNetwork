@@ -28,6 +28,7 @@ for root_dir, out_put_dir in [(COMMERCIAL_QUARTER_PATH, const.COMMERCIAL_QUARTER
     quarter_files = os.listdir(root_dir)
 
     for f in quarter_files:
+        print(f)
         f_name = os.path.splitext(f)[0]
         save_path = os.path.join(out_put_dir, '{}.pkl'.format(f_name))
 
