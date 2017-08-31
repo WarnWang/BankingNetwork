@@ -8,9 +8,9 @@
 
 import os
 
-from pscore_match.pscore import PropensityScore
-import pandas as pd
 import pathos
+import pandas as pd
+from pscore_match.pscore import PropensityScore
 
 from constants import Constants as const
 
@@ -45,20 +45,22 @@ def get_psm_index_file(df, match_file, match_type):
 def merge_id_with_link(id_df, rssd9364_data_df, rssd9001_data_df):
     use_cov_list = cov_list[:]
     use_cov_list.append(const.COMMERCIAL_ID)
-    rssd9001_tmp_df = rssd9364_data_df[use_cov_list]
+    rssd9001_tmp_df = rssd9001_data_df[use_cov_list]
+    rssd9364_tmp_df = rssd9364_data_df[use_cov_list]
 
     for i in [const.ACQUIRER, const.TARGET]:
-        id_rssd_9364 = id_df[id_df['{}_{}'.format(i, const.COMMERCIAL_ID)].isin(
-            rssd9364_data_df[const.COMMERCIAL_ID])]
-        id_rssd_9001 = id_df[id_df.index.notin(id_rssd_9364.index)]
-        rssd9364_tmp_df = rssd9364_data_df.rename(index=str, columns={const.COMMERCIAL_ID: '{}_{}'.format(
-            i, const.COMMERCIAL_ID
-        )})
-        id_9364 = id_rssd_9364.merge(rssd9364_tmp_df, on='{}_{}'.format(i, const.COMMERCIAL_ID), how='left')
+        rename_dict = {}
 
-        rssd9001_tmp_df2 = rssd9001_tmp_df.rename(index=str, columns={const.COMMERCIAL_ID: '{}_{}'.format(
-            i, const.COMMERCIAL_ID
-        )})
+        for j in use_cov_list:
+            rename_dict[j] = '{}_{}'.format(i, j)
+
+        id_rssd_9364 = id_df[id_df['{}_{}'.format(i, const.COMMERCIAL_ID)].apply(int).isin(
+            rssd9364_tmp_df[const.COMMERCIAL_ID])]
+        id_rssd_9001 = id_df.drop(id_rssd_9364.index, errors='ignore')
+        rssd9364_tmp_df2 = rssd9364_tmp_df.rename(index=str, columns=rename_dict)
+        id_9364 = id_rssd_9364.merge(rssd9364_tmp_df2, on='{}_{}'.format(i, const.COMMERCIAL_ID), how='left')
+
+        rssd9001_tmp_df2 = rssd9001_tmp_df.rename(index=str, columns=rename_dict)
         id_9001 = id_rssd_9001.merge(rssd9001_tmp_df2, on='{}_{}'.format(i, const.COMMERCIAL_ID), how='left')
 
         id_df = pd.concat([id_9364, id_9001], axis=0)
@@ -83,7 +85,7 @@ def get_pscore_match(df):
     matched_result_9364 = get_psm_index_file(df=df, match_file=rssd9364_match_file, match_type=const.ACQUIRER)
     rssd9001_match_file = match_file[match_file[const.COMMERCIAL_RSSD9001] > 0]
     rssd9001_match_file[const.COMMERCIAL_ID] = rssd9001_match_file[const.COMMERCIAL_RSSD9001]
-    matched_result_9001 = get_psm_index_file(df=df, match_file=rssd9364_match_file, match_type=const.ACQUIRER)
+    matched_result_9001 = get_psm_index_file(df=df, match_file=rssd9001_match_file, match_type=const.ACQUIRER)
 
     acq_matched_result = pd.concat([matched_result_9001, matched_result_9364], axis=0).drop_duplicates(
         subset=[const.COMMERCIAL_ID], keep='first')
@@ -95,7 +97,7 @@ def get_pscore_match(df):
     matched_result_9364 = get_psm_index_file(df=df, match_file=rssd9364_match_file, match_type=const.TARGET)
     rssd9001_match_file = match_file[match_file[const.COMMERCIAL_RSSD9001] > 0]
     rssd9001_match_file[const.COMMERCIAL_ID] = rssd9001_match_file[const.COMMERCIAL_RSSD9001]
-    matched_result_9001 = get_psm_index_file(df=df, match_file=rssd9364_match_file, match_type=const.TARGET)
+    matched_result_9001 = get_psm_index_file(df=df, match_file=rssd9001_match_file, match_type=const.TARGET)
 
     tar_matched_result = pd.concat([matched_result_9001, matched_result_9364], axis=0).drop_duplicates(
         subset=[const.COMMERCIAL_ID], keep='first')
@@ -108,8 +110,8 @@ def get_pscore_match(df):
     dfs = []
     for i in df.index:
         temp_df = pd.DataFrame(columns=columns)
-        real_acq_id = df.loc[i, '{}_{}'.format(const.ACQUIRER, const.COMMERCIAL_ID)]
-        real_tar_id = df.loc[i, '{}_{}'.format(const.TARGET, const.COMMERCIAL_ID)]
+        real_acq_id = df.loc[i, '{}_{}'.format(const.ACQUIRER, const.LINK_TABLE_RSSD9001)]
+        real_tar_id = df.loc[i, '{}_{}'.format(const.TARGET, const.LINK_TABLE_RSSD9001)]
         temp_df.loc[temp_df.shape[0]] = {
             '{}_{}'.format(const.ACQUIRER, const.REAL): 1,
             '{}_{}'.format(const.TARGET, const.REAL): 1,
