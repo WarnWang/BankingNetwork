@@ -42,6 +42,7 @@ for root_dir, out_put_dir in [(COMMERCIAL_QUARTER_PATH, const.COMMERCIAL_QUARTER
 
         df[const.LEVERAGE_RATIO] = df[const.TOTAL_LIABILITIES] / df[const.TOTAL_ASSETS]
         df[const.ROA] = df[const.NET_INCOME_LOSS] / df[const.TOTAL_ASSETS]
-        df[const.ROE] = df[const.NET_INCOME_LOSS] / df[const.TOTAL_EQUITY_CAPITAL]
+        if const.TOTAL_EQUITY_CAPITAL in df.keys():
+            df[const.ROE] = df[const.NET_INCOME_LOSS] / df[const.TOTAL_EQUITY_CAPITAL]
 
         df.to_pickle(save_path)

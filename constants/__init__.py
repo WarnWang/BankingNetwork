@@ -57,6 +57,9 @@ class Constants(PathInfo):
     TARGET_NI = 'Target_Net_Income_Last_Twelve_Months_mil'
     TARGET_TA = 'Target_Total_Assets_mil'
 
+    LINK_TABLE_RSSD9001 = 'link_table_rssd9001'
+    REAL = 'real'
+
     ACQUIRER = 'Acquirer'
     TARGET = 'Target'
 
@@ -70,5 +73,5 @@ class Constants(PathInfo):
     TOTAL_EQUITY_CAPITAL = 'RCON3210'
     NET_INCOME_LOSS = 'RIAD4340'
     LEVERAGE_RATIO = 'Leverage_Ratio'
-    ROA = 'ROA_call'
-    ROE = 'ROE_call'
+    ROA = 'ROA'
+    ROE = 'ROE'
