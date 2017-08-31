@@ -37,6 +37,7 @@ class Constants(PathInfo):
 
     ANNOUNCED_DATE = 'Date_Announced'
     YEAR = 'Year_Announced'
+    QUARTER = 'Quarter'
     STATUS = 'Status'
 
     COMPLETED = 'Completed'
