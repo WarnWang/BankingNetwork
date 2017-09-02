@@ -197,6 +197,10 @@ def get_pscore_match(df):
     elif year in {1988} and quarter in {4}:
         match_file = pd.read_pickle(os.path.join(const.COMMERCIAL_QUARTER_PATH,
                                                  'call{}09.pkl'.format(year)))
+
+    elif year in {1991} and quarter in {1}:
+        match_file = pd.read_pickle(os.path.join(const.COMMERCIAL_QUARTER_PATH,
+                                                 'call199012.pkl'.format(year)))
     elif year == 1986 and quarter in {1, 2, 3}:
         match_file = pd.read_pickle(os.path.join(const.COMMERCIAL_QUARTER_PATH,
                                                  'call{}12.pkl'.format(year)))
