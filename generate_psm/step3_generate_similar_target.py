@@ -7,6 +7,7 @@
 # @Email: wangyouan@gamil.com
 
 import os
+import datetime
 
 import pathos
 import pandas as pd
@@ -177,6 +178,13 @@ def get_pscore_match_year(df):
 def get_pscore_match(df):
     year = df[const.YEAR].iloc[0]
     quarter = df[const.QUARTER].iloc[0]
+
+    print('{} Start to handle {} - {} data'.format(datetime.datetime.now(), year, quarter))
+
+    if os.path.isfile(os.path.join(const.TEMP_PATH, '20170831_{}_{}_data_file.pkl'.format(year, quarter))):
+        print('{}: {} - {} data already have'.format(datetime.datetime.now(), year, quarter))
+        return pd.read_pickle(os.path.join(const.TEMP_PATH, '20170831_{}_{}_data_file.pkl'.format(year, quarter)))
+
     if year == 2014:
         match_file = pd.read_pickle(os.path.join(const.COMMERCIAL_YEAR_PATH, 'call2013.pkl'))
         match_file = match_file.dropna(subset=cov_list, how='any').drop_duplicates(
@@ -279,6 +287,8 @@ def get_pscore_match(df):
                                         rssd9001_data_df=rssd9001_match_file)
 
     merged_data_df.to_pickle(os.path.join(const.TEMP_PATH, '20170831_{}_{}_data_file.pkl'.format(year, quarter)))
+
+    print('{}: {} - {} data finished'.format(datetime.datetime.now(), year, quarter))
     return merged_data_df
 
 
