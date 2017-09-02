@@ -190,10 +190,9 @@ def get_pscore_match(df):
         match_file = match_file.dropna(subset=cov_list, how='any').drop_duplicates(
             subset=[const.COMMERCIAL_RSSD9001], keep='last')
 
-    elif year == 1985 and quarter in {3, 4}:
+    elif year in {1985, 1987} and quarter in {3, 4}:
         match_file = pd.read_pickle(os.path.join(const.COMMERCIAL_QUARTER_PATH,
-                                                 'call{}03.pkl'.format(year)))
-
+                                                 'call{}06.pkl'.format(year)))
     elif year == 1986 and quarter in {1, 2, 3}:
         match_file = pd.read_pickle(os.path.join(const.COMMERCIAL_QUARTER_PATH,
                                                  'call{}12.pkl'.format(year)))
