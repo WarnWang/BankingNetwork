@@ -185,7 +185,7 @@ def get_pscore_match(df):
         print('{}: {} - {} data already have'.format(datetime.datetime.now(), year, quarter))
         return pd.read_pickle(os.path.join(const.TEMP_PATH, '20170831_{}_{}_data_file.pkl'.format(year, quarter)))
 
-    if year == 2014:
+    if year >= 2014:
         match_file = pd.read_pickle(os.path.join(const.COMMERCIAL_YEAR_PATH, 'call2013.pkl'))
         match_file = match_file.dropna(subset=cov_list, how='any').drop_duplicates(
             subset=[const.COMMERCIAL_RSSD9001], keep='last')
@@ -205,8 +205,8 @@ def get_pscore_match(df):
         match_file = pd.read_pickle(os.path.join(const.COMMERCIAL_QUARTER_PATH,
                                                  'call{}12.pkl'.format(year)))
 
-    elif year > 2014:
-        return pd.DataFrame()
+
+
     else:
         match_file = pd.read_pickle(os.path.join(const.COMMERCIAL_QUARTER_PATH,
                                                  'call{}{:02d}.pkl'.format(year, quarter * 3)))
