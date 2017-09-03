@@ -18,7 +18,8 @@ usecol.append('DateAnnounced')
 usecol.append('AcquirerCUSIP')
 usecol.append('TargetCUSIP')
 
-data_df = pd.read_csv(os.path.join(const.DATA_PATH, ''))
+data_df = pd.read_csv(os.path.join(const.DATA_PATH,
+                                   '20170902_CAR_Control_Ind_IV12_DirExe_Stata_CUSIPnum_3Part_IVtest.csv'))
 makeup_df = pd.read_csv(os.path.join(const.DATA_PATH, '20160105_branch_data.csv'), usecols=usecol)
 
 makeup_df = makeup_df.dropna(subset=['DateAnnounced', 'AcquirerCUSIP', 'TargetCUSIP'], how='any').rename(
