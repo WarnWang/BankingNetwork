@@ -255,10 +255,6 @@ def get_pscore_match(df):
         acq_matched_tmp = acq_matched_result[acq_matched_result[const.COMMERCIAL_ID] == real_acq_id]
         tar_matched_tmp = tar_matched_result[tar_matched_result[const.COMMERCIAL_ID] == real_tar_id]
 
-        # if acq_matched_tmp.empty and tar_matched_tmp.empty:
-        #     print('{}-{}'.format(year, quarter))
-        #     return get_pscore_match_year(df)
-
         if not tar_matched_tmp.empty:
             for j in range(5):
                 temp_df.loc[temp_df.shape[0]] = {
