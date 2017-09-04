@@ -7,6 +7,7 @@
 # @Email: wangyouan@gamil.com
 
 import os
+import csv
 
 import pandas as pd
 
@@ -51,4 +52,5 @@ for i in [1, 3, 4]:
 merged_df = merged_df.drop(refer_df.branch.tolist(), axis=1)
 
 merged_df.to_pickle(os.path.join(const.TEMP_PATH, '20170904_CAR_makeup_with_previous_branch.pkl'))
-merged_df.to_csv(os.path.join(const.RESULT_PATH, '20170904_CAR_makeup_with_previous_branch.csv'), index=False)
+merged_df.to_csv(os.path.join(const.RESULT_PATH, '20170904_CAR_makeup_with_previous_branch.csv'), index=False,
+                 quoting=csv.QUOTE_ALL)
