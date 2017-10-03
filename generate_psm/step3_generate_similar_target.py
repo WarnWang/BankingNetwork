@@ -22,7 +22,7 @@ cov_list = [const.NET_INCOME_LOSS, const.TOTAL_ASSETS, const.TOTAL_LIABILITIES, 
 def get_psm_index_file(df, match_file, match_type):
     match_file = match_file.dropna(subset=cov_list, how='any').reset_index(drop=True)
     treatment = match_file[const.COMMERCIAL_ID].isin(
-        df['{}_{}'.format(match_type, const.LINK_TABLE_RSSD9001)]).apply(int)
+        df['{}_{}'.format(match_type, const.LINK_TABLE_RSSD9001)].apply(str)).apply(int)
 
     if treatment[treatment == 1].empty:
         use_cov_list = cov_list[:]
