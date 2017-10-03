@@ -28,3 +28,5 @@ class PathInfo(object):
 
     COMMERCIAL_QUARTER_PATH = os.path.join(DATA_PATH, 'commercial', 'commercial_csv')
     COMMERCIAL_YEAR_PATH = os.path.join(DATA_PATH, 'commercial', 'commercial_csv_yearly')
+
+    PSCORE_MATCH_RESULT = os.path.join(TEMP_PATH, 'pscore')

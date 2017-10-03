@@ -77,3 +77,8 @@ class Constants(PathInfo):
     LEVERAGE_RATIO = 'Leverage_Ratio'
     ROA = 'ROA'
     ROE = 'ROE'
+
+    TAR_PSCORE = 'pro_score_tar'
+    ACQ_PSCORE = 'pro_score_acq'
+    TAR_PSCORE_RANK = 'pseudo_acq_rank'
+    ACQ_PSCORE_RANK = 'pseudo_tar_rank'
