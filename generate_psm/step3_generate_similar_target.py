@@ -31,7 +31,7 @@ def get_psm_index_file(df, match_file, match_type):
 
     covariates = match_file[cov_list]
     pscore = pd.Series(PropensityScore(treatment, covariates).compute('probit'))
-    columns = [const.COMMERCIAL_ID, 'psore']
+    columns = [const.COMMERCIAL_ID, 'pscore']
     for i in range(5):
         columns.append(str(i))
         columns.append('{}_score'.format(i))
@@ -40,7 +40,7 @@ def get_psm_index_file(df, match_file, match_type):
     for i in treatment[treatment == 1].index:
         i_score = pscore[i]
         result_dict = {const.COMMERCIAL_ID: str(int(match_file.loc[i, const.COMMERCIAL_ID])),
-                       'psore': i_score}
+                       'pscore': i_score}
         tmp_series = pscore[pscore.index != i]
         min_dis_index = (tmp_series - i_score).apply(abs).sort_values(ascending=True).head(5).index
         for j, k in enumerate(min_dis_index):
