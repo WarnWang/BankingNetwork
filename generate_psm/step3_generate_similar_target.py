@@ -174,7 +174,7 @@ def get_pscore_match(df):
                     const.TAR_PSCORE_RANK: j + 1,
                     const.ACQ_PSCORE_RANK: 0,
                     const.ACQ_PSCORE: np.nan,
-                    const.TAR_PSCORE: tar_matched_tmp['{}_score'.format(j)],
+                    const.TAR_PSCORE: tar_matched_tmp.loc[tar_matched_tmp.index[0], '{}_score'.format(j)],
                 }
 
         if not acq_matched_tmp.empty:
@@ -187,7 +187,7 @@ def get_pscore_match(df):
                     const.ACQ_PSCORE_RANK: j + 1,
                     const.TAR_PSCORE_RANK: 0,
                     const.TAR_PSCORE: np.nan,
-                    const.ACQ_PSCORE: acq_matched_tmp['{}_score'.format(j)],
+                    const.ACQ_PSCORE: acq_matched_tmp.loc[acq_matched_tmp.index[0], '{}_score'.format(j)],
                 }
 
         if not acq_matched_tmp.empty and not tar_matched_tmp.empty:
@@ -200,8 +200,8 @@ def get_pscore_match(df):
                         '{}_{}'.format(const.TARGET, const.COMMERCIAL_ID): tar_matched_tmp[str(k)].iloc[0],
                         const.ACQ_PSCORE_RANK: j + 1,
                         const.TAR_PSCORE_RANK: k + 1,
-                        const.TAR_PSCORE: tar_matched_tmp['{}_score'.format(k)],
-                        const.ACQ_PSCORE: acq_matched_tmp['{}_score'.format(j)],
+                        const.TAR_PSCORE: tar_matched_tmp.loc[tar_matched_tmp.index[0], '{}_score'.format(k)],
+                        const.ACQ_PSCORE: acq_matched_tmp.loc[acq_matched_tmp.index[0], '{}_score'.format(j)],
                     }
         if not acq_matched_tmp.empty:
             temp_df[temp_df['{}_{}'.format(const.ACQUIRER, const.REAL)] == 1][const.ACQ_PSCORE] = \
