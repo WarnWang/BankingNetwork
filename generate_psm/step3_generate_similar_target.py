@@ -113,7 +113,6 @@ def get_pscore_match(df):
         match_file = pd.read_pickle(os.path.join(const.COMMERCIAL_QUARTER_PATH,
                                                  'call{}{:02d}.pkl'.format(year, quarter * 3)))
 
-    match_file[const.COMMERCIAL_ID] = match_file[const.COMMERCIAL_ID].apply(lambda x: str(int(x)))
     try:
         # get acquirer index
         rssd9364_match_file = match_file[match_file[const.COMMERCIAL_RSSD9364] > 0].groupby(
