@@ -27,8 +27,11 @@ for f_name in f_list:
     df = pd.read_stata(os.path.join(const.DATA_PATH, '20171008_datamerge', f_name))
 
     new_name = '20171008_{}'.format('_'.join(f_name.split('_')[1:]))
+    print(df.shape)
+    print(lambda_df.shape)
 
     merged_df = pd.merge(df, lambda_df, how='left', on=[const.YEAR, 'Acq_State_abbr', 'Target_State_abbr'])
+    print(merged_df.shape)
 
     merged_df.to_pickle(os.path.join(const.TEMP_PATH, '{}.pkl'.format(new_name)))
     merged_df.to_stata(os.path.join(const.RESULT_PATH, new_name))
