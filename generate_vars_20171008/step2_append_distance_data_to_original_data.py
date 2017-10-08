@@ -27,7 +27,6 @@ for year, state in new_index:
     df.loc[index, 'year'] = year
     df.loc[index, 'acq'] = df.loc[index, 'tgt'] = state
     df.loc[index, 'acq_access_tgt'] = df.loc[index, 'tgt_access_acq'] = 1
-    df.loc[index, 'acq_access_tgt'] = df.loc[index, 'acq_access_tgt'] = state
     df.loc[index, 'acq_state_gdp'] = df.loc[index, 'tgt_state_gdp'] = tmp_df.loc[tmp_df.index[0], 'acq_state_gdp']
     df.loc[index, 'acq_population'] = df.loc[index, 'tgt_population'] = tmp_df.loc[tmp_df.index[0], 'acq_population']
     df.loc[index, 'acq_state_gdp_growth'] = df.loc[index, 'tgt_state_gdp_growth'] = \
