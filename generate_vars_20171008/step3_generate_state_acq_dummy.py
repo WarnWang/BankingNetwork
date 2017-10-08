@@ -21,7 +21,7 @@ acq_df = acq_df[[const.YEAR, 'Acquirer_State_abbr', 'Target_State_abbr']]
 
 acq_df = acq_df.rename(index=str, columns={"Acquirer_State_abbr": 'acq',
                                            'Target_State_abbr': 'tgt',
-                                           const.YEAR: 'year'})
+                                           const.YEAR: 'year'}).drop_duplicates()
 
 acq_df.loc[:, 'acq_state_acquiring_tar_state_dummy'] = 1
 

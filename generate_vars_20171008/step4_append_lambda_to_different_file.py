@@ -13,10 +13,8 @@ import pandas as pd
 from constants import Constants as const
 
 lambda_df = pd.read_stata(os.path.join(const.RESULT_PATH, '20171008_state_year_append_lambda.dta'))
-lambda_df = lambda_df[['year', 'acq', 'tgt', 'lambda']]
-lambda_df = lambda_df.rename(index=str, columns={'year': const.YEAR,
-                                                 'acq': 'Acq_State_abbr',
-                                                 'tgt': 'Target_State_abbr'})
+lambda_df = lambda_df[['year', 'acq', 'tgt', 'lambda']].rename(
+    index=str, columns={'year': const.YEAR, 'acq': 'Acq_State_abbr', 'tgt': 'Target_State_abbr'}).drop_duplicates()
 
 f_list = ['20170906_CAR_Control_Ind_IV12_DirExe_Stata_CUSIPnum_3Part_DeleteMissing_IVtest_drop.dta',
           '20170906_CAR_Control_Ind_IV12_DirExe_Stata_CUSIPnum_3Part_IVtest2_drop.dta',
