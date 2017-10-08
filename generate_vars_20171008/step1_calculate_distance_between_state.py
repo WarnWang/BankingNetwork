@@ -32,3 +32,14 @@ for i in range(state_number):
                                        'distance': vincenty(point1=state1_geocode, point2=state2_geocode, miles=False)}
 
 new_df.to_pickle(os.path.join(const.TEMP_PATH, '20171008_distance_between_different_states.pkl'))
+
+distance_number = new_df.shape[0]
+
+for i in range(distance_number):
+    if new_df.iloc[i, 1] != new_df.iloc[i, 0]:
+        new_df.loc[new_df.shape[0]] = {'state1': new_df.iloc[i, 1],
+                                       'state2': new_df.iloc[i, 0],
+                                       'distance': new_df.iloc[i, 2]}
+
+new_df = new_df.set_index(['state1', 'state2'])
+new_df.to_pickle(os.path.join(const.TEMP_PATH, '20171008_distance_between_different_states.pkl'))
