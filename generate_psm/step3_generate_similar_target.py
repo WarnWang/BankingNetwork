@@ -67,12 +67,12 @@ def merge_id_with_link(id_df, rssd9364_data_df, rssd9001_data_df):
             rssd9364_tmp_df[const.COMMERCIAL_ID])]
         id_rssd_9001 = id_df.drop(id_rssd_9364.index, errors='ignore')
         rssd9364_tmp_df2 = rssd9364_tmp_df.rename(index=str, columns=rename_dict)
-        id_9364 = id_rssd_9364.merge(rssd9364_tmp_df2, on='{}_{}'.format(i, const.COMMERCIAL_ID), how='left')
+        id_9364 = id_rssd_9364.merge(rssd9364_tmp_df2, on=['{}_{}'.format(i, const.COMMERCIAL_ID)], how='left')
 
         rssd9001_tmp_df2 = rssd9001_tmp_df.rename(index=str, columns=rename_dict)
-        id_9001 = id_rssd_9001.merge(rssd9001_tmp_df2, on='{}_{}'.format(i, const.COMMERCIAL_ID), how='left')
+        id_9001 = id_rssd_9001.merge(rssd9001_tmp_df2, on=['{}_{}'.format(i, const.COMMERCIAL_ID)], how='left')
 
-        id_df = pd.concat([id_9364, id_9001], axis=0)
+        id_df = pd.concat([id_9364, id_9001], axis=0, ignore_index=True)
 
     return id_df
 
@@ -150,8 +150,8 @@ def get_pscore_match(df):
         temp_df = pd.DataFrame(columns=columns)
         real_acq_id = str(int(df.loc[i, '{}_{}'.format(const.ACQUIRER, const.LINK_TABLE_RSSD9001)]))
         real_tar_id = str(int(df.loc[i, '{}_{}'.format(const.TARGET, const.LINK_TABLE_RSSD9001)]))
-        original_index = temp_df.shape[0]
-        temp_df.loc[original_index] = {
+        index = 0
+        temp_df.loc[index] = {
             '{}_{}'.format(const.ACQUIRER, const.REAL): 1,
             '{}_{}'.format(const.TARGET, const.REAL): 1,
             '{}_{}'.format(const.ACQUIRER, const.COMMERCIAL_ID): real_acq_id,
@@ -161,12 +161,13 @@ def get_pscore_match(df):
             const.ACQ_PSCORE: np.nan,
             const.TAR_PSCORE: np.nan,
         }
+        index += 1
         acq_matched_tmp = acq_matched_result[acq_matched_result[const.COMMERCIAL_ID] == real_acq_id]
         tar_matched_tmp = tar_matched_result[tar_matched_result[const.COMMERCIAL_ID] == real_tar_id]
 
         if not tar_matched_tmp.empty:
             for j in range(5):
-                temp_df.loc[temp_df.shape[0]] = {
+                temp_df.loc[index] = {
                     '{}_{}'.format(const.ACQUIRER, const.REAL): 1,
                     '{}_{}'.format(const.TARGET, const.REAL): 0,
                     '{}_{}'.format(const.ACQUIRER, const.COMMERCIAL_ID): real_acq_id,
@@ -176,10 +177,11 @@ def get_pscore_match(df):
                     const.ACQ_PSCORE: np.nan,
                     const.TAR_PSCORE: tar_matched_tmp.loc[tar_matched_tmp.index[0], '{}_score'.format(j)],
                 }
+                index += 1
 
         if not acq_matched_tmp.empty:
             for j in range(5):
-                temp_df.loc[temp_df.shape[0]] = {
+                temp_df.loc[index] = {
                     '{}_{}'.format(const.ACQUIRER, const.REAL): 0,
                     '{}_{}'.format(const.TARGET, const.REAL): 1,
                     '{}_{}'.format(const.ACQUIRER, const.COMMERCIAL_ID): acq_matched_tmp[str(j)].iloc[0],
@@ -189,11 +191,12 @@ def get_pscore_match(df):
                     const.TAR_PSCORE: np.nan,
                     const.ACQ_PSCORE: acq_matched_tmp.loc[acq_matched_tmp.index[0], '{}_score'.format(j)],
                 }
+                index += 1
 
         if not acq_matched_tmp.empty and not tar_matched_tmp.empty:
             for j in range(5):
                 for k in range(5):
-                    temp_df.loc[temp_df.shape[0]] = {
+                    temp_df.loc[index] = {
                         '{}_{}'.format(const.ACQUIRER, const.REAL): 0,
                         '{}_{}'.format(const.TARGET, const.REAL): 0,
                         '{}_{}'.format(const.ACQUIRER, const.COMMERCIAL_ID): acq_matched_tmp[str(j)].iloc[0],
@@ -203,6 +206,8 @@ def get_pscore_match(df):
                         const.TAR_PSCORE: tar_matched_tmp.loc[tar_matched_tmp.index[0], '{}_score'.format(k)],
                         const.ACQ_PSCORE: acq_matched_tmp.loc[acq_matched_tmp.index[0], '{}_score'.format(j)],
                     }
+                    index += 1
+
         if not acq_matched_tmp.empty:
             temp_df[temp_df['{}_{}'.format(const.ACQUIRER, const.REAL)] == 1][const.ACQ_PSCORE] = \
                 acq_matched_tmp['pscore'].iloc[0]
@@ -242,7 +247,8 @@ if __name__ == '__main__':
     # pool.join()
     result_dfs = []
     for df in dfs:
+    # df = groups.get_group((1987,4))
         result_dfs.append(get_pscore_match(df))
 
     result_df = pd.concat(result_dfs, ignore_index=True)
-    result_df.to_pickle(os.path.join(const.TEMP_PATH, '20170831_CAR_real_fault_file.pkl'))
+    result_df.drop_duplicates().to_pickle(os.path.join(const.TEMP_PATH, '20170831_CAR_real_fault_file.pkl'))
