@@ -21,7 +21,7 @@ if __name__ == '__main__':
             key = '{}_{}'.format(prefix, col)
             psm_result[key] = psm_result[key].apply(int).apply(str)
 
-    data_df = pd.read_pickle(os.path.join(const.TEMP_PATH, '20171212_CAR_useful_row.pkl'))
+    data_df = pd.read_pickle(os.path.join(const.TEMP_PATH, '20170831_CAR_useful_row.pkl'))
     data_df = data_df.drop(['Acquirer_real', 'Target_real'], axis=1)
     data_df[const.QUARTER] = data_df[const.ANNOUNCED_DATE].apply(lambda x: math.ceil(x.month / 3))
     data_df['Acquirer_link_table_rssd9001'] = data_df['Acquirer_link_table_rssd9001'].apply(int).apply(str)
