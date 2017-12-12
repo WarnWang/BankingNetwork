@@ -15,8 +15,7 @@ from pscore_match.pscore import PropensityScore
 
 from constants import Constants as const
 
-cov_list = [const.NET_INCOME_LOSS, const.TOTAL_ASSETS, const.TOTAL_LIABILITIES, const.TOTAL_EQUITY_CAPITAL,
-            const.ROA, const.ROE, const.LEVERAGE_RATIO, const.NET_INTEREST_INCOME]
+cov_list = [const.NET_INCOME_LOSS, const.TOTAL_ASSETS, const.ROA,  const.LEVERAGE_RATIO, const.INTEREST_INCOME_RATIO]
 
 
 def get_psm_index_file(df, match_file, match_type):
@@ -83,9 +82,9 @@ def get_pscore_match(df):
 
     print('{} Start to handle {} - {} data'.format(datetime.datetime.now(), year, quarter))
 
-    if os.path.isfile(os.path.join(const.TEMP_PATH, '20170831_{}_{}_data_file.pkl'.format(year, quarter))):
+    if os.path.isfile(os.path.join(const.TEMP_PATH, '20171212_{}_{}_data_file.pkl'.format(year, quarter))):
         print('{}: {} - {} data already have'.format(datetime.datetime.now(), year, quarter))
-        return pd.read_pickle(os.path.join(const.TEMP_PATH, '20170831_{}_{}_data_file.pkl'.format(year, quarter)))
+        return pd.read_pickle(os.path.join(const.TEMP_PATH, '20171212_{}_{}_data_file.pkl'.format(year, quarter)))
 
     if year >= 2014:
         match_file = pd.read_pickle(os.path.join(const.COMMERCIAL_YEAR_PATH, 'call2013.pkl'))
@@ -119,10 +118,14 @@ def get_pscore_match(df):
             const.COMMERCIAL_RSSD9364)[cov_list].sum().reset_index()
         rssd9364_match_file[const.COMMERCIAL_ID] = rssd9364_match_file[const.COMMERCIAL_RSSD9364].apply(
             lambda x: str(int(x)))
+        rssd9364_match_file[const.INTEREST_INCOME_RATIO] = (rssd9364_match_file[const.NET_INTEREST_INCOME] /
+                                                            rssd9364_match_file[const.TOTAL_ASSETS])
         matched_result_9364 = get_psm_index_file(df=df, match_file=rssd9364_match_file, match_type=const.ACQUIRER)
         rssd9001_match_file = match_file[match_file[const.COMMERCIAL_RSSD9001] > 0]
         rssd9001_match_file[const.COMMERCIAL_ID] = rssd9001_match_file[const.COMMERCIAL_RSSD9001].apply(
             lambda x: str(int(x)))
+        rssd9001_match_file[const.INTEREST_INCOME_RATIO] = (rssd9001_match_file[const.NET_INTEREST_INCOME] /
+                                                            rssd9001_match_file[const.TOTAL_ASSETS])
         matched_result_9001 = get_psm_index_file(df=df, match_file=rssd9001_match_file, match_type=const.ACQUIRER)
 
         acq_matched_result = pd.concat([matched_result_9001, matched_result_9364], axis=0).drop_duplicates(
@@ -224,19 +227,19 @@ def get_pscore_match(df):
     generated_index_file.loc[:, const.YEAR] = year
     generated_index_file.loc[:, const.QUARTER] = quarter
 
-    generated_index_file.to_pickle(os.path.join(const.TEMP_PATH, '20170831_{}_{}_id_file.pkl'.format(year, quarter)))
+    generated_index_file.to_pickle(os.path.join(const.TEMP_PATH, '20171212_{}_{}_id_file.pkl'.format(year, quarter)))
 
     merged_data_df = merge_id_with_link(generated_index_file, rssd9364_data_df=rssd9364_match_file,
                                         rssd9001_data_df=rssd9001_match_file)
 
-    merged_data_df.to_pickle(os.path.join(const.TEMP_PATH, '20170831_{}_{}_data_file.pkl'.format(year, quarter)))
+    merged_data_df.to_pickle(os.path.join(const.TEMP_PATH, '20171212_{}_{}_data_file.pkl'.format(year, quarter)))
 
     print('{}: {} - {} data finished'.format(datetime.datetime.now(), year, quarter))
     return merged_data_df
 
 
 if __name__ == '__main__':
-    data_df = pd.read_pickle(os.path.join(os.path.join(const.TEMP_PATH, '20170831_CAR_useful_col.pkl')))
+    data_df = pd.read_pickle(os.path.join(os.path.join(const.TEMP_PATH, '20171212_CAR_useful_col.pkl')))
     groups = data_df.groupby([const.YEAR, const.QUARTER])
 
     dfs = [tmp_df for _, tmp_df in groups]
@@ -251,4 +254,4 @@ if __name__ == '__main__':
         result_dfs.append(get_pscore_match(df))
 
     result_df = pd.concat(result_dfs, ignore_index=True)
-    result_df.drop_duplicates().to_pickle(os.path.join(const.TEMP_PATH, '20170831_CAR_real_fault_file.pkl'))
+    result_df.drop_duplicates().to_pickle(os.path.join(const.TEMP_PATH, '20171212_CAR_real_fault_file.pkl'))

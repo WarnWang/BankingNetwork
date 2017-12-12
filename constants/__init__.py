@@ -75,6 +75,7 @@ class Constants(PathInfo):
     TOTAL_EQUITY_CAPITAL = 'RCON3210'
     NET_INCOME_LOSS = 'RIAD4340'
     LEVERAGE_RATIO = 'Leverage_Ratio'
+    INTEREST_INCOME_RATIO = 'interest_income_ratio'
     ROA = 'ROA'
     ROE = 'ROE'
 
