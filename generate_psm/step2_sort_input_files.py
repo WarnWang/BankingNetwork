@@ -31,7 +31,7 @@ for tag in [const.ACQUIRER, const.TARGET]:
     useful_df.loc[:, key] = pd.to_numeric(useful_df[key], errors='raise', downcast='integer')
     useful_column.append(key)
 
-# useful_df.to_pickle(os.path.join(const.TEMP_PATH, '20170831_CAR_useful_row.pkl'))
+useful_df.to_pickle(os.path.join(const.TEMP_PATH, '20170831_CAR_useful_row.pkl'))
 
 useful_df = useful_df[useful_column]
 
