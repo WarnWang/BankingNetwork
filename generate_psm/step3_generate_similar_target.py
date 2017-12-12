@@ -239,7 +239,7 @@ def get_pscore_match(df):
 
 
 if __name__ == '__main__':
-    data_df = pd.read_pickle(os.path.join(os.path.join(const.TEMP_PATH, '20171212_CAR_useful_col.pkl')))
+    data_df = pd.read_pickle(os.path.join(os.path.join(const.TEMP_PATH, '20170831_CAR_useful_col.pkl')))
     groups = data_df.groupby([const.YEAR, const.QUARTER])
 
     dfs = [tmp_df for _, tmp_df in groups]
