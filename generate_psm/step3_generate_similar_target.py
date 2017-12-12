@@ -118,14 +118,10 @@ def get_pscore_match(df):
             const.COMMERCIAL_RSSD9364)[cov_list].sum().reset_index()
         rssd9364_match_file[const.COMMERCIAL_ID] = rssd9364_match_file[const.COMMERCIAL_RSSD9364].apply(
             lambda x: str(int(x)))
-        rssd9364_match_file[const.INTEREST_INCOME_RATIO] = (rssd9364_match_file[const.NET_INTEREST_INCOME] /
-                                                            rssd9364_match_file[const.TOTAL_ASSETS])
         matched_result_9364 = get_psm_index_file(df=df, match_file=rssd9364_match_file, match_type=const.ACQUIRER)
         rssd9001_match_file = match_file[match_file[const.COMMERCIAL_RSSD9001] > 0]
         rssd9001_match_file[const.COMMERCIAL_ID] = rssd9001_match_file[const.COMMERCIAL_RSSD9001].apply(
             lambda x: str(int(x)))
-        rssd9001_match_file[const.INTEREST_INCOME_RATIO] = (rssd9001_match_file[const.NET_INTEREST_INCOME] /
-                                                            rssd9001_match_file[const.TOTAL_ASSETS])
         matched_result_9001 = get_psm_index_file(df=df, match_file=rssd9001_match_file, match_type=const.ACQUIRER)
 
         acq_matched_result = pd.concat([matched_result_9001, matched_result_9364], axis=0).drop_duplicates(
