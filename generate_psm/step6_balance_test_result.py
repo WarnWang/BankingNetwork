@@ -28,7 +28,7 @@ if __name__ == '__main__':
 
     valid_df = df[df['Deal_Number'].isin(valid_deal_index)]
 
-    value_to_measure = ['mean', 'std', '25', '50', '75']
+    value_to_measure = ['mean', 'std', '25', '50', '75', 'min', 'max']
 
     # valid_target_df = valid_df[valid_df['{}_{}'.format(const.TARGET, const.REAL)] == 1]
     # valid_acquire_df = valid_df[valid_df['{}_{}'.format(const.ACQUIRER, const.REAL)] == 1]
@@ -42,8 +42,8 @@ if __name__ == '__main__':
     result_df = pd.DataFrame(columns=columns)
 
     for i in range(2):
-        tag = tag_list[i]
-        real_tag = tag_list[1 - i]
+        tag = tag_list[1 - i]
+        real_tag = tag_list[i]
         tmp_valid_df = valid_df[valid_df['{}_{}'.format(tag, const.REAL)] == 1]
         tmp_real_df = tmp_valid_df[tmp_valid_df['{}_{}'.format(real_tag, const.REAL)] == 1]
         tmp_fake_df = tmp_valid_df[tmp_valid_df['{}_{}'.format(real_tag, const.REAL)] != 1]
@@ -56,11 +56,15 @@ if __name__ == '__main__':
                            '25_0': tmp_real_df[data_key].quantile(q=0.25),
                            '50_0': tmp_real_df[data_key].quantile(q=0.5),
                            '75_0': tmp_real_df[data_key].quantile(q=0.75),
+                           'min_0': tmp_real_df[data_key].min(),
+                           'max_0': tmp_real_df[data_key].max(),
                            'mean_1': tmp_fake_df[data_key].mean(),
                            'std_1': tmp_fake_df[data_key].std(),
                            '25_1': tmp_fake_df[data_key].quantile(q=0.25),
                            '50_1': tmp_fake_df[data_key].quantile(q=0.5),
                            '75_1': tmp_fake_df[data_key].quantile(q=0.75),
+                           'min_1': tmp_fake_df[data_key].min(),
+                           'max_1': tmp_fake_df[data_key].max(),
                            't': ttest_ind(tmp_real_df[data_key], tmp_fake_df[data_key])[0]
                            }
             result_df.loc[data_key] = result_dict
