@@ -15,7 +15,7 @@ from constants import Constants as const
 
 
 if __name__ == '__main__':
-    df = pd.read_csv(os.path.join(const.RESULT_PATH, '20171212_psm_add_pscore_overlap.csv'),
+    df = pd.read_csv(os.path.join(const.RESULT_PATH, '20171216_psm_add_pscore_overlap.csv'),
                      dtype={'Deal_Number': int, 'Acquirer_real': int, 'Target_real': int})
 
     df_deal_groups = df.groupby('Deal_Number')
@@ -35,5 +35,5 @@ if __name__ == '__main__':
     acquire_missing = df_deal_groups.filter(lambda x: x.shape[0]==6 and x[x['Acquirer_real'] == 1].shape[0]==6).index
     df.loc[acquire_missing, 'missing_rssd'] = 2
 
-    df.to_csv(os.path.join(const.RESULT_PATH, '20171212_psm_add_missing_rssd.csv'), index=False)
-    df.to_pickle(os.path.join(const.TEMP_PATH, '20171212_psm_add_missing_rssd.pkl'))
+    df.to_csv(os.path.join(const.RESULT_PATH, '20171216_psm_add_missing_rssd.csv'), index=False)
+    df.to_pickle(os.path.join(const.TEMP_PATH, '20171216_psm_add_missing_rssd.pkl'))

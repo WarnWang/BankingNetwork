@@ -255,9 +255,9 @@ if __name__ == '__main__':
     # pool.close()
     # pool.join()
     result_dfs = []
-    # for df in dfs:
-    df = groups.get_group((1984,2))
-    result_dfs.append(get_pscore_match(df))
+    for df in dfs:
+    # df = groups.get_group((1984,2))
+        result_dfs.append(get_pscore_match(df))
 
     result_df = pd.concat(result_dfs, ignore_index=True)
     result_df.drop_duplicates().to_pickle(

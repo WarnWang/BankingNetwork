@@ -17,9 +17,8 @@ tag_list = [const.ACQUIRER, const.TARGET]
 
 test_column = [const.INTEREST_INCOME_RATIO, const.LEVERAGE_RATIO, const.TOTAL_ASSETS, const.NET_INCOME_LOSS, const.ROA]
 
-
 if __name__ == '__main__':
-    df = pd.read_pickle(os.path.join(const.TEMP_PATH, '20171212_merged_psm_data_file.pkl'))
+    df = pd.read_pickle(os.path.join(const.TEMP_PATH, '20171216_merged_psm_data_file.pkl'))
 
     df = df.rename(index=str, columns={'Acquirer_ROA_y': 'Acquirer_ROA'})
 
@@ -66,5 +65,4 @@ if __name__ == '__main__':
                            }
             result_df.loc[data_key] = result_dict
 
-
-    result_df.to_excel(os.path.join(const.RESULT_PATH, '20171212_balance_test.xlsx'))
+    result_df.to_excel(os.path.join(const.RESULT_PATH, '20171216_balance_test.xlsx'))
