@@ -15,7 +15,9 @@ from pscore_match.pscore import PropensityScore
 
 from constants import Constants as const
 
-cov_list = [const.NET_INCOME_LOSS, const.TOTAL_ASSETS, const.ROA,  const.LEVERAGE_RATIO, const.INTEREST_INCOME_RATIO]
+cov_list = [const.NET_INCOME_LOSS, const.TOTAL_ASSETS, const.ROA, const.LEVERAGE_RATIO, const.INTEREST_INCOME_RATIO]
+
+date_string = '20171216'
 
 
 def get_psm_index_file(df, match_file, match_type):
@@ -82,9 +84,10 @@ def get_pscore_match(df):
 
     print('{} Start to handle {} - {} data'.format(datetime.datetime.now(), year, quarter))
 
-    if os.path.isfile(os.path.join(const.TEMP_PATH, '20171212_{}_{}_data_file.pkl'.format(year, quarter))):
+    if os.path.isfile(os.path.join(const.TEMP_PATH, '{}_{}_{}_data_file.pkl'.format(date_string, year, quarter))):
         print('{}: {} - {} data already have'.format(datetime.datetime.now(), year, quarter))
-        return pd.read_pickle(os.path.join(const.TEMP_PATH, '20171212_{}_{}_data_file.pkl'.format(year, quarter)))
+        return pd.read_pickle(
+            os.path.join(const.TEMP_PATH, '{}_{}_{}_data_file.pkl'.format(date_string, year, quarter)))
 
     if year >= 2014:
         match_file = pd.read_pickle(os.path.join(const.COMMERCIAL_YEAR_PATH, 'call2013.pkl'))
@@ -118,10 +121,12 @@ def get_pscore_match(df):
             const.COMMERCIAL_RSSD9364)[cov_list].sum().reset_index()
         rssd9364_match_file[const.COMMERCIAL_ID] = rssd9364_match_file[const.COMMERCIAL_RSSD9364].apply(
             lambda x: str(int(x)))
+        rssd9364_match_file_tmp = rssd9364_match_file.copy()
         matched_result_9364 = get_psm_index_file(df=df, match_file=rssd9364_match_file, match_type=const.ACQUIRER)
         rssd9001_match_file = match_file[match_file[const.COMMERCIAL_RSSD9001] > 0]
         rssd9001_match_file[const.COMMERCIAL_ID] = rssd9001_match_file[const.COMMERCIAL_RSSD9001].apply(
             lambda x: str(int(x)))
+        rssd9001_match_file_tmp = rssd9001_match_file.copy()
         matched_result_9001 = get_psm_index_file(df=df, match_file=rssd9001_match_file, match_type=const.ACQUIRER)
 
         acq_matched_result = pd.concat([matched_result_9001, matched_result_9364], axis=0).drop_duplicates(
@@ -223,12 +228,13 @@ def get_pscore_match(df):
     generated_index_file.loc[:, const.YEAR] = year
     generated_index_file.loc[:, const.QUARTER] = quarter
 
-    generated_index_file.to_pickle(os.path.join(const.TEMP_PATH, '20171212_{}_{}_id_file.pkl'.format(year, quarter)))
+    generated_index_file.to_pickle(
+        os.path.join(const.TEMP_PATH, '{}_{}_{}_id_file.pkl'.format(date_string, year, quarter)))
 
-    merged_data_df = merge_id_with_link(generated_index_file, rssd9364_data_df=rssd9364_match_file,
-                                        rssd9001_data_df=rssd9001_match_file)
+    merged_data_df = merge_id_with_link(generated_index_file, rssd9364_data_df=rssd9364_match_file_tmp,
+                                        rssd9001_data_df=rssd9001_match_file_tmp)
 
-    merged_data_df.to_pickle(os.path.join(const.TEMP_PATH, '20171212_{}_{}_data_file.pkl'.format(year, quarter)))
+    merged_data_df.to_pickle(os.path.join(const.TEMP_PATH, '{}_{}_{}_data_file.pkl'.format(date_string, year, quarter)))
 
     print('{}: {} - {} data finished'.format(datetime.datetime.now(), year, quarter))
     return merged_data_df
@@ -245,9 +251,10 @@ if __name__ == '__main__':
     # pool.close()
     # pool.join()
     result_dfs = []
-    for df in dfs:
-    # df = groups.get_group((1987,4))
-        result_dfs.append(get_pscore_match(df))
+    # for df in dfs:
+    df = groups.get_group((1984,2))
+    result_dfs.append(get_pscore_match(df))
 
     result_df = pd.concat(result_dfs, ignore_index=True)
-    result_df.drop_duplicates().to_pickle(os.path.join(const.TEMP_PATH, '20171212_CAR_real_fault_file.pkl'))
+    result_df.drop_duplicates().to_pickle(
+        os.path.join(const.TEMP_PATH, '{}_CAR_real_fault_file.pkl'.format(date_string)))
