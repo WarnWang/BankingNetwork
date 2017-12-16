@@ -118,13 +118,13 @@ def get_pscore_match(df):
     try:
         # get acquirer index
         rssd9364_sum_df = match_file[match_file[const.COMMERCIAL_RSSD9364] > 0].groupby(
-            const.COMMERCIAL_RSSD9364)[cov_list].sum().reset_index()
-        rssd9364_mean_df = match_file[match_file[const.COMMERCIAL_RSSD9364] > 0].groupby(
-            const.COMMERCIAL_RSSD9364)[cov_list].mean().reset_index()
-        rssd9364_match_file = rssd9364_sum_df.copy()
+            const.COMMERCIAL_RSSD9364).sum().reset_index()
+        rssd9364_sum_df[const.LEVERAGE_RATIO] = rssd9364_sum_df[const.TOTAL_LIABILITIES] / rssd9364_sum_df[
+            const.TOTAL_ASSETS]
+        rssd9364_sum_df[const.ROA] = rssd9364_sum_df[const.NET_INCOME_LOSS] / rssd9364_sum_df[const.TOTAL_ASSETS]
+        rssd9364_sum_df[const.ROA] = rssd9364_sum_df[const.NET_INTEREST_INCOME] / rssd9364_sum_df[const.TOTAL_ASSETS]
 
-        for i in [const.ROA, const.LEVERAGE_RATIO, const.INTEREST_INCOME_RATIO]:
-            rssd9364_match_file.loc[:, i] = rssd9364_mean_df[i]
+        rssd9364_match_file = rssd9364_sum_df[[cov_list]].copy()
         rssd9364_match_file[const.COMMERCIAL_ID] = rssd9364_match_file[const.COMMERCIAL_RSSD9364].apply(
             lambda x: str(int(x)))
         matched_result_9364 = get_psm_index_file(df=df, match_file=rssd9364_match_file, match_type=const.ACQUIRER)
