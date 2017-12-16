@@ -117,16 +117,20 @@ def get_pscore_match(df):
 
     try:
         # get acquirer index
-        rssd9364_match_file = match_file[match_file[const.COMMERCIAL_RSSD9364] > 0].groupby(
+        rssd9364_sum_df = match_file[match_file[const.COMMERCIAL_RSSD9364] > 0].groupby(
             const.COMMERCIAL_RSSD9364)[cov_list].sum().reset_index()
+        rssd9364_mean_df = match_file[match_file[const.COMMERCIAL_RSSD9364] > 0].groupby(
+            const.COMMERCIAL_RSSD9364)[cov_list].mean().reset_index()
+        rssd9364_match_file = rssd9364_sum_df.copy()
+
+        for i in [const.ROA, const.LEVERAGE_RATIO, const.INTEREST_INCOME_RATIO]:
+            rssd9364_match_file.loc[:, i] = rssd9364_mean_df[i]
         rssd9364_match_file[const.COMMERCIAL_ID] = rssd9364_match_file[const.COMMERCIAL_RSSD9364].apply(
             lambda x: str(int(x)))
-        rssd9364_match_file_tmp = rssd9364_match_file.copy()
         matched_result_9364 = get_psm_index_file(df=df, match_file=rssd9364_match_file, match_type=const.ACQUIRER)
         rssd9001_match_file = match_file[match_file[const.COMMERCIAL_RSSD9001] > 0]
         rssd9001_match_file[const.COMMERCIAL_ID] = rssd9001_match_file[const.COMMERCIAL_RSSD9001].apply(
             lambda x: str(int(x)))
-        rssd9001_match_file_tmp = rssd9001_match_file.copy()
         matched_result_9001 = get_psm_index_file(df=df, match_file=rssd9001_match_file, match_type=const.ACQUIRER)
 
         acq_matched_result = pd.concat([matched_result_9001, matched_result_9364], axis=0).drop_duplicates(
@@ -231,8 +235,8 @@ def get_pscore_match(df):
     generated_index_file.to_pickle(
         os.path.join(const.TEMP_PATH, '{}_{}_{}_id_file.pkl'.format(date_string, year, quarter)))
 
-    merged_data_df = merge_id_with_link(generated_index_file, rssd9364_data_df=rssd9364_match_file_tmp,
-                                        rssd9001_data_df=rssd9001_match_file_tmp)
+    merged_data_df = merge_id_with_link(generated_index_file, rssd9364_data_df=rssd9364_match_file,
+                                        rssd9001_data_df=rssd9001_match_file)
 
     merged_data_df.to_pickle(os.path.join(const.TEMP_PATH, '{}_{}_{}_data_file.pkl'.format(date_string, year, quarter)))
 
