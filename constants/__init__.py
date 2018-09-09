@@ -78,6 +78,7 @@ class Constants(PathInfo):
     INTEREST_INCOME_RATIO = 'interest_income_ratio'
     ROA = 'ROA'
     ROE = 'ROE'
+    MORTGAGE_LENDING_RATIO = 'MortgageLendingRatio'
 
     TAR_PSCORE = 'pro_score_tar'
     ACQ_PSCORE = 'pro_score_acq'

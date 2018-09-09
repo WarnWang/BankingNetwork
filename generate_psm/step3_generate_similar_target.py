@@ -109,8 +109,6 @@ def get_pscore_match(df):
         match_file = pd.read_pickle(os.path.join(const.COMMERCIAL_QUARTER_PATH,
                                                  'call{}12.pkl'.format(year)))
 
-
-
     else:
         match_file = pd.read_pickle(os.path.join(const.COMMERCIAL_QUARTER_PATH,
                                                  'call{}{:02d}.pkl'.format(year, quarter * 3)))
@@ -122,7 +120,6 @@ def get_pscore_match(df):
         rssd9364_sum_df[const.LEVERAGE_RATIO] = rssd9364_sum_df[const.TOTAL_LIABILITIES] / rssd9364_sum_df[
             const.TOTAL_ASSETS]
         rssd9364_sum_df[const.ROA] = rssd9364_sum_df[const.NET_INCOME_LOSS] / rssd9364_sum_df[const.TOTAL_ASSETS]
-        rssd9364_sum_df[const.ROA] = rssd9364_sum_df[const.NET_INTEREST_INCOME] / rssd9364_sum_df[const.TOTAL_ASSETS]
 
         rssd9364_match_file = rssd9364_sum_df.copy()
         rssd9364_match_file[const.COMMERCIAL_ID] = rssd9364_match_file[const.COMMERCIAL_RSSD9364].apply(
@@ -256,7 +253,6 @@ if __name__ == '__main__':
     # pool.join()
     result_dfs = []
     for df in dfs:
-    # df = groups.get_group((1984,2))
         result_dfs.append(get_pscore_match(df))
 
     result_df = pd.concat(result_dfs, ignore_index=True)
