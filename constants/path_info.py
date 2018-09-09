@@ -11,7 +11,8 @@ import os
 
 
 class PathInfo(object):
-    ROOT_PATH = '/home/zigan/Documents/WangYouan/research/banking'
+    # ROOT_PATH = '/home/zigan/Documents/WangYouan/research/banking'
+    ROOT_PATH = '/home/zigan/Documents/wangyouan/research/BankingNetwork'
 
     DATA_PATH = os.path.join(ROOT_PATH, 'data')
     CUSIP_STOCK_PRICE_PATH = os.path.join(DATA_PATH, 'price_cusip')
