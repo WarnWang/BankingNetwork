@@ -141,7 +141,8 @@ def get_pscore_match(df_to_match):
 
     useful_col_list = PSM_COV_LIST[:]
     if year >= 2014:
-        match_file = pd.read_pickle(os.path.join(const.COMMERCIAL_YEAR_PATH, 'call2014.pkl'))
+        match_file = pd.read_pickle(os.path.join(const.COMMERCIAL_QUARTER_PATH,
+                                                 'call2013{:02d}.pkl'.format(quarter * 3)))
 
     else:
         match_file = pd.read_pickle(os.path.join(const.COMMERCIAL_QUARTER_PATH,
