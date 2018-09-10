@@ -23,8 +23,9 @@ if __name__ == '__main__':
                             'STNUMBR_SUMD9210': const.FIPS_STATE_CODE, 'CNTYNUMB_SUMD9150': const.FIPS_COUNTY_CODE,
                             'RSSDHCR_RSSD9364': const.COMMERCIAL_RSSD9364})
 
+    branch_df = branch_df.dropna(subset=[const.FIPS_COUNTY_CODE, const.FIPS_STATE_CODE], how='any')
     for key in [const.COMMERCIAL_RSSD9001, const.FIPS_COUNTY_CODE, const.FIPS_STATE_CODE, const.COMMERCIAL_RSSD9364]:
-        branch_df.loc[:, key] = branch_df[key].apply(lambda x: str(int(x)))
+        branch_df.loc[:, key] = branch_df[key].dropna().apply(lambda x: str(int(x)))
 
     branch_df.loc[:, const.FIPS] = branch_df.apply(lambda x: '{:02d}{:03d}'.format(int(x[const.FIPS_STATE_CODE]),
                                                                                    int(x[const.FIPS_COUNTY_CODE])),
