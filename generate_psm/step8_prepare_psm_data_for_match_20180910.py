@@ -115,7 +115,7 @@ def generate_required_variables(period_tuple):
 
 if __name__ == '__main__':
     # Sort call report data, generate required variables (except loan growth rate)
-    pool = pathos.multiprocessing.ProcessingPool(multiprocessing.cpu_count() - 3)
+    pool = pathos.multiprocessing.ProcessingPool(10)
 
     year_list = [(i,) for i in range(1976, 2015)]
     year_quarter_list = [(i, j) for i in range(1976, 2015) for j in [3, 6, 9, 12]]
