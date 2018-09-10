@@ -101,8 +101,6 @@ def merge_id_with_link(id_df, rssd9364_data_df, rssd9001_data_df, cov_list):
     use_cov_list.append(const.COMMERCIAL_ID)
     rssd9001_tmp_df = rssd9001_data_df[use_cov_list]
     rssd9364_tmp_df = rssd9364_data_df[use_cov_list]
-    rssd9001_tmp_df.loc[:, const.COMMERCIAL_ID] = rssd9001_tmp_df[const.COMMERCIAL_ID].apply(lambda x: str(int(x)))
-    rssd9364_tmp_df.loc[:, const.COMMERCIAL_ID] = rssd9364_tmp_df[const.COMMERCIAL_ID].apply(lambda x: str(int(x)))
 
     for i in [const.ACQUIRER, const.TARGET]:
         rename_dict = {}
