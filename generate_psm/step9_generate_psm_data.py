@@ -24,7 +24,7 @@ PSM_COV_LIST = [const.INTEREST_INCOME_RATIO, const.TOTAL_ASSETS, const.NET_INCOM
                 const.SBL_RATIO, const.MORTGAGE_LENDING_RATIO]
 
 DATE_STRING = '20180910'
-TMP_SAVE_PATH = os.path.join(const.TEMP_PATH, DATE_STRING)
+TMP_SAVE_PATH = os.path.join(const.TEMP_PATH, '{}_temp_result'.format(DATE_STRING))
 if not os.path.isdir(TMP_SAVE_PATH):
     os.makedirs(TMP_SAVE_PATH)
 
@@ -153,13 +153,11 @@ def get_pscore_match(df_to_match):
         rssd9364_sum_df = generate_rssd9364_data(rssd9364_group, useful_col_list)
 
         rssd9364_match_file = rssd9364_sum_df.copy()
-        rssd9364_match_file[const.COMMERCIAL_ID] = rssd9364_match_file[const.COMMERCIAL_RSSD9364].apply(
-            lambda x: int(x))
+        rssd9364_match_file.loc[:, const.COMMERCIAL_ID] = rssd9364_match_file[const.COMMERCIAL_RSSD9364]
         matched_result_9364 = get_psm_index_file(df=df_to_match, match_file=rssd9364_match_file,
                                                  match_type=const.ACQUIRER, cov_list=useful_col_list)
         rssd9001_match_file = match_file[match_file[const.COMMERCIAL_RSSD9001] > 0]
-        rssd9001_match_file[const.COMMERCIAL_ID] = rssd9001_match_file[const.COMMERCIAL_RSSD9001].apply(
-            lambda x: int(x))
+        rssd9001_match_file.loc[:, const.COMMERCIAL_ID] = rssd9001_match_file[const.COMMERCIAL_RSSD9001]
         matched_result_9001 = get_psm_index_file(df=df_to_match, match_file=rssd9001_match_file,
                                                  match_type=const.ACQUIRER, cov_list=useful_col_list)
 
@@ -188,8 +186,8 @@ def get_pscore_match(df_to_match):
     dfs = []
     for i in df_to_match.index:
         temp_df = pd.DataFrame(columns=columns)
-        real_acq_id = str(int(df_to_match.loc[i, '{}_{}'.format(const.ACQUIRER, const.LINK_TABLE_RSSD9001)]))
-        real_tar_id = str(int(df_to_match.loc[i, '{}_{}'.format(const.TARGET, const.LINK_TABLE_RSSD9001)]))
+        real_acq_id = int(df_to_match.loc[i, '{}_{}'.format(const.ACQUIRER, const.LINK_TABLE_RSSD9001)])
+        real_tar_id = int(df_to_match.loc[i, '{}_{}'.format(const.TARGET, const.LINK_TABLE_RSSD9001)])
         index = 0
         temp_df.loc[index] = {
             '{}_{}'.format(const.ACQUIRER, const.REAL): 1,
@@ -264,8 +262,7 @@ def get_pscore_match(df_to_match):
     generated_index_file.loc[:, const.YEAR] = year
     generated_index_file.loc[:, const.QUARTER] = quarter
 
-    generated_index_file.to_pickle(
-        os.path.join(const.TEMP_PATH, '{}_{}_{}_id_file.pkl'.format(DATE_STRING, year, quarter)))
+    generated_index_file.to_pickle(os.path.join(TMP_SAVE_PATH, '{}_{}_id_file.pkl'.format(year, quarter)))
 
     merged_data_df = merge_id_with_link(generated_index_file, rssd9364_data_df=rssd9364_match_file,
                                         rssd9001_data_df=rssd9001_match_file, cov_list=useful_col_list)
