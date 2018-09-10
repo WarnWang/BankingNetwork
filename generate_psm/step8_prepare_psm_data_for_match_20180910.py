@@ -11,7 +11,6 @@ python3 -m generate_psm.step8_prepare_psm_data_for_match_20180910
 """
 
 import os
-import multiprocessing
 
 import pandas as pd
 import pathos
@@ -33,6 +32,8 @@ def get_last_quarter(year, quarter):
 def generate_required_variables(period_tuple):
     quarterly_call_report_path = os.path.join(const.DATA_PATH, 'commercial', 'commercial_csv')
     annual_call_report_path = os.path.join(const.DATA_PATH, 'commercial', 'commercial_csv_yearly')
+
+    changed_flag = False
 
     if len(period_tuple) == 1:
         year = period_tuple[0]
@@ -88,11 +89,13 @@ def generate_required_variables(period_tuple):
             result_list.append((var, var_1, var_2))
         else:
             data_df.loc[:, var] = data_df[var_1] / data_df[var_2]
+            changed_flag = True
 
     if not os.path.isfile(last_year_file_path):
         result_list.append(const.BANK_TYPE)
 
-    else:
+    elif const.BANK_TYPE not in current_var_set:
+        changed_flag = True
         last_year_df = pd.read_pickle(last_year_file_path)
 
         current_year_sub_df = data_df[[const.TOTAL_LOANS, const.COMMERCIAL_RSSD9001]].drop_duplicates(
@@ -108,7 +111,8 @@ def generate_required_variables(period_tuple):
         data_df = data_df.merge(merged_df[[const.COMMERCIAL_RSSD9001, const.BANK_TYPE]], on=const.COMMERCIAL_RSSD9001,
                                 how='left')
 
-    data_df.to_pickle(file_path)
+    if changed_flag:
+        data_df.to_pickle(file_path)
 
     return result_list
 
