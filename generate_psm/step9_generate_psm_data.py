@@ -256,7 +256,7 @@ def get_pscore_match(df_to_match):
 
         if not tar_matched_tmp.empty:
             temp_df.loc[temp_df['{}_{}'.format(const.TARGET, const.REAL)] == 1, const.TAR_PSCORE] = \
-                acq_matched_tmp['pscore'].iloc[0]
+                tar_matched_tmp['pscore'].iloc[0]
 
         temp_df.loc[:, '{}_{}'.format(const.TARGET, const.LINK_TABLE_RSSD9001)] = real_tar_id
         temp_df.loc[:, '{}_{}'.format(const.ACQUIRER, const.LINK_TABLE_RSSD9001)] = real_acq_id
