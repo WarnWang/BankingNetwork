@@ -65,9 +65,9 @@ def get_psm_index_file(df, match_file, match_type, cov_list=None):
     if cov_list is None:
         cov_list = PSM_COV_LIST
 
-    match_file = match_file.dropna(subset=cov_list, how='any').reset_index(drop=True)
+    match_file = match_file.replace({float('inf'): np.nan}).dropna(subset=cov_list, how='any').reset_index(drop=True)
     treatment = match_file[const.COMMERCIAL_ID].isin(
-        df['{}_{}'.format(match_type, const.LINK_TABLE_RSSD9001)].apply(str)).apply(int)
+        set(df['{}_{}'.format(match_type, const.LINK_TABLE_RSSD9001)])).apply(int)
 
     if treatment[treatment == 1].empty:
         use_cov_list = cov_list[:]
@@ -101,6 +101,8 @@ def merge_id_with_link(id_df, rssd9364_data_df, rssd9001_data_df, cov_list):
     use_cov_list.append(const.COMMERCIAL_ID)
     rssd9001_tmp_df = rssd9001_data_df[use_cov_list]
     rssd9364_tmp_df = rssd9364_data_df[use_cov_list]
+    rssd9001_tmp_df.loc[:, const.COMMERCIAL_ID] = rssd9001_tmp_df[const.COMMERCIAL_ID].apply(lambda x: str(int(x)))
+    rssd9364_tmp_df.loc[:, const.COMMERCIAL_ID] = rssd9364_tmp_df[const.COMMERCIAL_ID].apply(lambda x: str(int(x)))
 
     for i in [const.ACQUIRER, const.TARGET]:
         rename_dict = {}
@@ -108,8 +110,9 @@ def merge_id_with_link(id_df, rssd9364_data_df, rssd9001_data_df, cov_list):
         for j in use_cov_list:
             rename_dict[j] = '{}_{}'.format(i, j)
 
-        id_rssd_9364 = id_df[
-            id_df['{}_{}'.format(i, const.COMMERCIAL_ID)].isin(set(rssd9364_tmp_df[const.COMMERCIAL_ID]))]
+        id_key = '{}_{}'.format(i, const.COMMERCIAL_ID)
+        id_df.loc[:, id_key] = id_df[id_key].apply(lambda x: str(int(x)))
+        id_rssd_9364 = id_df[id_df[id_key].isin(set(rssd9364_tmp_df[const.COMMERCIAL_ID]))]
         id_rssd_9001 = id_df.drop(id_rssd_9364.index, errors='ignore')
         rssd9364_tmp_df2 = rssd9364_tmp_df.rename(index=str, columns=rename_dict)
         id_9364 = id_rssd_9364.merge(rssd9364_tmp_df2, on=['{}_{}'.format(i, const.COMMERCIAL_ID)], how='left')
@@ -117,7 +120,7 @@ def merge_id_with_link(id_df, rssd9364_data_df, rssd9001_data_df, cov_list):
         rssd9001_tmp_df2 = rssd9001_tmp_df.rename(index=str, columns=rename_dict)
         id_9001 = id_rssd_9001.merge(rssd9001_tmp_df2, on=['{}_{}'.format(i, const.COMMERCIAL_ID)], how='left')
 
-        id_df = pd.concat([id_9364, id_9001], axis=0, ignore_index=True)
+        id_df = pd.concat([id_9364, id_9001], axis=0, ignore_index=True, sort=False)
 
     return id_df
 
@@ -153,15 +156,19 @@ def get_pscore_match(df_to_match):
         rssd9364_sum_df = generate_rssd9364_data(rssd9364_group, useful_col_list)
 
         rssd9364_match_file = rssd9364_sum_df.copy()
-        rssd9364_match_file.loc[:, const.COMMERCIAL_ID] = rssd9364_match_file[const.COMMERCIAL_RSSD9364]
+        rssd9364_match_file.loc[:, const.COMMERCIAL_ID] = rssd9364_match_file[const.COMMERCIAL_RSSD9364].apply(
+            lambda x: str(int(x))
+        )
         matched_result_9364 = get_psm_index_file(df=df_to_match, match_file=rssd9364_match_file,
                                                  match_type=const.ACQUIRER, cov_list=useful_col_list)
         rssd9001_match_file = match_file[match_file[const.COMMERCIAL_RSSD9001] > 0]
-        rssd9001_match_file.loc[:, const.COMMERCIAL_ID] = rssd9001_match_file[const.COMMERCIAL_RSSD9001]
+        rssd9001_match_file.loc[:, const.COMMERCIAL_ID] = rssd9001_match_file[const.COMMERCIAL_RSSD9001].apply(
+            lambda x: str(int(x))
+        )
         matched_result_9001 = get_psm_index_file(df=df_to_match, match_file=rssd9001_match_file,
                                                  match_type=const.ACQUIRER, cov_list=useful_col_list)
 
-        acq_matched_result = pd.concat([matched_result_9001, matched_result_9364], axis=0).drop_duplicates(
+        acq_matched_result = pd.concat([matched_result_9001, matched_result_9364], axis=0, sort=False).drop_duplicates(
             subset=[const.COMMERCIAL_ID], keep='first')
 
         # get target index
@@ -170,7 +177,7 @@ def get_pscore_match(df_to_match):
         matched_result_9001 = get_psm_index_file(df=df_to_match, match_file=rssd9001_match_file,
                                                  match_type=const.TARGET, cov_list=useful_col_list)
 
-        tar_matched_result = pd.concat([matched_result_9001, matched_result_9364], axis=0).drop_duplicates(
+        tar_matched_result = pd.concat([matched_result_9001, matched_result_9364], axis=0, sort=False).drop_duplicates(
             subset=[const.COMMERCIAL_ID], keep='first')
 
     except Exception as err:
@@ -258,7 +265,7 @@ def get_pscore_match(df_to_match):
         temp_df.loc[:, '{}_{}'.format(const.ACQUIRER, const.LINK_TABLE_RSSD9001)] = real_acq_id
         dfs.append(temp_df)
 
-    generated_index_file = pd.concat(dfs, axis=0, ignore_index=True)
+    generated_index_file = pd.concat(dfs, axis=0, ignore_index=True, sort=False)
     generated_index_file.loc[:, const.YEAR] = year
     generated_index_file.loc[:, const.QUARTER] = quarter
 
@@ -284,6 +291,6 @@ if __name__ == '__main__':
         print('{} Start to handle {} - {} data'.format(datetime.datetime.now(), key[0], key[1]))
         result_dfs.append(get_pscore_match(sub_df))
 
-    result_df = pd.concat(result_dfs, ignore_index=True)
+    result_df = pd.concat(result_dfs, ignore_index=True, sort=False)
     result_df.drop_duplicates().to_pickle(
         os.path.join(const.TEMP_PATH, '{}_CAR_real_fault_file.pkl'.format(DATE_STRING)))
