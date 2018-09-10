@@ -93,3 +93,9 @@ class Constants(PathInfo):
     ACQ_PSCORE = 'pro_score_acq'
     TAR_PSCORE_RANK = 'pseudo_acq_rank'
     ACQ_PSCORE_RANK = 'pseudo_tar_rank'
+
+    FIPS = FIPS
+    BRANCH_TYPE = 'sumd9310'
+    FIPS_STATE_CODE = 'sumd9210'
+    FIPS_COUNTY_CODE = 'sumd9150'
+    BRANCH_ID_NUM = 'BRNUM_SUMD9021'

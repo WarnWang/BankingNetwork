@@ -31,3 +31,9 @@ class PathInfo(object):
     COMMERCIAL_YEAR_PATH = os.path.join(DATA_PATH, 'commercial', 'commercial_csv_yearly')
 
     PSCORE_MATCH_RESULT = os.path.join(TEMP_PATH, 'pscore')
+
+
+    DISTANCE_PATH = os.path.join(DATA_PATH, 'fips_distance_data')
+    POST2010_DISTANCE_FILE = os.path.join(DISTANCE_PATH, 'sf12010countydistancemiles.dta')
+    POST2000_DISTANCE_FILE = os.path.join(DISTANCE_PATH, '')
+    OLD_DISTANCE_FILE = os.path.join(DISTANCE_PATH, '')
