@@ -94,7 +94,7 @@ class Constants(PathInfo):
     TAR_PSCORE_RANK = 'pseudo_acq_rank'
     ACQ_PSCORE_RANK = 'pseudo_tar_rank'
 
-    FIPS = FIPS
+    FIPS = 'FIPS'
     BRANCH_TYPE = 'sumd9310'
     FIPS_STATE_CODE = 'sumd9210'
     FIPS_COUNTY_CODE = 'sumd9150'
