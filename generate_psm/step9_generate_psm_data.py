@@ -154,12 +154,12 @@ def get_pscore_match(df_to_match):
 
         rssd9364_match_file = rssd9364_sum_df.copy()
         rssd9364_match_file[const.COMMERCIAL_ID] = rssd9364_match_file[const.COMMERCIAL_RSSD9364].apply(
-            lambda x: str(int(x)))
+            lambda x: int(x))
         matched_result_9364 = get_psm_index_file(df=df_to_match, match_file=rssd9364_match_file,
                                                  match_type=const.ACQUIRER, cov_list=useful_col_list)
         rssd9001_match_file = match_file[match_file[const.COMMERCIAL_RSSD9001] > 0]
         rssd9001_match_file[const.COMMERCIAL_ID] = rssd9001_match_file[const.COMMERCIAL_RSSD9001].apply(
-            lambda x: str(int(x)))
+            lambda x: int(x))
         matched_result_9001 = get_psm_index_file(df=df_to_match, match_file=rssd9001_match_file,
                                                  match_type=const.ACQUIRER, cov_list=useful_col_list)
 
