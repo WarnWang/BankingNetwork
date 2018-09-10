@@ -108,8 +108,8 @@ def merge_id_with_link(id_df, rssd9364_data_df, rssd9001_data_df, cov_list):
         for j in use_cov_list:
             rename_dict[j] = '{}_{}'.format(i, j)
 
-        id_rssd_9364 = id_df[id_df['{}_{}'.format(i, const.COMMERCIAL_ID)].apply(int).isin(
-            rssd9364_tmp_df[const.COMMERCIAL_ID])]
+        id_rssd_9364 = id_df[
+            id_df['{}_{}'.format(i, const.COMMERCIAL_ID)].isin(set(rssd9364_tmp_df[const.COMMERCIAL_ID]))]
         id_rssd_9001 = id_df.drop(id_rssd_9364.index, errors='ignore')
         rssd9364_tmp_df2 = rssd9364_tmp_df.rename(index=str, columns=rename_dict)
         id_9364 = id_rssd_9364.merge(rssd9364_tmp_df2, on=['{}_{}'.format(i, const.COMMERCIAL_ID)], how='left')
