@@ -21,13 +21,13 @@ from constants import Constants as const
 
 def calculate_hq_branch_total_distance(hq_id, tar_id, query_year=1990, hq_info=None, sub_branch_info=None):
     if query_year >= 2010:
-        distance_df = pd.read_pickle(const.POST2010_DISTANCE_FILE)
+        distance_df = pd.read_stata(const.POST2010_DISTANCE_FILE)
 
     elif query_year >= 2000:
-        distance_df = pd.read_pickle(const.POST2000_DISTANCE_FILE)
+        distance_df = pd.read_stata(const.POST2000_DISTANCE_FILE)
 
     else:
-        distance_df = pd.read_pickle(const.OLD_DISTANCE_FILE)
+        distance_df = pd.read_stata(const.OLD_DISTANCE_FILE)
 
     hq_fips_info = hq_info[hq_info[const.COMMERCIAL_RSSD9001] == hq_id]
     if hq_fips_info.empty:
