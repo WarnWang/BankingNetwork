@@ -8,7 +8,7 @@
 
 
 """
-python3 -m generate_vars_20180910.step1_sort_luping_fips_data
+python3 -m generate_vars_20180910.step2_caulate_average_distance
 """
 
 import os
@@ -94,23 +94,23 @@ if __name__ == '__main__':
         print(i)
         acq_id = data_df.loc[i, '{}_{}'.format(const.ACQUIRER, const.COMMERCIAL_ID)]
         tar_id = data_df.loc[i, '{}_{}'.format(const.TARGET, const.COMMERCIAL_ID)]
-        acq_branch_num = data_df.loc[:, '{}_{}'.format(const.ACQUIRER, const.BRANCH_NUM)]
-        tar_branch_num = data_df.loc[:, '{}_{}'.format(const.TARGET, const.BRANCH_NUM)]
+        acq_branch_num = data_df.loc[i, '{}_{}'.format(const.ACQUIRER, const.BRANCH_NUM)]
+        tar_branch_num = data_df.loc[i, '{}_{}'.format(const.TARGET, const.BRANCH_NUM)]
         year = data_df.loc[i, const.YEAR]
 
-        if acq_branch_num != 0:
+        if acq_branch_num >= 1:
             total_distance = calculate_hq_branch_total_distance(tar_id, acq_id, year)
             average_distance = total_distance / acq_branch_num
             data_df.loc[i, const.TARHQ_ACQBR_TOTAL_DISTANCE] = total_distance
             data_df.loc[i, const.TARHQ_ACQBR_AVG_DISTANCE] = average_distance
 
-        if tar_branch_num != 0:
+        if tar_branch_num >= 1:
             total_distance = calculate_hq_branch_total_distance(acq_id, tar_id, year)
             average_distance = total_distance / tar_branch_num
             data_df.loc[i, const.ACQHQ_TARBR_TOTAL_DISTANCE] = total_distance
             data_df.loc[i, const.ACQHQ_TARBR_AVG_DISTANCE] = average_distance
 
-        if acq_branch_num + tar_branch_num > 0:
+        if acq_branch_num + tar_branch_num >= 1:
             total_distance = data_df.loc[
                                  i, const.ACQHQ_TARBR_TOTAL_DISTANCE] + data_df.loc[i, const.TARHQ_ACQBR_TOTAL_DISTANCE]
             average_distance = total_distance / (acq_branch_num + tar_branch_num)

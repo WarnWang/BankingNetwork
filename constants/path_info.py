@@ -34,5 +34,5 @@ class PathInfo(object):
 
     DISTANCE_PATH = os.path.join(DATA_PATH, 'fips_distance_data')
     POST2010_DISTANCE_FILE = os.path.join(DISTANCE_PATH, 'sf12010countydistancemiles.dta')
-    POST2000_DISTANCE_FILE = os.path.join(DISTANCE_PATH, '')
-    OLD_DISTANCE_FILE = os.path.join(DISTANCE_PATH, '')
+    POST2000_DISTANCE_FILE = os.path.join(DISTANCE_PATH, 'sf12000countydistancemiles.dta')
+    OLD_DISTANCE_FILE = os.path.join(DISTANCE_PATH, 'gaz1990countydistancemiles.dta')
