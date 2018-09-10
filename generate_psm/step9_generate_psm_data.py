@@ -67,7 +67,7 @@ def get_psm_index_file(df, match_file, match_type, cov_list=None):
 
     match_file = match_file.replace({float('inf'): np.nan}).dropna(subset=cov_list, how='any').reset_index(drop=True)
     treatment = match_file[const.COMMERCIAL_ID].isin(
-        set(df['{}_{}'.format(match_type, const.LINK_TABLE_RSSD9001)])).apply(int)
+        set(df['{}_{}'.format(match_type, const.LINK_TABLE_RSSD9001)].apply(str))).apply(int)
 
     if treatment[treatment == 1].empty:
         use_cov_list = cov_list[:]
