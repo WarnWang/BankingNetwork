@@ -99,13 +99,15 @@ if __name__ == '__main__':
         year = data_df.loc[i, const.YEAR]
 
         if acq_branch_num >= 1:
-            total_distance = calculate_hq_branch_total_distance(tar_id, acq_id, year)
+            total_distance = calculate_hq_branch_total_distance(tar_id, acq_id, year, hq_info=headquarter_info,
+                                                                sub_branch_info=only_branch_info)
             average_distance = total_distance / acq_branch_num
             data_df.loc[i, const.TARHQ_ACQBR_TOTAL_DISTANCE] = total_distance
             data_df.loc[i, const.TARHQ_ACQBR_AVG_DISTANCE] = average_distance
 
         if tar_branch_num >= 1:
-            total_distance = calculate_hq_branch_total_distance(acq_id, tar_id, year)
+            total_distance = calculate_hq_branch_total_distance(acq_id, tar_id, year, hq_info=headquarter_info,
+                                                                sub_branch_info=only_branch_info)
             average_distance = total_distance / tar_branch_num
             data_df.loc[i, const.ACQHQ_TARBR_TOTAL_DISTANCE] = total_distance
             data_df.loc[i, const.ACQHQ_TARBR_AVG_DISTANCE] = average_distance
