@@ -111,8 +111,10 @@ def generate_required_variables(period_tuple):
         data_df = data_df.merge(merged_df[[const.COMMERCIAL_RSSD9001, const.BANK_TYPE]], on=const.COMMERCIAL_RSSD9001,
                                 how='left')
 
-    if changed_flag:
-        data_df.to_pickle(file_path)
+    dropna_data_df = data_df.dropna(axis=1, how='all')
+
+    if changed_flag or dropna_data_df.shape[1] != data_df.shape[1]:
+        dropna_data_df.to_pickle(file_path)
 
     return result_list
 
