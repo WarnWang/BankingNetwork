@@ -133,7 +133,4 @@ if __name__ == '__main__':
 
     for item2 in miss_list_2:
         print(item2)
-    # psm_data = pd.read_stata(os.path.join(const.DATA_PATH, '20180908_revision', '20180908_psm_add_missing_rssd.dta'))
-    # real_psm_data = psm_data[(psm_data['Target_real'] == 1) & (psm_data['Acquirer_real'] == 1)]
-    #
-    # psm_group = real_psm_data.groupby([const.QUARTER, const.YEAR])
+
