@@ -195,10 +195,9 @@ def get_pscore_match(df_to_match):
     dfs = []
     for i in df_to_match.index:
         temp_df = pd.DataFrame(columns=columns)
-        real_acq_id = int(df_to_match.loc[i, '{}_{}'.format(const.ACQUIRER, const.LINK_TABLE_RSSD9001)])
-        real_tar_id = int(df_to_match.loc[i, '{}_{}'.format(const.TARGET, const.LINK_TABLE_RSSD9001)])
-        index = 0
-        temp_df.loc[index] = {
+        real_acq_id = str(df_to_match.loc[i, '{}_{}'.format(const.ACQUIRER, const.LINK_TABLE_RSSD9001)])
+        real_tar_id = str(df_to_match.loc[i, '{}_{}'.format(const.TARGET, const.LINK_TABLE_RSSD9001)])
+        temp_df = temp_df.append({
             '{}_{}'.format(const.ACQUIRER, const.REAL): 1,
             '{}_{}'.format(const.TARGET, const.REAL): 1,
             '{}_{}'.format(const.ACQUIRER, const.COMMERCIAL_ID): real_acq_id,
@@ -207,14 +206,13 @@ def get_pscore_match(df_to_match):
             const.ACQ_PSCORE_RANK: 0,
             const.ACQ_PSCORE: np.nan,
             const.TAR_PSCORE: np.nan,
-        }
-        index += 1
+        }, ignore_index=True)
         acq_matched_tmp = acq_matched_result[acq_matched_result[const.COMMERCIAL_ID] == real_acq_id]
         tar_matched_tmp = tar_matched_result[tar_matched_result[const.COMMERCIAL_ID] == real_tar_id]
 
         if not tar_matched_tmp.empty:
             for j in range(5):
-                temp_df.loc[index] = {
+                temp_df = temp_df.append({
                     '{}_{}'.format(const.ACQUIRER, const.REAL): 1,
                     '{}_{}'.format(const.TARGET, const.REAL): 0,
                     '{}_{}'.format(const.ACQUIRER, const.COMMERCIAL_ID): real_acq_id,
@@ -223,12 +221,11 @@ def get_pscore_match(df_to_match):
                     const.ACQ_PSCORE_RANK: 0,
                     const.ACQ_PSCORE: np.nan,
                     const.TAR_PSCORE: tar_matched_tmp.loc[tar_matched_tmp.index[0], '{}_score'.format(j)],
-                }
-                index += 1
+                }, ignore_index=True)
 
         if not acq_matched_tmp.empty:
             for j in range(5):
-                temp_df.loc[index] = {
+                temp_df = temp_df.append({
                     '{}_{}'.format(const.ACQUIRER, const.REAL): 0,
                     '{}_{}'.format(const.TARGET, const.REAL): 1,
                     '{}_{}'.format(const.ACQUIRER, const.COMMERCIAL_ID): acq_matched_tmp[str(j)].iloc[0],
@@ -237,13 +234,12 @@ def get_pscore_match(df_to_match):
                     const.TAR_PSCORE_RANK: 0,
                     const.TAR_PSCORE: np.nan,
                     const.ACQ_PSCORE: acq_matched_tmp.loc[acq_matched_tmp.index[0], '{}_score'.format(j)],
-                }
-                index += 1
+                }, ignore_index=True)
 
         if not acq_matched_tmp.empty and not tar_matched_tmp.empty:
             for j in range(5):
                 for k in range(5):
-                    temp_df.loc[index] = {
+                    temp_df = temp_df.append({
                         '{}_{}'.format(const.ACQUIRER, const.REAL): 0,
                         '{}_{}'.format(const.TARGET, const.REAL): 0,
                         '{}_{}'.format(const.ACQUIRER, const.COMMERCIAL_ID): acq_matched_tmp[str(j)].iloc[0],
@@ -252,16 +248,15 @@ def get_pscore_match(df_to_match):
                         const.TAR_PSCORE_RANK: k + 1,
                         const.TAR_PSCORE: tar_matched_tmp.loc[tar_matched_tmp.index[0], '{}_score'.format(k)],
                         const.ACQ_PSCORE: acq_matched_tmp.loc[acq_matched_tmp.index[0], '{}_score'.format(j)],
-                    }
-                    index += 1
+                    }, ignore_index=True)
 
         if not acq_matched_tmp.empty:
-            temp_df[temp_df['{}_{}'.format(const.ACQUIRER, const.REAL)] == 1][const.ACQ_PSCORE] = \
+            temp_df.loc[temp_df['{}_{}'.format(const.ACQUIRER, const.REAL)] == 1, const.ACQ_PSCORE] = \
                 acq_matched_tmp['pscore'].iloc[0]
 
         if not tar_matched_tmp.empty:
-            temp_df[temp_df['{}_{}'.format(const.TARGET, const.REAL)] == 1][const.TAR_PSCORE] = \
-                tar_matched_tmp['pscore'].iloc[0]
+            temp_df.loc[temp_df['{}_{}'.format(const.TARGET, const.REAL)] == 1, const.TAR_PSCORE] = \
+                acq_matched_tmp['pscore'].iloc[0]
 
         temp_df.loc[:, '{}_{}'.format(const.TARGET, const.LINK_TABLE_RSSD9001)] = real_tar_id
         temp_df.loc[:, '{}_{}'.format(const.ACQUIRER, const.LINK_TABLE_RSSD9001)] = real_acq_id
@@ -286,7 +281,7 @@ if __name__ == '__main__':
     psm_data = pd.read_stata(os.path.join(const.DATA_PATH, '20180908_revision', '20180908_psm_add_missing_rssd.dta'))
     real_psm_data = psm_data[(psm_data['Target_real'] == 1) & (psm_data['Acquirer_real'] == 1)]
 
-    psm_group = real_psm_data.groupby([const.QUARTER, const.YEAR])
+    psm_group = real_psm_data.groupby([const.YEAR, const.QUARTER])
 
     result_dfs = []
     for key, sub_df in psm_group:
