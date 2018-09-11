@@ -109,6 +109,8 @@ if __name__ == '__main__':
         for quarter in quarter_list:
             print('Time: {}-{}'.format(year, quarter))
             tmp_data_df = data_sub_df[(data_sub_df[const.YEAR] == year) & (data_sub_df[const.QUARTER] == quarter)]
+            if tmp_data_df.empty:
+                continue
 
             tmp_branch_df = bank_branch_df[bank_branch_df[const.YEAR] == year]
             tmp_save_path = os.path.join(constructed_tmp_save_path,
