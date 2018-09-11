@@ -100,6 +100,7 @@ class Constants(PathInfo):
     FIPS_COUNTY_CODE = 'sumd9150'
     BRANCH_ID_NUM = 'BRNUM_SUMD9021'
     BRANCH_NUM = 'BranchNum'
+    DISTANCE = 'Distance'
 
     ACQHQ_TARBR_TOTAL_DISTANCE = 'AcqHq2TarBrTotalDistance'
     ACQHQ_TARBR_AVG_DISTANCE = 'AcqHq2TarBrAvgDistance'
