@@ -139,8 +139,8 @@ if __name__ == '__main__':
                   )].copy()
 
             rm_2brs_data_df = rm_2hqs_data_df[
-                ~((remove_duplicate_data_df['Acquirer_BRNUM_SUMD9021'] > 0)
-                  & (remove_duplicate_data_df['Target_BRNUM_SUMD9021'] > 0)
+                ~((rm_2hqs_data_df['Acquirer_BRNUM_SUMD9021'] > 0)
+                  & (rm_2hqs_data_df['Target_BRNUM_SUMD9021'] > 0)
                   )].copy()
 
             rm_2brs_distance_df = match_distance_from_fips(rm_2brs_data_df)
