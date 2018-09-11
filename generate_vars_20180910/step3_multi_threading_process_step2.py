@@ -111,6 +111,12 @@ if __name__ == '__main__':
             tmp_data_df = data_sub_df[(data_sub_df[const.YEAR] == year) & (data_sub_df[const.QUARTER] == quarter)]
 
             tmp_branch_df = bank_branch_df[bank_branch_df[const.YEAR] == year]
+            tmp_save_path = os.path.join(constructed_tmp_save_path,
+                                         '{}_{}_constructed_distance.pkl'.format(year, quarter))
+
+            if os.path.isfile(tmp_save_path):
+                distance_dfs.append(pd.read_pickle(tmp_save_path))
+                continue
 
             for tag in [const.ACQUIRER, const.TARGET]:
                 match_key = '{}_{}'.format(tag, const.COMMERCIAL_ID)
@@ -159,8 +165,7 @@ if __name__ == '__main__':
                                                        '{}_{}_matched_result.pkl'.format(year, quarter)))
 
             constructed_distance_var = constuct_distance_related_variables(rm_2brs_distance_df)
-            constructed_distance_var.to_pickle(os.path.join(constructed_tmp_save_path,
-                                                            '{}_{}_constructed_distance.pkl'.format(year, quarter)))
+            constructed_distance_var.to_pickle(tmp_save_path)
             distance_dfs.append(constructed_distance_var)
 
     all_distance_df = pd.concat(distance_dfs, ignore_index=True, sort=False)
