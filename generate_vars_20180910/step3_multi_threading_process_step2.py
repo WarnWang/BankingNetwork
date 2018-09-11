@@ -21,33 +21,43 @@ from constants import Constants as const
 
 def match_distance_from_fips(fips_data_df):
     same_fips_sub_df = fips_data_df[fips_data_df['Acquirer_FIPS'] == fips_data_df['Target_FIPS']].copy()
-    same_fips_sub_df.loc[:, const.DISTANCE] = 0
+    if same_fips_sub_df.empty:
+        dfs_to_concate = []
+    else:
+        same_fips_sub_df.loc[:, const.DISTANCE] = 0
+        dfs_to_concate = [same_fips_sub_df]
 
     diff_fips_sub_df = fips_data_df[fips_data_df['Acquirer_FIPS'] != fips_data_df['Target_FIPS']].copy()
 
-    data_year = fips_data_df[const.YEAR].iloc[0]
-    if data_year >= 2010:
-        distance_df = pd.read_stata(const.POST2010_DISTANCE_FILE)
-    elif data_year >= 2000:
-        distance_df = pd.read_stata(const.POST2000_DISTANCE_FILE)
+    if not diff_fips_sub_df.empty:
+        data_year = fips_data_df[const.YEAR].iloc[0]
+        if data_year >= 2010:
+            distance_df = pd.read_stata(const.POST2010_DISTANCE_FILE)
+        elif data_year >= 2000:
+            distance_df = pd.read_stata(const.POST2000_DISTANCE_FILE)
+        else:
+            distance_df = pd.read_stata(const.OLD_DISTANCE_FILE)
+
+        useful_distance_df = distance_df[['county1', 'county2', 'mi_to_county']].rename(index=str, columns={
+            'mi_to_county': const.DISTANCE, 'county1': 'Acquirer_FIPS', 'county2': 'Target_FIPS'}).drop_duplicates(
+            subset=['Acquirer_FIPS', 'Target_FIPS'])
+
+        useful_distance_df2 = distance_df[['county1', 'county2', 'mi_to_county']].rename(index=str, columns={
+            'mi_to_county': const.DISTANCE, 'county2': 'Acquirer_FIPS', 'county1': 'Target_FIPS'}).drop_duplicates(
+            subset=['Acquirer_FIPS', 'Target_FIPS'])
+
+        matched_df1 = diff_fips_sub_df.merge(useful_distance_df, on=['Acquirer_FIPS', 'Target_FIPS'], how='left')
+        dfs_to_concate.append(matched_df1)
+        unmatched_df1 = matched_df1[matched_df1[const.DISTANCE].isnull()]
+        if not unmatched_df1.empty:
+            del unmatched_df1[const.DISTANCE]
+
+            matched_df2 = unmatched_df1.merge(useful_distance_df2, on=['Acquirer_FIPS', 'Target_FIPS'], how='left')
+            dfs_to_concate.append(matched_df2)
+    if dfs_to_concate:
+        result_df = pd.concat(dfs_to_concate, sort=False)
     else:
-        distance_df = pd.read_stata(const.OLD_DISTANCE_FILE)
-
-    useful_distance_df = distance_df[['county1', 'county2', 'mi_to_county']].rename(index=str, columns={
-        'mi_to_county': const.DISTANCE, 'county1': 'Acquirer_FIPS', 'county2': 'Target_FIPS'}).drop_duplicates(
-        subset=['Acquirer_FIPS', 'Target_FIPS'])
-
-    useful_distance_df2 = distance_df[['county1', 'county2', 'mi_to_county']].rename(index=str, columns={
-        'mi_to_county': const.DISTANCE, 'county2': 'Acquirer_FIPS', 'county1': 'Target_FIPS'}).drop_duplicates(
-        subset=['Acquirer_FIPS', 'Target_FIPS'])
-
-    matched_df1 = diff_fips_sub_df.merge(useful_distance_df, on=['Acquirer_FIPS', 'Target_FIPS'], how='left')
-    unmatched_df1 = matched_df1[matched_df1[const.DISTANCE].isnull()]
-    del unmatched_df1[const.DISTANCE]
-
-    matched_df2 = unmatched_df1.merge(useful_distance_df2, on=['Acquirer_FIPS', 'Target_FIPS'], how='left')
-    result_df = pd.concat([same_fips_sub_df, matched_df2, matched_df1[matched_df1[const.DISTANCE].notnull()]],
-                          sort=False)
+        result_df = pd.DataFrame()
     return result_df
 
 
