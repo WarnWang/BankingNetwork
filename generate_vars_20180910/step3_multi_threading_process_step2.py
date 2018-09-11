@@ -65,11 +65,17 @@ def calculate_distance_variables(distance_data_df):
     result_dict = {const.TOTAL_DISTANCE: distance_data_df[const.DISTANCE].sum(),
                    const.AVERAGE_DISTANCE: distance_data_df[const.DISTANCE].mean()}
 
-    tar_hq_df = distance_data_df[distance_data_df['Target_BRNUM_SUMD9021'] == 0].copy()
+    hq2hq_distance_df = distance_data_df[(distance_data_df['Target_BRNUM_SUMD9021'] == 0)
+                                         & (distance_data_df['Acquirer_BRNUM_SUMD9021'] == 0)]
+    result_dict[const.HQ2HQ_DISTANCE] = hq2hq_distance_df[const.DISTANCE].sum()
+    no_hq2hq_distance_df = distance_data_df[~((distance_data_df['Target_BRNUM_SUMD9021'] == 0)
+                                              & (distance_data_df['Acquirer_BRNUM_SUMD9021'] == 0))]
+
+    tar_hq_df = no_hq2hq_distance_df[no_hq2hq_distance_df['Target_BRNUM_SUMD9021'] == 0].copy()
     result_dict[const.TARHQ_ACQBR_AVG_DISTANCE] = tar_hq_df[const.DISTANCE].mean()
     result_dict[const.TARHQ_ACQBR_TOTAL_DISTANCE] = tar_hq_df[const.DISTANCE].sum()
 
-    acq_hq_df = distance_data_df[distance_data_df['Acquirer_BRNUM_SUMD9021'] == 0].copy()
+    acq_hq_df = no_hq2hq_distance_df[no_hq2hq_distance_df['Acquirer_BRNUM_SUMD9021'] == 0].copy()
     result_dict[const.ACQHQ_TARBR_AVG_DISTANCE] = acq_hq_df[const.DISTANCE].mean()
     result_dict[const.ACQHQ_TARBR_TOTAL_DISTANCE] = acq_hq_df[const.DISTANCE].sum()
 
@@ -152,14 +158,14 @@ if __name__ == '__main__':
             remove_duplicate_data_df = tmp_data_df.drop_duplicates()
 
             # remove both headquarter data
-            rm_2hqs_data_df = remove_duplicate_data_df[
-                ~((remove_duplicate_data_df['Acquirer_BRNUM_SUMD9021'] == 0)
-                  & (remove_duplicate_data_df['Target_BRNUM_SUMD9021'] == 0)
-                  )].copy()
+            # rm_2hqs_data_df = remove_duplicate_data_df[
+            #     ~((remove_duplicate_data_df['Acquirer_BRNUM_SUMD9021'] == 0)
+            #       & (remove_duplicate_data_df['Target_BRNUM_SUMD9021'] == 0)
+            #       )].copy()
 
-            rm_2brs_data_df = rm_2hqs_data_df[
-                ~((rm_2hqs_data_df['Acquirer_BRNUM_SUMD9021'] > 0)
-                  & (rm_2hqs_data_df['Target_BRNUM_SUMD9021'] > 0)
+            rm_2brs_data_df = remove_duplicate_data_df[
+                ~((remove_duplicate_data_df['Acquirer_BRNUM_SUMD9021'] > 0)
+                  & (remove_duplicate_data_df['Target_BRNUM_SUMD9021'] > 0)
                   )].copy()
 
             rm_2brs_distance_df = match_distance_from_fips(rm_2brs_data_df)

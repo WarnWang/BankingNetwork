@@ -106,5 +106,6 @@ class Constants(PathInfo):
     ACQHQ_TARBR_AVG_DISTANCE = 'AcqHq2TarBrAvgDistance'
     TARHQ_ACQBR_TOTAL_DISTANCE = 'TarHq2AcqBrTotalDistance'
     TARHQ_ACQBR_AVG_DISTANCE = 'TarHq2AcqBrAvgDistance'
+    HQ2HQ_DISTANCE = 'Hq2HqDistance'
     TOTAL_DISTANCE = 'Hq2BrTotalDistance'
     AVERAGE_DISTANCE = 'Hq2BrAvgDistance'
