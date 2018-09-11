@@ -46,7 +46,8 @@ def match_distance_from_fips(fips_data_df):
     del unmatched_df1[const.DISTANCE]
 
     matched_df2 = unmatched_df1.merge(useful_distance_df2, on=['Acquirer_FIPS', 'Target_FIPS'], how='left')
-    result_df = pd.concat([same_fips_sub_df, matched_df2, matched_df1[matched_df1[const.DISTANCE].notnull()]])
+    result_df = pd.concat([same_fips_sub_df, matched_df2, matched_df1[matched_df1[const.DISTANCE].notnull()]],
+                          sort=False)
     return result_df
 
 
