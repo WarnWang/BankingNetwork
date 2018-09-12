@@ -109,3 +109,5 @@ class Constants(PathInfo):
     HQ2HQ_DISTANCE = 'Hq2HqDistance'
     TOTAL_DISTANCE = 'Hq2BrTotalDistance'
     AVERAGE_DISTANCE = 'Hq2BrAvgDistance'
+
+    STATE_MATCH = 'state_match'
