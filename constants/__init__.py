@@ -111,6 +111,10 @@ class Constants(PathInfo):
     AVERAGE_DISTANCE = 'Hq2BrAvgDistance'
 
     STATE_MATCH = 'state_match'
+    STATE_FIPS_MATCH = 'state_fips_match'
     CITY_MATCH = 'city_match'
     COUNTY_MATCH = 'county_match'
+    COUNTY_FIPS_MATCH = 'county_fips_match'
     ZIPCODE_MATCH = 'zipcode_match'
+
+    BRANCH_STATE_NUM = 'Num_Br_State'
