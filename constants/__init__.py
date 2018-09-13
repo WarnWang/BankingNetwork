@@ -111,3 +111,6 @@ class Constants(PathInfo):
     AVERAGE_DISTANCE = 'Hq2BrAvgDistance'
 
     STATE_MATCH = 'state_match'
+    CITY_MATCH = 'city_match'
+    COUNTY_MATCH = 'county_match'
+    ZIPCODE_MATCH = 'zipcode_match'
