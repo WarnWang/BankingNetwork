@@ -35,9 +35,9 @@ if __name__ == '__main__':
     headquarter_df = branch_df[branch_df[const.BRANCH_ID_NUM] == 0].copy().drop(['DEPSUMBR_SUMD2200', 'BRNUM_SUMD9021',
                                                                                  'STALPBR'], axis=1)
 
-    just_branch_df = branch_df[branch_df[const.BRANCH_ID_NUM] != 0].copy()
+    # just_branch_df = branch_df[branch_df[const.BRANCH_ID_NUM] != 0].copy()
 
-    branch_state_df = just_branch_df[[const.FIPS_STATE_CODE, const.YEAR, const.COMMERCIAL_RSSD9001]].drop_duplicates()
+    branch_state_df = branch_df[[const.FIPS_STATE_CODE, const.YEAR, const.COMMERCIAL_RSSD9001]].drop_duplicates()
     branch_state_count = branch_state_df.groupby([const.YEAR, const.COMMERCIAL_RSSD9001]).count().reset_index(
         drop=False).rename(index=str, columns={const.FIPS_STATE_CODE: const.BRANCH_STATE_NUM})
 
@@ -47,7 +47,7 @@ if __name__ == '__main__':
 
     hq_add_br_state_num_df = headquarter_df.merge(branch_state_count, on=[const.YEAR, const.COMMERCIAL_RSSD9001],
                                                   how='left')
-    hq_add_br_state_num_df.loc[:, const.BRANCH_STATE_NUM] = hq_add_br_state_num_df[const.BRANCH_STATE_NUM].fillna(0)
+    hq_add_br_state_num_df.loc[:, const.BRANCH_STATE_NUM] = hq_add_br_state_num_df[const.BRANCH_STATE_NUM].fillna(1)
     hq_add_cnty_name_df = hq_add_br_state_num_df.merge(fips_county_df,
                                                        on=[const.FIPS_COUNTY_CODE, const.FIPS_STATE_CODE],
                                                        how='left')
