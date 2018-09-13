@@ -45,14 +45,16 @@ if __name__ == '__main__':
         ['CLASSFP'], axis=1).rename(index=str, columns={'STATEFP': const.FIPS_STATE_CODE,
                                                         'COUNTYFP': const.FIPS_COUNTY_CODE})
 
-    hq_add_br_state_num_df = headquarter_df.merge(branch_state_df, on=[const.YEAR, const.COMMERCIAL_RSSD9001],
+    hq_add_br_state_num_df = headquarter_df.merge(branch_state_count, on=[const.YEAR, const.COMMERCIAL_RSSD9001],
                                                   how='left')
     hq_add_br_state_num_df.loc[:, const.BRANCH_STATE_NUM] = hq_add_br_state_num_df[const.BRANCH_STATE_NUM].fillna(0)
     hq_add_cnty_name_df = hq_add_br_state_num_df.merge(fips_county_df,
                                                        on=[const.FIPS_COUNTY_CODE, const.FIPS_STATE_CODE],
                                                        how='left')
 
-    data_df = pd.read_pickle(os.path.join(const.TEMP_PATH, '20180913_psm_append_permco.pkl'))
+    data_df = pd.read_pickle(os.path.join(const.TEMP_PATH, '20180913_psm_append_permco.pkl')).drop(['Tar_state_match',
+                                                                                                    'Acq_state_match'],
+                                                                                                   axis=1)
 
     for prefix in [const.TARGET, const.ACQUIRER]:
         match_prefix = prefix[:3]
