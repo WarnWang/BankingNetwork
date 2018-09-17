@@ -61,8 +61,12 @@ class Constants(PathInfo):
     LINK_TABLE_RSSD9001 = 'link_table_rssd9001'
     REAL = 'real'
 
+    ACQ = 'Acq'
     ACQUIRER = 'Acquirer'
+    TAR = 'Tar'
     TARGET = 'Target'
+    ACQ_TAR = 'Acq_Tar'
+    COMBINED = 'Combined'
 
     COMMERCIAL_DATE = 'DATE_VALID'
     COMMERCIAL_RSSD9364 = 'RSSD9364'
@@ -85,6 +89,7 @@ class Constants(PathInfo):
     TOTAL_DEPOSITS = 'RCFD2200'
     MORTGAGE_LENDING = 'RCON3164'
     SMALL_BUSINESS_LENDING = 'RCONA249'
+    SMALL_BUSINESS_LOAN = 'RCON5571'
     BANK_EFFICIENCY = 'BankEfficiency'
     BANK_TYPE = 'BankType'
     BUSINESS_FOCUS = 'BusinessFocus'
