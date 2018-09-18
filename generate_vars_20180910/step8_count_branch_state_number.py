@@ -54,19 +54,7 @@ if __name__ == '__main__':
         # match with rssd9001
         rename_dict1 = {const.COMMERCIAL_RSSD9001: match_id,
                         const.BRANCH_STATE_NUM: match_key}
-        tmp_branch_data1 = branch_state_count2.drop([const.COMMERCIAL_RSSD9364], axis=1).rename(
-            index=str, columns=rename_dict1)
-        data_df_9001 = data_df.merge(tmp_branch_data1, on=[match_id, const.YEAR], how='left')
-
-        # match with rssd9364
-        rename_dict2 = {const.COMMERCIAL_RSSD9364: match_id,
-                        const.BRANCH_STATE_NUM: match_key}
-        tmp_branch_data2 = branch_state_count2.drop([const.COMMERCIAL_RSSD9001], axis=1).dropna(how='any').rename(
-            index=str, columns=rename_dict2)
-        data_df_9364 = data_df.merge(tmp_branch_data2, on=[match_id, const.YEAR], how='left')
-
-        # merge match result
-        data_df_9001.loc[:, match_key] = data_df_9001[match_key].fillna(data_df_9364[match_key])
-        data_df = data_df_9001.copy()
+        tmp_branch_data1 = branch_state_count2.rename(index=str, columns=rename_dict1)
+        data_df = data_df.merge(tmp_branch_data1, on=[match_id, const.YEAR], how='left')
 
     data_df.to_pickle(os.path.join(const.TEMP_PATH, '20180918_third_part_concise_3018_add_brstatenum.pkl'))
