@@ -69,30 +69,36 @@ class Constants(PathInfo):
     COMBINED = 'Combined'
 
     COMMERCIAL_DATE = 'DATE_VALID'
+    COMMERCIAL_ID = 'id'
+
+    # from fed reserve data set
     COMMERCIAL_RSSD9364 = 'RSSD9364'
     COMMERCIAL_RSSD9001 = 'RSSD9001'
     RSSD9379 = 'RSSD9379'
     RSSD9348 = 'RSSD9348'
     RSSD9360 = 'RSSD9360'
-    COMMERCIAL_ID = 'id'
 
     NET_INTEREST_INCOME = 'RIAD4074'
     TOTAL_ASSETS = 'RCFD2170'
     TOTAL_LIABILITIES = 'RCON2950'
     TOTAL_EQUITY_CAPITAL = 'RCON3210'
     NET_INCOME_LOSS = 'RIAD4340'
-    LEVERAGE_RATIO = 'Leverage_Ratio'
-    INTEREST_INCOME_RATIO = 'interest_income_ratio'
-    ROA = 'ROA'
-    ROE = 'ROE'
-    MORTGAGE_LENDING_RATIO = 'MortgageLoanRatio'
-    SBL_RATIO = 'SmallBusinessRatio'
     TOTAL_LOANS = 'RCON1400'
     EMPLOYEE_NUMBER = 'RIAD4150'
     TOTAL_DEPOSITS = 'RCFD2200'
     MORTGAGE_LENDING = 'RCON3164'
     SMALL_BUSINESS_LENDING = 'RCONA249'
     SMALL_BUSINESS_LOAN = 'RCON5571'
+
+    LEVERAGE_RATIO = 'Leverage_Ratio'
+    INTEREST_INCOME_RATIO = 'interest_income_ratio'
+    ROA = 'ROA'
+    ROE = 'ROE'
+    MORTGAGE_LENDING_RATIO = 'MortgageLoanRatio'
+    SBL_RATIO = 'SmallBusinessRatio'
+
+    # generated variables
+    TOTAL_LOAN = 'TotalLoan'
     SB_LOAN = 'SBLoan'
     BANK_EFFICIENCY = 'BankEfficiency'
     BANK_TYPE = 'BankType'
