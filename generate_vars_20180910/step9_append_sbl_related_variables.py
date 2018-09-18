@@ -131,7 +131,7 @@ if __name__ == '__main__':
 
     pure_sbl_df = sbl_df_append_sml.drop(['RCON5571_chg', 'RCON5571_pctchg'], axis=1).rename(
         index=str, columns={const.SMALL_BUSINESS_LOAN: const.SB_LOAN})
-    pure_sbl_df = pure_sbl_df[pure_sbl_df[const.YEAR].notin({2015, 2016})]
+    pure_sbl_df = pure_sbl_df[~pure_sbl_df[const.YEAR].isin({2015, 2016})]
     acq_tar_ids = data_df[[ACQ_9001, TAR_9001, 'Acq_CUSIP', 'Tar_CUSIP']].copy().dropna(
         subset=[ACQ_9001, TAR_9001], how='any').drop_duplicates(subset=['Acq_CUSIP', 'Tar_CUSIP'])
     acq_sml_df = pure_sbl_df.rename(index=str, columns={const.COMMERCIAL_RSSD9001: ACQ_9001,
