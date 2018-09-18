@@ -152,12 +152,6 @@ if __name__ == '__main__':
 
             remove_duplicate_data_df = tmp_data_df.drop_duplicates()
 
-            # remove both headquarter data
-            # rm_2hqs_data_df = remove_duplicate_data_df[
-            #     ~((remove_duplicate_data_df['Acquirer_BRNUM_SUMD9021'] == 0)
-            #       & (remove_duplicate_data_df['Target_BRNUM_SUMD9021'] == 0)
-            #       )].copy()
-
             rm_2brs_data_df = remove_duplicate_data_df[
                 ~((remove_duplicate_data_df['Acquirer_BRNUM_SUMD9021'] > 0)
                   & (remove_duplicate_data_df['Target_BRNUM_SUMD9021'] > 0)
