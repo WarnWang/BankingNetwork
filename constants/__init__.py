@@ -93,6 +93,7 @@ class Constants(PathInfo):
     MORTGAGE_LENDING = 'RCON3164'
     SMALL_BUSINESS_LENDING = 'RCONA249'
     SMALL_BUSINESS_LOAN = 'RCON5571'
+    SB_LOAN = 'SBLoan'
     BANK_EFFICIENCY = 'BankEfficiency'
     BANK_TYPE = 'BankType'
     BUSINESS_FOCUS = 'BusinessFocus'
