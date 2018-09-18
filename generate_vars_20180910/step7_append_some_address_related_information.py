@@ -37,20 +37,20 @@ if __name__ == '__main__':
 
     # just_branch_df = branch_df[branch_df[const.BRANCH_ID_NUM] != 0].copy()
 
-    branch_state_df = branch_df[[const.FIPS_STATE_CODE, const.YEAR, const.COMMERCIAL_RSSD9001]].drop_duplicates()
-    branch_state_count = branch_state_df.groupby([const.YEAR, const.COMMERCIAL_RSSD9001]).count().reset_index(
-        drop=False).rename(index=str, columns={const.FIPS_STATE_CODE: const.BRANCH_STATE_NUM})
+    # branch_state_df = branch_df[[const.FIPS_STATE_CODE, const.YEAR, const.COMMERCIAL_RSSD9001]].drop_duplicates()
+    # branch_state_count = branch_state_df.groupby([const.YEAR, const.COMMERCIAL_RSSD9001]).count().reset_index(
+    #     drop=False).rename(index=str, columns={const.FIPS_STATE_CODE: const.BRANCH_STATE_NUM})
 
     fips_county_df = pd.read_csv(os.path.join(const.DATA_PATH, 'fips_county.csv'), dtype=str).drop(
         ['CLASSFP'], axis=1).rename(index=str, columns={'STATEFP': const.FIPS_STATE_CODE,
                                                         'COUNTYFP': const.FIPS_COUNTY_CODE})
 
-    hq_add_br_state_num_df = headquarter_df.merge(branch_state_count, on=[const.YEAR, const.COMMERCIAL_RSSD9001],
-                                                  how='left')
-    hq_add_br_state_num_df.loc[:, const.BRANCH_STATE_NUM] = hq_add_br_state_num_df[const.BRANCH_STATE_NUM].fillna(1)
-    hq_add_cnty_name_df = hq_add_br_state_num_df.merge(fips_county_df,
-                                                       on=[const.FIPS_COUNTY_CODE, const.FIPS_STATE_CODE],
-                                                       how='left')
+    # hq_add_br_state_num_df = headquarter_df.merge(branch_state_count, on=[const.YEAR, const.COMMERCIAL_RSSD9001],
+    #                                               how='left')
+    # hq_add_br_state_num_df.loc[:, const.BRANCH_STATE_NUM] = hq_add_br_state_num_df[const.BRANCH_STATE_NUM].fillna(1)
+    hq_add_cnty_name_df = headquarter_df.merge(fips_county_df,
+                                               on=[const.FIPS_COUNTY_CODE, const.FIPS_STATE_CODE],
+                                               how='left')
 
     data_df = pd.read_pickle(os.path.join(const.TEMP_PATH, '20180913_psm_append_permco.pkl')).drop(['Tar_state_match',
                                                                                                     'Acq_state_match'],
