@@ -42,7 +42,7 @@ if __name__ == '__main__':
                                                const.COMMERCIAL_RSSD9364: const.COMMERCIAL_RSSD9001})
 
     branch_state_count2 = branch_state_count.append(branch_state_df_9364, ignore_index=True)
-    branch_state_count2 = branch_state_count2.drop_duplicats([const.COMMERCIAL_RSSD9001, const.YEAR], keep='last')
+    branch_state_count2 = branch_state_count2.drop_duplicates([const.COMMERCIAL_RSSD9001, const.YEAR], keep='last')
 
     # prepare branch state number count dataframe
     for prefix in [const.TAR, const.ACQ]:
