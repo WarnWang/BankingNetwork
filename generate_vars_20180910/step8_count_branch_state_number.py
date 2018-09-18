@@ -35,11 +35,14 @@ if __name__ == '__main__':
     branch_state_df = branch_df[[const.FIPS_STATE_CODE, const.YEAR, const.COMMERCIAL_RSSD9001]].drop_duplicates()
     branch_state_count = branch_state_df.groupby([const.YEAR, const.COMMERCIAL_RSSD9001]).count().reset_index(
         drop=False).rename(index=str, columns={const.FIPS_STATE_CODE: const.BRANCH_STATE_NUM})
+    branch_state_df_9364 = branch_df[
+        [const.FIPS_STATE_CODE, const.YEAR, const.COMMERCIAL_RSSD9364]].dropna(how='any').drop_duplicates().groupby(
+        [const.YEAR, const.COMMERCIAL_RSSD9364]).count().reset_index(
+        drop=False).rename(index=str, columns={const.FIPS_STATE_CODE: const.BRANCH_STATE_NUM,
+                                               const.COMMERCIAL_RSSD9364: const.COMMERCIAL_RSSD9001})
 
-    rssd_link_file = branch_df[[const.COMMERCIAL_RSSD9001, const.COMMERCIAL_RSSD9364, const.YEAR]].copy().dropna(
-        how='any').drop_duplicates()
-    branch_state_count2 = branch_state_count.merge(rssd_link_file, on=[const.COMMERCIAL_RSSD9001, const.YEAR],
-                                                   how='left')
+    branch_state_count2 = branch_state_count.append(branch_state_df_9364, ignore_index=True)
+    branch_state_count2 = branch_state_count2.drop_duplicats([const.COMMERCIAL_RSSD9001, const.YEAR], keep='last')
 
     # prepare branch state number count dataframe
     for prefix in [const.TAR, const.ACQ]:
