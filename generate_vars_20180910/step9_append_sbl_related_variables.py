@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# @Filename: step9_append_total_loans
+# @Filename: step9_append_sbl_related_variables.py
 # @Date: 18/9/2018
 # @Author: Mark Wang
 # @Email: wangyouan@gamil.com
 
 
 """
-python3 -m generate_vars_20180910.step9_append_total_loans
+python3 -m generate_vars_20180910.step9_append_sbl_related_variables
 """
 
 import os
@@ -131,6 +131,7 @@ if __name__ == '__main__':
 
     pure_sbl_df = sbl_df_append_sml.drop(['RCON5571_chg', 'RCON5571_pctchg'], axis=1).rename(
         index=str, columns={const.SMALL_BUSINESS_LOAN: const.SB_LOAN})
+    pure_sbl_df = pure_sbl_df[pure_sbl_df[const.YEAR].notin({2015, 2016})]
     acq_tar_ids = data_df[[ACQ_9001, TAR_9001, 'Acq_CUSIP', 'Tar_CUSIP']].copy().dropna(
         subset=[ACQ_9001, TAR_9001], how='any').drop_duplicates(subset=['Acq_CUSIP', 'Tar_CUSIP'])
     acq_sml_df = pure_sbl_df.rename(index=str, columns={const.COMMERCIAL_RSSD9001: ACQ_9001,
@@ -151,6 +152,10 @@ if __name__ == '__main__':
 
     acq_tar_chg_dfs = p.map(acq_tar_add_change, acq_tar_dfs)
     acq_tar_chg_df = pd.concat(acq_tar_chg_dfs, ignore_index=True, sort=False)
+    for year in [2015, 2016]:
+        acq_tar_chg_sub_df = acq_tar_chg_df[acq_tar_chg_df[const.YEAR] == 2014].copy()
+        acq_tar_chg_sub_df.loc[:, const.YEAR] = year
+        acq_tar_chg_df = acq_tar_chg_df.append(acq_tar_chg_sub_df, ignore_index=True)
 
     data_df_add_acq_tar = data_df.merge(acq_tar_chg_df, on=[ACQ_9001, TAR_9001, const.YEAR], how='left')
     data_df_add_acq_tar = data_df_add_acq_tar.drop_duplicates(subset=['Acq_CUSIP', 'Tar_CUSIP', const.YEAR])
