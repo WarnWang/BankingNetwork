@@ -16,6 +16,7 @@ import multiprocessing
 import pandas as pd
 
 from constants import Constants as const
+from generate_vars_20180910.step10_add_total_loans_related_variables import generate_2015_2016_data
 
 
 def fill_all_df(sub_df):
@@ -44,6 +45,8 @@ if __name__ == '__main__':
                                                                                 'RSSD9210': 'sumd9210',
                                                                                 'RSSD9220': 'ZIPBR_SUMD9220',
                                                                                 'RSSD9130': 'CITYBR'})
+    bhcf_data_df_useful = generate_2015_2016_data(bhcf_data_df_useful)
+
     format_str = (lambda x: x if isinstance(x, str) else str(int(x)))
     for key in [const.FIPS_STATE_CODE, const.FIPS_COUNTY_CODE, 'ZIPBR_SUMD9220', const.COMMERCIAL_RSSD9001]:
         bhcf_data_df_useful.loc[:, key] = bhcf_data_df_useful[key].dropna().apply(format_str)
