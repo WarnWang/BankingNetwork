@@ -51,13 +51,15 @@ if __name__ == '__main__':
         subset=[const.COMMERCIAL_RSSD9001, const.YEAR], keep='last')
     merged_headquarter_group = merged_headquarter.groupby([const.COMMERCIAL_RSSD9001, const.YEAR])
     merged_headquarter_dfs = [df for _, df in merged_headquarter_group]
+    pool = multiprocessing.Pool(38)
+    fillna_hq_dfs = pool.map(fill_all_df, merged_headquarter_dfs)
+    hq_df_fillna = pd.concat(fillna_hq_dfs, ignore_index=True, sort=False)
 
     fips_county_df = pd.read_csv(os.path.join(const.DATA_PATH, 'fips_county.csv'), dtype=str).drop(
         ['CLASSFP'], axis=1).rename(index=str, columns={'STATEFP': const.FIPS_STATE_CODE,
                                                         'COUNTYFP': const.FIPS_COUNTY_CODE})
-    hq_add_cnty_name_df = headquarter_df.merge(fips_county_df,
-                                               on=[const.FIPS_COUNTY_CODE, const.FIPS_STATE_CODE],
-                                               how='left')
+    hq_add_cnty_name_df = hq_df_fillna.merge(fips_county_df, on=[const.FIPS_COUNTY_CODE, const.FIPS_STATE_CODE],
+                                             how='left')
 
     data_df = pd.read_pickle(os.path.join(const.TEMP_PATH, '20180913_psm_append_permco.pkl')).drop(
         ['Tar_state_match', 'Acq_state_match'], axis=1)
