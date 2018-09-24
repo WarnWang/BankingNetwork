@@ -117,7 +117,7 @@ if __name__ == '__main__':
             subset=['Acq_CUSIP', 'Tar_CUSIP', const.YEAR])
         data_df = data_df.rename(index=str, columns=rename_dict)
 
-    data_df.to_pickle(os.path.join(const.TEMP_PATH, '20180918_third_part_concise_3018_add_sbl_tl.pkl'))
+    data_df.to_pickle(os.path.join(const.TEMP_PATH, '20180924_third_part_concise_3018_add_sbl_tl.pkl'))
     data_df = data_df.replace({np.inf: np.nan})
-    data_df.to_stata(os.path.join(const.RESULT_PATH, '20180918_third_part_concise_3018_add_sbl_tl.dta'),
+    data_df.to_stata(os.path.join(const.RESULT_PATH, '20180924_third_part_concise_3018_add_sbl_tl.dta'),
                      write_index=False)
