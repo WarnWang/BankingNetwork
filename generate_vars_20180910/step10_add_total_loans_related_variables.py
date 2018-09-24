@@ -76,7 +76,7 @@ if __name__ == '__main__':
         bhcf_sub_df = bhcf_sub_df.rename(index=str, columns={total_loan_key: const.TOTAL_LOAN})
 
         # prepare for acq or tar merge
-        bhcf_sub_group = bhcf_sub_df.groupby([const.COMMERCIAL_RSSD9001, const.YEAR])
+        bhcf_sub_group = bhcf_sub_df.groupby([const.COMMERCIAL_RSSD9001])
         bhcf_sub_dfs = [df for _, df in bhcf_sub_group]
         bhcf_sub_add_chg_dfs = pool.map(add_chg_to_total_loan, bhcf_sub_dfs)
         bhcf_sub_add_chg_df = pd.concat(bhcf_sub_add_chg_dfs, ignore_index=True, sort=False)
