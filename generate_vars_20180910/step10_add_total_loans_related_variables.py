@@ -30,7 +30,7 @@ def generate_2015_2016_data(tmp_df):
     for year in [2014, 2015]:
         tmp_sub_df = tmp_df[tmp_df[const.YEAR] == 2014].copy()
         tmp_sub_df.loc[:, const.YEAR] = year
-        result_df = result_df.append(tmp_sub_df, ignore_index=True)
+        result_df = result_df.append(tmp_sub_df, ignore_index=True, sort=False)
 
     return result_df
 
