@@ -133,3 +133,10 @@ class Constants(PathInfo):
     ZIPCODE_MATCH = 'zipcode_match'
 
     BRANCH_STATE_NUM = 'Num_Br_State'
+
+    # some data prefix
+    MORTGAGE_LENDING_ABBR = 'ML'
+    INTEREST_INCOME_ABBR = 'II'
+    NET_INCOME_LOSS_ABBR = 'NIL'
+    TOTAL_ASSETS_ABBR = 'TA'
+    TOTAL_INTEREST_NONINTEREST_INCOME_ABBR = 'TINI'
