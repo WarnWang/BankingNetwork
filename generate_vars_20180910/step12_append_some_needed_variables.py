@@ -35,7 +35,7 @@ TAR_9001 = '{}_{}'.format(const.TAR, const.LINK_TABLE_RSSD9001)
 
 def generate_2015_2016_data(tmp_df):
     result_df = tmp_df.copy()
-    for year in [2014, 2015]:
+    for year in [2015, 2016]:
         tmp_sub_df = tmp_df[tmp_df[const.YEAR] == 2014].copy()
         tmp_sub_df.loc[:, const.YEAR] = year
         result_df = result_df.append(tmp_sub_df, ignore_index=True, sort=False)
