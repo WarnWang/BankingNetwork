@@ -88,3 +88,24 @@ if __name__ == '__main__':
     cdf.loc[:, const.REAL_ESTATE_LOAN_PROFITABILITY] = cdf[INTEREST_FROM_RE_LOAN] / cdf[REAL_ESTATE_LOAN]
     cdf.loc[:, const.PROFITABILITY_RATIO] = cdf[const.C_AND_I_LOAN_PROFITABILITY] / cdf[
         const.REAL_ESTATE_LOAN_PROFITABILITY]
+
+    keys_to_attach = [const.REAL_ESTATE_LOANS, const.MBS, const.COMMERCIAL_MORTGAGES, const.C_AND_I_LOANS,
+                      const.CONSUMER_LOANS, const.C_AND_I_LOAN_PROFITABILITY, const.REAL_ESTATE_LOAN_PROFITABILITY,
+                      const.PROFITABILITY_RATIO]
+    keep_keys = keys_to_attach[:]
+    keep_keys.append(const.YEAR)
+    keep_keys.append(const.COMMERCIAL_RSSD9001)
+    cdf_useful = cdf[keep_keys]
+
+    for prefix in [const.ACQ, const.TAR]:
+        match_key = '{}_{}'.format(prefix, const.LINK_TABLE_RSSD9001)
+        bhcf_rename_dict = {const.COMMERCIAL_RSSD9001: match_key}
+        for data_key in keys_to_attach:
+            bhcf_rename_dict[data_key] = '{}_{}'.format(prefix, data_key)
+        data_to_merge = cdf_useful.rename(index=str, columns=bhcf_rename_dict)
+        data_df = data_df.merge(data_to_merge, on=[match_key, const.YEAR], how='left')
+
+    data_df.to_pickle(os.path.join(const.TEMP_PATH, '20181004_third_part_concise_3018_add_some_vars.pkl'))
+    data_df = data_df.replace({np.inf: np.nan})
+    data_df.to_stata(os.path.join(const.RESULT_PATH, '20181004_third_part_concise_3018_add_some_vars.dta'),
+                     write_index=False)
