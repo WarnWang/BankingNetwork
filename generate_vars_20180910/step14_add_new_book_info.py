@@ -17,9 +17,6 @@ import pandas as pd
 
 from constants import Constants as const
 
-ACQ_9001 = '{}_{}'.format(const.ACQ, const.LINK_TABLE_RSSD9001)
-TAR_9001 = '{}_{}'.format(const.TAR, const.LINK_TABLE_RSSD9001)
-
 
 def generate_2015_2016_data(tmp_df):
     result_df = tmp_df.copy()
@@ -37,9 +34,7 @@ if __name__ == '__main__':
 
     bhcf_data_df = pd.read_pickle(os.path.join(bhc_save_path, '1986_2014_all_bhcf_data.pkl'))
 
-    useful_cols = [const.YEAR, const.COMMERCIAL_RSSD9364, const.COMMERCIAL_RSSD9001]
-    useful_cols.extend('BHCK4079')
-    useful_cols.extend('BHCK4107')
+    useful_cols = [const.YEAR, const.COMMERCIAL_RSSD9364, const.COMMERCIAL_RSSD9001, 'BHCK4079', 'BHCK4107']
 
     bhcf_data_df_useful = bhcf_data_df[useful_cols]
 
