@@ -19,6 +19,7 @@ from pandas import DataFrame
 from constants import Constants as const
 
 SOD_DATA_PATH = os.path.join(const.DATA_PATH, '20180908_revision', 'SOD_1976-1985_Fed_micro_data.dta')
+SOD_DATA2_PATH = os.path.join(const.DATA_PATH, '20180908_revision', 'SOD_1986-2006_Fed_micro_data.dta')
 FDIC_DATA_PATH = os.path.join(const.DATA_PATH, 'FDIC_data', 'Branch Office Deposits')
 
 BRANCH_NUMBER = 'BRNUM'
@@ -47,7 +48,7 @@ def _calculate_county_data(valid_data_df: DataFrame):
 
 
 def _calculate_sod_data(year: int):
-    sod_df: DataFrame = pd.read_stata(SOD_DATA_PATH)
+    sod_df: DataFrame = pd.read_stata(SOD_DATA_PATH if year <= 1985 else SOD_DATA2_PATH)
     if year not in set(sod_df['year']):
         return DataFrame()
 
@@ -106,8 +107,10 @@ if __name__ == '__main__':
     result_dfs = pool.map(sort_county_level_data, range(1976, 2017))
     result_df: DataFrame = pd.concat(result_dfs, ignore_index=True, sort=False)
 
-    result_df.to_pickle(os.path.join(const.TEMP_PATH, '20181018_county_level_data.pkl'))
+    # result_df.to_pickle(os.path.join(const.TEMP_PATH, '20181018_county_level_data.pkl'))
+    result_df.to_pickle(os.path.join(const.TEMP_PATH, '20181119_county_level_data.pkl'))
 
     result_group = result_df.groupby(const.FIPS)
     rotated_df = result_group.apply(create_lag_variable).reset_index(drop=True)
-    rotated_df.to_pickle(os.path.join(const.TEMP_PATH, '20181018_county_level_data_rotated_data.pkl'))
+    # rotated_df.to_pickle(os.path.join(const.TEMP_PATH, '20181018_county_level_data_rotated_data.pkl'))
+    rotated_df.to_pickle(os.path.join(const.TEMP_PATH, '20181119_county_level_data_rotated_data.pkl'))
