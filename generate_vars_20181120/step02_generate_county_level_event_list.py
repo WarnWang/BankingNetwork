@@ -51,4 +51,5 @@ if __name__ == '__main__':
             common_county_event = common_county_event.append({const.FIPS: fips, const.YEAR: year,
                                                               const.RSSD9001: tar_9001}, ignore_index=True)
 
-    common_county_event.to_pickle(os.path.join(const.TEMP_PATH, '20181120_common_county_event_rssd.pkl'))
+    common_county_event.drop_duplicates().to_pickle(
+        os.path.join(const.TEMP_PATH, '20181120_common_county_event_rssd.pkl'))
