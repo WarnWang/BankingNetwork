@@ -158,6 +158,7 @@ class Constants(PathInfo):
     EXCLUDE_ALL_AT_BANK = 'EAB'
     RSSD9001 = 'rssd9001'
     YEAR = 'year'
+    BRANCH_ID = 'sumd9021'
 
     TOTAL_DEPOSITS_REAL = 'TOTAL_DEPOSITS'
     TOTAL_DEPOSITS_HHI = 'TOTAL_DEPOSITS_HHI'
