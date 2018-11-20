@@ -52,7 +52,7 @@ def _calculate_sod_data(year: int):
     if year not in set(sod_df['year']):
         return DataFrame()
 
-    sod_valid_df: DataFrame = sod_df[(sod_df['year'] == year) & (sod_df['sumd9021'] != -1)].copy()
+    sod_valid_df: DataFrame = sod_df[(sod_df['year'] == year) & (sod_df['sumd9310'] != 9)].copy()
 
     def calculte_fips(row):
         county_code = int(row['sumd9150'])
@@ -108,9 +108,9 @@ if __name__ == '__main__':
     result_df: DataFrame = pd.concat(result_dfs, ignore_index=True, sort=False)
 
     # result_df.to_pickle(os.path.join(const.TEMP_PATH, '20181018_county_level_data.pkl'))
-    result_df.to_pickle(os.path.join(const.TEMP_PATH, '20181119_county_level_data.pkl'))
+    result_df.to_pickle(os.path.join(const.TEMP_PATH, '20181120_county_level_data.pkl'))
 
     result_group = result_df.groupby(const.FIPS)
     rotated_df = result_group.apply(create_lag_variable).reset_index(drop=True)
     # rotated_df.to_pickle(os.path.join(const.TEMP_PATH, '20181018_county_level_data_rotated_data.pkl'))
-    rotated_df.to_pickle(os.path.join(const.TEMP_PATH, '20181119_county_level_data_rotated_data.pkl'))
+    rotated_df.to_pickle(os.path.join(const.TEMP_PATH, '20181120_county_level_data_rotated_data.pkl'))
