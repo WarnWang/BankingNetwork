@@ -150,3 +150,9 @@ class Constants(PathInfo):
     C_AND_I_LOAN_PROFITABILITY = 'CIL_PROF'
     REAL_ESTATE_LOAN_PROFITABILITY = 'REL_PROF'
     PROFITABILITY_RATIO = 'PROF_R'
+
+    # The following would be used in 20181120 project
+    ACQ_9001 = '{}_{}'.format(ACQ, LINK_TABLE_RSSD9001)
+    TAR_9001 = '{}_{}'.format(TAR, LINK_TABLE_RSSD9001)
+    EXCLUDE_CURRENT_AT_BANK = 'ECB'
+    EXCLUDE_ALL_AT_BANK = 'EAB'
