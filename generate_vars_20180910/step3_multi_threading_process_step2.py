@@ -168,7 +168,8 @@ if __name__ == '__main__':
     all_distance_df = pd.concat(distance_dfs, ignore_index=True, sort=False)
     all_distance_df.to_pickle(os.path.join(const.TEMP_PATH, '20180911_constructed_distance_variables.pkl'))
 
-    merged_previous_info_df = data_df.merge(all_distance_df, on=[const.YEAR_MERGE, const.QUARTER, 'Target_id', 'Acquirer_id'],
+    merged_previous_info_df = data_df.merge(all_distance_df,
+                                            on=[const.YEAR_MERGE, const.QUARTER, 'Target_id', 'Acquirer_id'],
                                             how='left')
     merged_previous_info_df.to_pickle(os.path.join(const.TEMP_PATH, '20180911_psm_add_distance_vars.pkl'))
     merged_previous_info_df.to_csv(os.path.join(const.RESULT_PATH, '20180911_psm_add_distance_vars.csv'), index=str)

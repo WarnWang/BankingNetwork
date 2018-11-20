@@ -30,5 +30,6 @@ if __name__ == '__main__':
     branch_df.loc[:, const.FIPS] = branch_df.apply(lambda x: '{:02d}{:03d}'.format(int(x[const.FIPS_STATE_CODE]),
                                                                                    int(x[const.FIPS_COUNTY_CODE])),
                                                    axis=1)
-    keep_col_list = [const.COMMERCIAL_RSSD9364, const.COMMERCIAL_RSSD9001, const.YEAR_MERGE, const.FIPS, const.BRANCH_ID_NUM]
+    keep_col_list = [const.COMMERCIAL_RSSD9364, const.COMMERCIAL_RSSD9001, const.YEAR_MERGE, const.FIPS,
+                     const.BRANCH_ID_NUM]
     branch_df[keep_col_list].to_pickle(os.path.join(const.TEMP_PATH, '20180910_bank_branch_info.pkl'))
