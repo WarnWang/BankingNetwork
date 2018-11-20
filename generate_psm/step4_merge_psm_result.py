@@ -30,7 +30,7 @@ if __name__ == '__main__':
     merged_psm_data_df = pd.merge(data_df, psm_result, how='right',
                                   on=['{}_{}'.format(const.ACQUIRER, const.LINK_TABLE_RSSD9001),
                                       '{}_{}'.format(const.TARGET, const.LINK_TABLE_RSSD9001),
-                                      const.YEAR, const.QUARTER])
+                                      const.YEAR_MERGE, const.QUARTER])
 
     merged_psm_data_df.to_pickle(os.path.join(const.TEMP_PATH, '20171216_merged_psm_data_file.pkl'))
     merged_psm_data_df.to_csv(os.path.join(const.RESULT_PATH, '20171216_merged_psm_data_file.csv'), index=False,

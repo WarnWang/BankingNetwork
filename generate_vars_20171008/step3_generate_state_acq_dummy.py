@@ -17,11 +17,11 @@ df['year'] = df.year.apply(int)
 
 acq_df = pd.read_excel(os.path.join(const.DATA_PATH, '20171008_SDC_bank_merger_state.xlsx'))
 
-acq_df = acq_df[[const.YEAR, 'Acquirer_State_abbr', 'Target_State_abbr']]
+acq_df = acq_df[[const.YEAR_MERGE, 'Acquirer_State_abbr', 'Target_State_abbr']]
 
 acq_df = acq_df.rename(index=str, columns={"Acquirer_State_abbr": 'acq',
                                            'Target_State_abbr': 'tgt',
-                                           const.YEAR: 'year'}).drop_duplicates()
+                                           const.YEAR_MERGE: 'year'}).drop_duplicates()
 
 acq_df.loc[:, 'acq_state_acquiring_tar_state_dummy'] = 1
 

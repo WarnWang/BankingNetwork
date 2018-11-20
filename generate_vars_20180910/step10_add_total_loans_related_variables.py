@@ -28,8 +28,8 @@ TOTAL_LOANS = ['BHCP2125', 'BHCK5524', 'BHCK5525', 'BHCK5526', 'BHCK2122', 'BHCP
 def generate_2015_2016_data(tmp_df):
     result_df = tmp_df.copy()
     for year in [2014, 2015]:
-        tmp_sub_df = tmp_df[tmp_df[const.YEAR] == 2014].copy()
-        tmp_sub_df.loc[:, const.YEAR] = year
+        tmp_sub_df = tmp_df[tmp_df[const.YEAR_MERGE] == 2014].copy()
+        tmp_sub_df.loc[:, const.YEAR_MERGE] = year
         result_df = result_df.append(tmp_sub_df, ignore_index=True, sort=False)
 
     return result_df
@@ -67,12 +67,12 @@ if __name__ == '__main__':
                 rename_dict['{}_{}'.format(prefix, suffix)] = '{}_{}_{}'.format(prefix, suffix, i + 1)
 
         for id_key in [const.COMMERCIAL_RSSD9001, const.COMMERCIAL_RSSD9364]:
-            bhcf_tmp_sub_df = bhcf_data_df[[id_key, const.YEAR, total_loan_key]].dropna(how='any')
-            bhcf_tmp_sub_sum_df = bhcf_tmp_sub_df.groupby([id_key, const.YEAR]).sum().reset_index(drop=False)
+            bhcf_tmp_sub_df = bhcf_data_df[[id_key, const.YEAR_MERGE, total_loan_key]].dropna(how='any')
+            bhcf_tmp_sub_sum_df = bhcf_tmp_sub_df.groupby([id_key, const.YEAR_MERGE]).sum().reset_index(drop=False)
             bhcf_sub_df = bhcf_sub_df.append(bhcf_tmp_sub_sum_df.rename(
                 index=str, columns={id_key: const.COMMERCIAL_RSSD9001}), ignore_index=True)
 
-        bhcf_sub_df = bhcf_sub_df.drop_duplicates(subset=[const.COMMERCIAL_RSSD9001, const.YEAR], keep='first')
+        bhcf_sub_df = bhcf_sub_df.drop_duplicates(subset=[const.COMMERCIAL_RSSD9001, const.YEAR_MERGE], keep='first')
         bhcf_sub_df = bhcf_sub_df.rename(index=str, columns={total_loan_key: const.TOTAL_LOAN})
 
         # prepare for acq or tar merge
@@ -86,10 +86,10 @@ if __name__ == '__main__':
             match_key = '{}_{}'.format(prefix, const.LINK_TABLE_RSSD9001)
             bhcf_rename_dict = {const.COMMERCIAL_RSSD9001: match_key}
             for data_key in bhcf_sub_add_chg_df_full.keys():
-                if data_key not in {const.YEAR, const.COMMERCIAL_RSSD9001}:
+                if data_key not in {const.YEAR_MERGE, const.COMMERCIAL_RSSD9001}:
                     bhcf_rename_dict[data_key] = '{}_{}'.format(prefix, data_key)
             data_to_merge = bhcf_sub_add_chg_df_full.rename(index=str, columns=bhcf_rename_dict)
-            data_df = data_df.merge(data_to_merge, on=[match_key, const.YEAR], how='left')
+            data_df = data_df.merge(data_to_merge, on=[match_key, const.YEAR_MERGE], how='left')
 
         # prepare for acq tar aggregate match
         acq_total_loan_df = bhcf_sub_df.rename(index=str, columns={const.COMMERCIAL_RSSD9001: ACQ_9001,
@@ -100,11 +100,11 @@ if __name__ == '__main__':
         tar_total_loan_df = bhcf_sub_df.rename(index=str, columns={const.COMMERCIAL_RSSD9001: TAR_9001,
                                                                    const.TOTAL_LOAN: '{}_{}'.format(const.TAR,
                                                                                                     const.TOTAL_LOAN)})
-        acq_tar_tl_df = acq_tl_df.merge(tar_total_loan_df, on=[TAR_9001, const.YEAR], how='left')
+        acq_tar_tl_df = acq_tl_df.merge(tar_total_loan_df, on=[TAR_9001, const.YEAR_MERGE], how='left')
 
         acq_tar_tl_key = '{}_{}'.format(const.ACQ_TAR, const.TOTAL_LOAN)
         acq_tar_tl_df.loc[:, acq_tar_tl_key] = acq_tar_tl_df.apply(add_two_total_loan, axis=1)
-        valid_at_tl_df = acq_tar_tl_df[[ACQ_9001, TAR_9001, const.YEAR, acq_tar_tl_key]].dropna(how='any')
+        valid_at_tl_df = acq_tar_tl_df[[ACQ_9001, TAR_9001, const.YEAR_MERGE, acq_tar_tl_key]].dropna(how='any')
 
         acq_tar_add_change = partial(add_delta_change_group_change, data_key=acq_tar_tl_key)
         acq_tar_groups = valid_at_tl_df.groupby([ACQ_9001, TAR_9001])
@@ -113,8 +113,8 @@ if __name__ == '__main__':
         acq_tar_chg_df = pd.concat(acq_tar_chg_dfs, ignore_index=True, sort=False)
         acq_tar_chg_df = generate_2015_2016_data(acq_tar_chg_df)
 
-        data_df = data_df.merge(acq_tar_chg_df, on=[ACQ_9001, TAR_9001, const.YEAR], how='left').drop_duplicates(
-            subset=['Acq_CUSIP', 'Tar_CUSIP', const.YEAR])
+        data_df = data_df.merge(acq_tar_chg_df, on=[ACQ_9001, TAR_9001, const.YEAR_MERGE], how='left').drop_duplicates(
+            subset=['Acq_CUSIP', 'Tar_CUSIP', const.YEAR_MERGE])
         data_df = data_df.rename(index=str, columns=rename_dict)
 
     data_df.to_pickle(os.path.join(const.TEMP_PATH, '20180924_third_part_concise_3018_add_sbl_tl.pkl'))

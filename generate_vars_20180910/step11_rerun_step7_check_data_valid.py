@@ -20,15 +20,15 @@ from generate_vars_20180910.step10_add_total_loans_related_variables import gene
 
 
 def fill_all_df(sub_df):
-    min_year = sub_df[const.YEAR].min()
-    max_year = sub_df[const.YEAR].max()
+    min_year = sub_df[const.YEAR_MERGE].min()
+    max_year = sub_df[const.YEAR_MERGE].max()
 
     year_set = set(range(min_year, max_year + 1))
-    not_in_set = year_set.difference(sub_df[const.YEAR])
+    not_in_set = year_set.difference(sub_df[const.YEAR_MERGE])
     for year in not_in_set:
-        sub_df = sub_df.append({const.YEAR: year}, ignore_index=True)
+        sub_df = sub_df.append({const.YEAR_MERGE: year}, ignore_index=True)
 
-    result_df = sub_df.sort_values(by=const.YEAR, ascending=True).fillna(method='ffill')
+    result_df = sub_df.sort_values(by=const.YEAR_MERGE, ascending=True).fillna(method='ffill')
     return result_df
 
 
@@ -40,7 +40,7 @@ if __name__ == '__main__':
 
     bhc_save_path = os.path.join(const.DATA_PATH, 'bhc_csv_all_yearly')
     bhcf_data_df = pd.read_pickle(os.path.join(bhc_save_path, '1986_2014_all_bhcf_data.pkl'))
-    bhcf_data_df_useful = bhcf_data_df[[const.COMMERCIAL_RSSD9001, const.YEAR, 'RSSD9150', 'RSSD9210', 'RSSD9220',
+    bhcf_data_df_useful = bhcf_data_df[[const.COMMERCIAL_RSSD9001, const.YEAR_MERGE, 'RSSD9150', 'RSSD9210', 'RSSD9220',
                                         'RSSD9130']].rename(index=str, columns={'RSSD9150': 'sumd9150',
                                                                                 'RSSD9210': 'sumd9210',
                                                                                 'RSSD9220': 'ZIPBR_SUMD9220',
@@ -51,8 +51,8 @@ if __name__ == '__main__':
     for key in [const.FIPS_STATE_CODE, const.FIPS_COUNTY_CODE, 'ZIPBR_SUMD9220', const.COMMERCIAL_RSSD9001]:
         bhcf_data_df_useful.loc[:, key] = bhcf_data_df_useful[key].dropna().apply(format_str)
     merged_headquarter = headquarter_df.append(bhcf_data_df_useful, ignore_index=True, sort=False).drop_duplicates(
-        subset=[const.COMMERCIAL_RSSD9001, const.YEAR], keep='last')
-    merged_headquarter_group = merged_headquarter.groupby([const.COMMERCIAL_RSSD9001, const.YEAR])
+        subset=[const.COMMERCIAL_RSSD9001, const.YEAR_MERGE], keep='last')
+    merged_headquarter_group = merged_headquarter.groupby([const.COMMERCIAL_RSSD9001, const.YEAR_MERGE])
     merged_headquarter_dfs = [df for _, df in merged_headquarter_group]
     pool = multiprocessing.Pool(38)
     fillna_hq_dfs = pool.map(fill_all_df, merged_headquarter_dfs)
@@ -82,7 +82,7 @@ if __name__ == '__main__':
         # first use 9001 to match
         match_key = '{}_{}'.format(prefix, const.COMMERCIAL_ID)
         hq_match_df_9001 = hq_match_df.rename(columns={const.COMMERCIAL_RSSD9001: match_key}, index=str)
-        data_df = data_df.merge(hq_match_df_9001, on=[match_key, const.YEAR], how='left')
+        data_df = data_df.merge(hq_match_df_9001, on=[match_key, const.YEAR_MERGE], how='left')
 
     data_df.to_pickle(os.path.join(const.TEMP_PATH, '20180919_psm_append_address_related_info.pkl'))
     data_df.to_csv(os.path.join(const.RESULT_PATH, '20180919_psm_append_address_related_info.csv'), index=False)

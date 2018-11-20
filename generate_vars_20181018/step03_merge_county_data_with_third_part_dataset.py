@@ -26,9 +26,9 @@ if __name__ == '__main__':
     county_df: DataFrame = pd.read_pickle(os.path.join(const.TEMP_PATH, '20181018_county_level_data_rotated_data.pkl'))
 
     for tag in [const.TAR, const.ACQ]:
-        rename_dict = {key: '{}_{}'.format(tag, key) for key in county_df.keys() if key != const.YEAR}
+        rename_dict = {key: '{}_{}'.format(tag, key) for key in county_df.keys() if key != const.YEAR_MERGE}
         county_df_rename: DataFrame = county_df.rename(index=str, columns=rename_dict)
-        data_df = data_df.merge(county_df_rename, on=[const.YEAR, '{}_{}'.format(tag, const.FIPS)], how='left')
+        data_df = data_df.merge(county_df_rename, on=[const.YEAR_MERGE, '{}_{}'.format(tag, const.FIPS)], how='left')
 
     data_df.to_pickle(os.path.join(const.TEMP_PATH, '20181019_third_part_concise_3018_append_county_data.pkl'))
     data_df.to_stata(os.path.join(const.RESULT_PATH, '20181019_third_part_concise_3018_append_county_data.dta'),

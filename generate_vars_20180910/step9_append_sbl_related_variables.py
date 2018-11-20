@@ -22,7 +22,7 @@ from constants import Constants as const
 
 
 def add_delta_change_group_change(tmp_df, data_key):
-    result_df = tmp_df.copy().sort_values(by=const.YEAR, ascending=True)
+    result_df = tmp_df.copy().sort_values(by=const.YEAR_MERGE, ascending=True)
     result_df.loc[:, '{}_chg'.format(data_key)] = result_df[data_key].diff(periods=1)
     result_df.loc[:, '{}_pctchg'.format(data_key)] = result_df[data_key].pct_change(periods=1)
     return result_df
@@ -81,7 +81,7 @@ if __name__ == '__main__':
 
         merged_call_df = pd.concat(call_annual_dfs, ignore_index=True, sort=False)
         merged_call_df = merged_call_df.drop_duplicates(subset=[const.COMMERCIAL_RSSD9001], keep='last')
-        merged_call_df.loc[:, const.YEAR] = year
+        merged_call_df.loc[:, const.YEAR_MERGE] = year
 
         call_dfs.append(merged_call_df)
 
@@ -99,11 +99,11 @@ if __name__ == '__main__':
     sbl_df_append_sml.to_pickle(os.path.join(const.TEMP_PATH, '20180918_small_business_append_growth_93_14.pkl'))
 
     # extend variables to year 2016
-    call_df_2014 = sbl_df_append_sml[sbl_df_append_sml[const.YEAR] == 2014]
+    call_df_2014 = sbl_df_append_sml[sbl_df_append_sml[const.YEAR_MERGE] == 2014]
     call_df_2015 = call_df_2014.copy()
     call_df_2016 = call_df_2014.copy()
-    call_df_2015.loc[:, const.YEAR] = 2015
-    call_df_2016.loc[:, const.YEAR] = 2016
+    call_df_2015.loc[:, const.YEAR_MERGE] = 2015
+    call_df_2016.loc[:, const.YEAR_MERGE] = 2016
     sbl_df_append_sml = sbl_df_append_sml.append(call_df_2015, ignore_index=True)
     sbl_df_append_sml = sbl_df_append_sml.append(call_df_2016, ignore_index=True)
     sbl_df_append_sml = sbl_df_append_sml[sbl_df_append_sml[const.COMMERCIAL_RSSD9001] != '0']
@@ -115,14 +115,14 @@ if __name__ == '__main__':
 
         common_rename_dict = {}
         for key in sbl_df_append_sml.keys():
-            if key not in {const.YEAR, const.COMMERCIAL_RSSD9001, const.COMMERCIAL_RSSD9364}:
+            if key not in {const.YEAR_MERGE, const.COMMERCIAL_RSSD9001, const.COMMERCIAL_RSSD9364}:
                 common_rename_dict[key] = '{}_{}'.format(prefix, key)
 
         # first use rssd 9001
         rename_dict_9001 = common_rename_dict.copy()
         rename_dict_9001[const.COMMERCIAL_RSSD9001] = match_id
         match_data_9001 = sbl_df_append_sml.rename(index=str, columns=rename_dict_9001)
-        data_df = data_df.merge(match_data_9001, on=[match_id, const.YEAR], how='left')
+        data_df = data_df.merge(match_data_9001, on=[match_id, const.YEAR_MERGE], how='left')
 
     sbl_keys = {i: i.replace(const.SMALL_BUSINESS_LOAN, const.SB_LOAN) for i in data_df.keys() if
                 const.SMALL_BUSINESS_LOAN in i}
@@ -131,7 +131,7 @@ if __name__ == '__main__':
 
     pure_sbl_df = sbl_df_append_sml.drop(['RCON5571_chg', 'RCON5571_pctchg'], axis=1).rename(
         index=str, columns={const.SMALL_BUSINESS_LOAN: const.SB_LOAN})
-    pure_sbl_df = pure_sbl_df[~pure_sbl_df[const.YEAR].isin({2015, 2016})]
+    pure_sbl_df = pure_sbl_df[~pure_sbl_df[const.YEAR_MERGE].isin({2015, 2016})]
     acq_tar_ids = data_df[[ACQ_9001, TAR_9001, 'Acq_CUSIP', 'Tar_CUSIP']].copy().dropna(
         subset=[ACQ_9001, TAR_9001], how='any').drop_duplicates(subset=['Acq_CUSIP', 'Tar_CUSIP'])
     acq_sml_df = pure_sbl_df.rename(index=str, columns={const.COMMERCIAL_RSSD9001: ACQ_9001,
@@ -140,11 +140,11 @@ if __name__ == '__main__':
 
     tar_sml_df = pure_sbl_df.rename(index=str, columns={const.COMMERCIAL_RSSD9001: TAR_9001,
                                                         const.SB_LOAN: '{}_{}'.format(const.TAR, const.SB_LOAN)})
-    acq_tar_sbl_id = acq_sml_id.merge(tar_sml_df, on=[TAR_9001, const.YEAR], how='left')
+    acq_tar_sbl_id = acq_sml_id.merge(tar_sml_df, on=[TAR_9001, const.YEAR_MERGE], how='left')
 
     acq_tar_sbl_key = '{}_{}'.format(const.ACQ_TAR, const.SB_LOAN)
     acq_tar_sbl_id.loc[:, acq_tar_sbl_key] = acq_tar_sbl_id.apply(add_two_sb_loan, axis=1)
-    valid_at_sbl_df = acq_tar_sbl_id[[ACQ_9001, TAR_9001, const.YEAR, acq_tar_sbl_key]].dropna(how='any')
+    valid_at_sbl_df = acq_tar_sbl_id[[ACQ_9001, TAR_9001, const.YEAR_MERGE, acq_tar_sbl_key]].dropna(how='any')
 
     acq_tar_add_change = partial(add_delta_change_group_change, data_key=acq_tar_sbl_key)
     acq_tar_groups = valid_at_sbl_df.groupby([ACQ_9001, TAR_9001])
@@ -153,10 +153,10 @@ if __name__ == '__main__':
     acq_tar_chg_dfs = p.map(acq_tar_add_change, acq_tar_dfs)
     acq_tar_chg_df = pd.concat(acq_tar_chg_dfs, ignore_index=True, sort=False)
     for year in [2015, 2016]:
-        acq_tar_chg_sub_df = acq_tar_chg_df[acq_tar_chg_df[const.YEAR] == 2014].copy()
-        acq_tar_chg_sub_df.loc[:, const.YEAR] = year
+        acq_tar_chg_sub_df = acq_tar_chg_df[acq_tar_chg_df[const.YEAR_MERGE] == 2014].copy()
+        acq_tar_chg_sub_df.loc[:, const.YEAR_MERGE] = year
         acq_tar_chg_df = acq_tar_chg_df.append(acq_tar_chg_sub_df, ignore_index=True)
 
-    data_df_add_acq_tar = data_df.merge(acq_tar_chg_df, on=[ACQ_9001, TAR_9001, const.YEAR], how='left')
-    data_df_add_acq_tar = data_df_add_acq_tar.drop_duplicates(subset=['Acq_CUSIP', 'Tar_CUSIP', const.YEAR])
+    data_df_add_acq_tar = data_df.merge(acq_tar_chg_df, on=[ACQ_9001, TAR_9001, const.YEAR_MERGE], how='left')
+    data_df_add_acq_tar = data_df_add_acq_tar.drop_duplicates(subset=['Acq_CUSIP', 'Tar_CUSIP', const.YEAR_MERGE])
     data_df_add_acq_tar.to_pickle(os.path.join(const.TEMP_PATH, '20180918_third_part_concise_3018_add_acq_tar_sbl.pkl'))

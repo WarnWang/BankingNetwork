@@ -79,7 +79,7 @@ def merge_id_with_link(id_df, rssd9364_data_df, rssd9001_data_df):
 
 
 def get_pscore_match(df):
-    year = df[const.YEAR].iloc[0]
+    year = df[const.YEAR_MERGE].iloc[0]
     quarter = df[const.QUARTER].iloc[0]
 
     print('{} Start to handle {} - {} data'.format(datetime.datetime.now(), year, quarter))
@@ -226,7 +226,7 @@ def get_pscore_match(df):
         dfs.append(temp_df)
 
     generated_index_file = pd.concat(dfs, axis=0, ignore_index=True)
-    generated_index_file.loc[:, const.YEAR] = year
+    generated_index_file.loc[:, const.YEAR_MERGE] = year
     generated_index_file.loc[:, const.QUARTER] = quarter
 
     generated_index_file.to_pickle(
@@ -243,7 +243,7 @@ def get_pscore_match(df):
 
 if __name__ == '__main__':
     data_df = pd.read_pickle(os.path.join(os.path.join(const.TEMP_PATH, '20170831_CAR_useful_col.pkl')))
-    groups = data_df.groupby([const.YEAR, const.QUARTER])
+    groups = data_df.groupby([const.YEAR_MERGE, const.QUARTER])
 
     dfs = [tmp_df for _, tmp_df in groups]
 

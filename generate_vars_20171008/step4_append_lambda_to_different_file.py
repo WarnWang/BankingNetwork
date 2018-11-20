@@ -14,7 +14,7 @@ from constants import Constants as const
 
 lambda_df = pd.read_stata(os.path.join(const.RESULT_PATH, '20171008_state_year_append_lambda.dta'))
 lambda_df = lambda_df[['year', 'acq', 'tgt', 'lambda']].rename(
-    index=str, columns={'year': const.YEAR, 'acq': 'Acq_State_abbr', 'tgt': 'Target_State_abbr'}).drop_duplicates()
+    index=str, columns={'year': const.YEAR_MERGE, 'acq': 'Acq_State_abbr', 'tgt': 'Target_State_abbr'}).drop_duplicates()
 
 f_list = ['20170906_CAR_Control_Ind_IV12_DirExe_Stata_CUSIPnum_3Part_DeleteMissing_IVtest_drop.dta',
           '20170906_CAR_Control_Ind_IV12_DirExe_Stata_CUSIPnum_3Part_IVtest2_drop.dta',
@@ -28,7 +28,7 @@ for f_name in f_list:
     print(df.shape)
     print(lambda_df.shape)
 
-    merged_df = pd.merge(df, lambda_df, how='left', on=[const.YEAR, 'Acq_State_abbr', 'Target_State_abbr'])
+    merged_df = pd.merge(df, lambda_df, how='left', on=[const.YEAR_MERGE, 'Acq_State_abbr', 'Target_State_abbr'])
     print(merged_df.shape)
 
     merged_df.to_pickle(os.path.join(const.TEMP_PATH, '{}.pkl'.format(new_name)))

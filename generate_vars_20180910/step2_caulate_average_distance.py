@@ -41,7 +41,7 @@ def calculate_hq_branch_total_distance(hq_id, tar_id, query_year=1990, hq_info=N
         return np.nan
 
     elif hq_fips_info.shape[0] > 1:
-        tmp_sub_df = hq_fips_info[hq_fips_info[const.YEAR] == query_year]
+        tmp_sub_df = hq_fips_info[hq_fips_info[const.YEAR_MERGE] == query_year]
         if tmp_sub_df.empty:
             hq_fips = hq_fips_info[const.FIPS].iloc[0]
         else:
@@ -50,7 +50,7 @@ def calculate_hq_branch_total_distance(hq_id, tar_id, query_year=1990, hq_info=N
         hq_fips = hq_fips_info[const.FIPS].iloc[0]
 
     sub_branch_fips = sub_branch_info[(sub_branch_info[const.COMMERCIAL_RSSD9001] == tar_id)
-                                      & (sub_branch_info[const.YEAR] == query_year)]
+                                      & (sub_branch_info[const.YEAR_MERGE] == query_year)]
 
     td = 0
 
@@ -76,8 +76,8 @@ if __name__ == '__main__':
 
     headquarter_info = branch_info[branch_info[const.BRANCH_ID_NUM] == 0]
     only_branch_info = branch_info[branch_info[const.BRANCH_ID_NUM] != 0]
-    only_branch_count = only_branch_info[[const.YEAR, const.COMMERCIAL_RSSD9001, const.BRANCH_ID_NUM]].groupby(
-        [const.YEAR, const.COMMERCIAL_RSSD9001]).count().reset_index(drop=False).rename(
+    only_branch_count = only_branch_info[[const.YEAR_MERGE, const.COMMERCIAL_RSSD9001, const.BRANCH_ID_NUM]].groupby(
+        [const.YEAR_MERGE, const.COMMERCIAL_RSSD9001]).count().reset_index(drop=False).rename(
         index=str, columns={const.BRANCH_ID_NUM: const.BRANCH_NUM})
 
     for prefix in [const.ACQUIRER, const.TARGET]:
@@ -87,7 +87,7 @@ if __name__ == '__main__':
             const.BRANCH_NUM: branch_key,
             const.COMMERCIAL_RSSD9001: merge_key
         })
-        data_df = data_df.merge(tmp_branch_count, on=[const.YEAR, merge_key], how='left')
+        data_df = data_df.merge(tmp_branch_count, on=[const.YEAR_MERGE, merge_key], how='left')
         data_df.loc[:, branch_key] = data_df[branch_key].fillna(0)
 
     for key in [const.ACQHQ_TARBR_AVG_DISTANCE, const.ACQHQ_TARBR_TOTAL_DISTANCE, const.TARHQ_ACQBR_AVG_DISTANCE,
@@ -100,7 +100,7 @@ if __name__ == '__main__':
         tar_id = data_df.loc[i, '{}_{}'.format(const.TARGET, const.COMMERCIAL_ID)]
         acq_branch_num = data_df.loc[i, '{}_{}'.format(const.ACQUIRER, const.BRANCH_NUM)]
         tar_branch_num = data_df.loc[i, '{}_{}'.format(const.TARGET, const.BRANCH_NUM)]
-        year = data_df.loc[i, const.YEAR]
+        year = data_df.loc[i, const.YEAR_MERGE]
 
         if acq_branch_num >= 1:
             total_distance = calculate_hq_branch_total_distance(tar_id, acq_id, year, hq_info=headquarter_info,

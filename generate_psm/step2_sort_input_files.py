@@ -15,7 +15,7 @@ from constants import Constants as const
 
 df = pd.read_excel(os.path.join(const.DATA_PATH, '20170829_CAR_Control_Ind_IV12_DirExe.xlsx'))
 
-useful_column = [const.ANNOUNCED_DATE, const.YEAR]
+useful_column = [const.ANNOUNCED_DATE, const.YEAR_MERGE]
 
 for tag in [const.ACQUIRER, const.TARGET]:
     df.loc[:, '{}_{}'.format(tag, const.REAL)] = 1

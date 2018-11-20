@@ -39,39 +39,39 @@ if __name__ == '__main__':
 
     bhcf_data_df = pd.read_pickle(os.path.join(bhc_save_path, '1986_2014_all_bhcf_data.pkl'))
     bhcf_data_df.loc[:, const.FIPS] = bhcf_data_df['RSSD9210'] * 1000 + bhcf_data_df['RSSD9150']
-    bhcf_data_df_valid = bhcf_data_df[[const.COMMERCIAL_RSSD9001, const.YEAR, const.FIPS]].rename(
+    bhcf_data_df_valid = bhcf_data_df[[const.COMMERCIAL_RSSD9001, const.YEAR_MERGE, const.FIPS]].rename(
         columns={const.FIPS: '{}_{}'.format(const.TAR, const.FIPS), const.COMMERCIAL_RSSD9001: TAR_9001})
-    data_df_append_tar_fips1 = data_df.merge(bhcf_data_df_valid, on=[const.YEAR, TAR_9001], how='left')
+    data_df_append_tar_fips1 = data_df.merge(bhcf_data_df_valid, on=[const.YEAR_MERGE, TAR_9001], how='left')
 
-    bhcf_data_df_acq = bhcf_data_df[[const.COMMERCIAL_RSSD9001, const.YEAR, const.FIPS]].rename(
+    bhcf_data_df_acq = bhcf_data_df[[const.COMMERCIAL_RSSD9001, const.YEAR_MERGE, const.FIPS]].rename(
         columns={const.FIPS: '{}_{}'.format(const.ACQ, const.FIPS), const.COMMERCIAL_RSSD9001: ACQ_9001})
-    data_df_append_tar_fips1 = data_df_append_tar_fips1.merge(bhcf_data_df_acq, on=[const.YEAR, ACQ_9001], how='left')
+    data_df_append_tar_fips1 = data_df_append_tar_fips1.merge(bhcf_data_df_acq, on=[const.YEAR_MERGE, ACQ_9001], how='left')
 
     # try call report
     call_dfs = []
     for year in range(1976, 2015):
         call_df = pd.read_pickle(os.path.join(CALL_REPORT_PATH, 'call{}.pkl'.format(year)))
         call_df.loc[:, const.FIPS] = call_df['RSSD9210'] * 1000 + call_df['RSSD9150']
-        call_df.loc[:, const.YEAR] = year
-        call_df_valid: DataFrame = call_df[[const.COMMERCIAL_RSSD9001, const.YEAR, const.FIPS]].rename(
+        call_df.loc[:, const.YEAR_MERGE] = year
+        call_df_valid: DataFrame = call_df[[const.COMMERCIAL_RSSD9001, const.YEAR_MERGE, const.FIPS]].rename(
             columns={const.FIPS: '{}_{}'.format(const.TAR, const.FIPS), const.COMMERCIAL_RSSD9001: TAR_9001})
         call_dfs.append(call_df_valid)
 
     for year in [2015, 2016]:
         tmp_call_df: DataFrame = call_dfs[-1]
-        tmp_call_df.loc[:, const.YEAR] = year
+        tmp_call_df.loc[:, const.YEAR_MERGE] = year
         call_dfs.append(tmp_call_df)
 
     merged_call_df: DataFrame = pd.concat(call_dfs, ignore_index=True, sort=False)
     merged_call_df.loc[:, TAR_9001] = merged_call_df[TAR_9001].apply(lambda x: str(int(x)))
-    merged_call_df: DataFrame = merged_call_df.drop_duplicates(subset=[TAR_9001, const.YEAR])
-    data_df_append_tar_fips = data_df.merge(merged_call_df, on=[const.YEAR, TAR_9001], how='left')
+    merged_call_df: DataFrame = merged_call_df.drop_duplicates(subset=[TAR_9001, const.YEAR_MERGE])
+    data_df_append_tar_fips = data_df.merge(merged_call_df, on=[const.YEAR_MERGE, TAR_9001], how='left')
 
     merged_call_df_acq = merged_call_df.rename(index=str,
                                                columns={TAR_9001: ACQ_9001,
                                                         '{}_{}'.format(const.TAR, const.FIPS):
                                                             '{}_{}'.format(const.ACQ, const.FIPS)})
-    data_df_append_tar_fips = data_df_append_tar_fips.merge(merged_call_df_acq, on=[const.YEAR, ACQ_9001], how='left')
+    data_df_append_tar_fips = data_df_append_tar_fips.merge(merged_call_df_acq, on=[const.YEAR_MERGE, ACQ_9001], how='left')
 
     fips_seris = data_df_append_tar_fips1['Tar_FIPS'].fillna(data_df_append_tar_fips['Tar_FIPS'])
     data_df_append_tar_fips.loc[:, 'Tar_FIPS'] = fips_seris

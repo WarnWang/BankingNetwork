@@ -24,7 +24,7 @@ if __name__ == '__main__':
 
     bank_branch_df = pd.read_pickle(os.path.join(const.TEMP_PATH, '20180910_bank_branch_info.pkl'))
     hq_fips_df = bank_branch_df[bank_branch_df[const.BRANCH_ID_NUM] == 0].copy().drop_duplicates(
-        subset=[const.COMMERCIAL_RSSD9001, const.YEAR])
+        subset=[const.COMMERCIAL_RSSD9001, const.YEAR_MERGE])
     hq_fips_df.loc[:, const.FIPS_STATE_CODE] = hq_fips_df[const.FIPS].apply(lambda x: x[:2])
 
     state_fips_df = pd.read_csv(os.path.join(const.DATA_PATH, 'state_fips.csv'), sep='|',
@@ -43,12 +43,12 @@ if __name__ == '__main__':
         tmp_hq_df_9001 = tmp_hq_df.drop([const.COMMERCIAL_RSSD9364], axis=1).rename(
             index=str, columns={const.COMMERCIAL_RSSD9001: match_key}
         )
-        data_df_9001 = data_df.merge(tmp_hq_df_9001, on=[match_key, const.YEAR], how='left')
+        data_df_9001 = data_df.merge(tmp_hq_df_9001, on=[match_key, const.YEAR_MERGE], how='left')
 
         tmp_hq_df_9364 = tmp_hq_df.drop([const.COMMERCIAL_RSSD9001], axis=1).rename(
             index=str, columns={const.COMMERCIAL_RSSD9364: match_key}
         ).dropna(how='any')
-        data_df_9364 = data_df.merge(tmp_hq_df_9364, on=[match_key, const.YEAR], how='left')
+        data_df_9364 = data_df.merge(tmp_hq_df_9364, on=[match_key, const.YEAR_MERGE], how='left')
 
         data_df.loc[:, new_key] = data_df_9001[new_key].fillna(data_df_9364[new_key])
 

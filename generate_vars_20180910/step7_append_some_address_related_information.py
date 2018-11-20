@@ -19,7 +19,7 @@ from constants import Constants as const
 if __name__ == '__main__':
     data_path = '/home/zigan/Documents/wangyouan/research/BankingNetwork/yuluping/overlap'
     branch_df = pd.read_csv(os.path.join(data_path, '20170816_ross_martin_fdic_76-16.csv')).rename(
-        index=str, columns={'RSSDID_RSSD9001': const.COMMERCIAL_RSSD9001, 'YEAR': const.YEAR,
+        index=str, columns={'RSSDID_RSSD9001': const.COMMERCIAL_RSSD9001, 'YEAR': const.YEAR_MERGE,
                             'STNUMBR_SUMD9210': const.FIPS_STATE_CODE, 'CNTYNUMB_SUMD9150': const.FIPS_COUNTY_CODE,
                             'RSSDHCR_RSSD9364': const.COMMERCIAL_RSSD9364})
 
@@ -73,13 +73,13 @@ if __name__ == '__main__':
         match_key = '{}_{}'.format(prefix, const.COMMERCIAL_ID)
         hq_match_df_9001 = hq_match_df.drop([const.COMMERCIAL_RSSD9364], axis=1).rename(columns={
             const.COMMERCIAL_RSSD9001: match_key}, index=str)
-        matched_df_9001 = data_df.merge(hq_match_df_9001, on=[match_key, const.YEAR], how='left')
+        matched_df_9001 = data_df.merge(hq_match_df_9001, on=[match_key, const.YEAR_MERGE], how='left')
 
         # then use 9364 to match
         match_key = '{}_{}'.format(prefix, const.COMMERCIAL_ID)
         hq_match_df_9364 = hq_match_df.drop([const.COMMERCIAL_RSSD9001], axis=1).rename(columns={
             const.COMMERCIAL_RSSD9364: match_key}, index=str)
-        matched_df_9364 = data_df.merge(hq_match_df_9364, on=[match_key, const.YEAR], how='left')
+        matched_df_9364 = data_df.merge(hq_match_df_9364, on=[match_key, const.YEAR_MERGE], how='left')
 
         for key in rename_dict.values():
             data_df.loc[:, key] = matched_df_9001[key].fillna(matched_df_9364[key])

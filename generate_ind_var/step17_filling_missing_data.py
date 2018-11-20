@@ -33,13 +33,13 @@ def filling_missing_info(row, key):
     if key in acq_filed_dict:
         cusip = row[const.ACQUIRER_CUSIP]
         ticker = row[const.ACQUIRER_TICKER]
-        year = row[const.YEAR]
+        year = row[const.YEAR_MERGE]
         field_dict = acq_filed_dict
 
     else:
         cusip = row[const.TARGET_TICKER]
         ticker = row[const.TARGET_CUSIP]
-        year = row[const.YEAR]
+        year = row[const.YEAR_MERGE]
         field_dict = tar_field_dict
 
     if hasattr(cusip, 'upper'):
@@ -50,7 +50,7 @@ def filling_missing_info(row, key):
     if hasattr(ticker, 'upper'):
         tmp_df = tmp_df[tmp_df[const.COMPUSTAT_TIC] == ticker]
 
-    tmp_df = tmp_df[tmp_df[const.YEAR] == year]
+    tmp_df = tmp_df[tmp_df[const.YEAR_MERGE] == year]
     if tmp_df.empty:
         return np.nan
 

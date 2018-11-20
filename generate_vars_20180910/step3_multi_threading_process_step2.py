@@ -29,7 +29,7 @@ def match_distance_from_fips(fips_data_df):
     diff_fips_sub_df = fips_data_df[fips_data_df['Acquirer_FIPS'] != fips_data_df['Target_FIPS']].copy()
 
     if not diff_fips_sub_df.empty:
-        data_year = fips_data_df[const.YEAR].iloc[0]
+        data_year = fips_data_df[const.YEAR_MERGE].iloc[0]
         if data_year >= 2010:
             distance_df = pd.read_stata(const.POST2010_DISTANCE_FILE)
         elif data_year >= 2000:
@@ -82,7 +82,7 @@ def calculate_distance_variables(distance_data_df):
 
 
 def constuct_distance_related_variables(distance_data_df):
-    return distance_data_df.groupby([const.YEAR, const.QUARTER, 'Target_id', 'Acquirer_id']).apply(
+    return distance_data_df.groupby([const.YEAR_MERGE, const.QUARTER, 'Target_id', 'Acquirer_id']).apply(
         calculate_distance_variables).reset_index(drop=False)
 
 
@@ -91,7 +91,7 @@ if __name__ == '__main__':
 
     bank_branch_df = pd.read_pickle(os.path.join(const.TEMP_PATH, '20180910_bank_branch_info.pkl'))
 
-    year_list = data_df[const.YEAR].drop_duplicates()
+    year_list = data_df[const.YEAR_MERGE].drop_duplicates()
     quarter_list = data_df[const.QUARTER].drop_duplicates()
 
     distance_tmp_save_path = os.path.join(const.TEMP_PATH, '20180911_distance_match')
@@ -102,18 +102,18 @@ if __name__ == '__main__':
             os.makedirs(dir_path)
 
     distance_dfs = []
-    distance_cal_cols = [const.YEAR, const.QUARTER, '{}_{}'.format(const.TARGET, const.COMMERCIAL_ID),
+    distance_cal_cols = [const.YEAR_MERGE, const.QUARTER, '{}_{}'.format(const.TARGET, const.COMMERCIAL_ID),
                          '{}_{}'.format(const.ACQUIRER, const.COMMERCIAL_ID)]
     data_sub_df = data_df[distance_cal_cols]
 
     for year in year_list:
         for quarter in quarter_list:
             print('Time: {}-{}'.format(year, quarter))
-            tmp_data_df = data_sub_df[(data_sub_df[const.YEAR] == year) & (data_sub_df[const.QUARTER] == quarter)]
+            tmp_data_df = data_sub_df[(data_sub_df[const.YEAR_MERGE] == year) & (data_sub_df[const.QUARTER] == quarter)]
             if tmp_data_df.empty:
                 continue
 
-            tmp_branch_df = bank_branch_df[bank_branch_df[const.YEAR] == year]
+            tmp_branch_df = bank_branch_df[bank_branch_df[const.YEAR_MERGE] == year]
             tmp_save_path = os.path.join(constructed_tmp_save_path,
                                          '{}_{}_constructed_distance.pkl'.format(year, quarter))
 
@@ -168,7 +168,7 @@ if __name__ == '__main__':
     all_distance_df = pd.concat(distance_dfs, ignore_index=True, sort=False)
     all_distance_df.to_pickle(os.path.join(const.TEMP_PATH, '20180911_constructed_distance_variables.pkl'))
 
-    merged_previous_info_df = data_df.merge(all_distance_df, on=[const.YEAR, const.QUARTER, 'Target_id', 'Acquirer_id'],
+    merged_previous_info_df = data_df.merge(all_distance_df, on=[const.YEAR_MERGE, const.QUARTER, 'Target_id', 'Acquirer_id'],
                                             how='left')
     merged_previous_info_df.to_pickle(os.path.join(const.TEMP_PATH, '20180911_psm_add_distance_vars.pkl'))
     merged_previous_info_df.to_csv(os.path.join(const.RESULT_PATH, '20180911_psm_add_distance_vars.csv'), index=str)

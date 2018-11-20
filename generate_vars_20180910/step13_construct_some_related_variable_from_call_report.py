@@ -33,7 +33,7 @@ INTEREST_FROM_RE_LOAN = 'RIAD4011'
 MORTGAGE_BACK_SEC_SUB = 'RCFD0408'
 MORTGAGE_BACK_SEC_SUB2 = 'RCFD0602'
 
-USEFUL_KEYS = [const.COMMERCIAL_RSSD9001, const.COMMERCIAL_RSSD9364, const.YEAR, REAL_ESTATE_LOAN, NON_RESIDENTiAL_PROP,
+USEFUL_KEYS = [const.COMMERCIAL_RSSD9001, const.COMMERCIAL_RSSD9364, const.YEAR_MERGE, REAL_ESTATE_LOAN, NON_RESIDENTiAL_PROP,
                TOTAL_ASSETS, MORTGAGE_BACK_SEC, COM_IND_LOAN, CONSUMER_LOAN, INTEREST_FROM_CI_LOAN,
                INTEREST_FROM_RE_LOAN, MORTGAGE_BACK_SEC_SUB, MORTGAGE_BACK_SEC_SUB2]
 
@@ -41,8 +41,8 @@ USEFUL_KEYS = [const.COMMERCIAL_RSSD9001, const.COMMERCIAL_RSSD9364, const.YEAR,
 def generate_2015_2016_data(tmp_df):
     result_df = tmp_df.copy()
     for year in [2015, 2016]:
-        tmp_sub_df = tmp_df[tmp_df[const.YEAR] == 2014].copy()
-        tmp_sub_df.loc[:, const.YEAR] = year
+        tmp_sub_df = tmp_df[tmp_df[const.YEAR_MERGE] == 2014].copy()
+        tmp_sub_df.loc[:, const.YEAR_MERGE] = year
         result_df = result_df.append(tmp_sub_df, ignore_index=True, sort=False)
 
     return result_df
@@ -57,7 +57,7 @@ if __name__ == '__main__':
 
     for year in range(1976, 2015):
         call_df = pd.read_pickle(os.path.join(call_report_path, 'call{}.pkl'.format(year)))
-        call_df.loc[:, const.YEAR] = year
+        call_df.loc[:, const.YEAR_MERGE] = year
         useful_keys = set(USEFUL_KEYS).intersection(call_df.keys())
 
         call_dfs.append(call_df[useful_keys].copy())
@@ -69,14 +69,14 @@ if __name__ == '__main__':
     for key in [const.COMMERCIAL_RSSD9364, const.COMMERCIAL_RSSD9001]:
         merged_call_df.loc[:, key] = merged_call_df[key].dropna().apply(lambda x: str(int(x)))
     merged_call_df_9001 = merged_call_df.drop([const.COMMERCIAL_RSSD9364], axis=1).dropna(
-        subset=[const.COMMERCIAL_RSSD9001]).groupby([const.COMMERCIAL_RSSD9001, const.YEAR]).sum().reset_index(
+        subset=[const.COMMERCIAL_RSSD9001]).groupby([const.COMMERCIAL_RSSD9001, const.YEAR_MERGE]).sum().reset_index(
         drop=False)
     merged_call_df_9364 = merged_call_df.drop([const.COMMERCIAL_RSSD9001], axis=1).dropna(
-        subset=[const.COMMERCIAL_RSSD9364]).groupby([const.COMMERCIAL_RSSD9364, const.YEAR]).sum().reset_index(
+        subset=[const.COMMERCIAL_RSSD9364]).groupby([const.COMMERCIAL_RSSD9364, const.YEAR_MERGE]).sum().reset_index(
         drop=False).rename(index=str, columns={const.COMMERCIAL_RSSD9364: const.COMMERCIAL_RSSD9001})
     merged_call_df_9364 = merged_call_df_9364[merged_call_df_9364[const.COMMERCIAL_RSSD9001] != '0']
     cdf = merged_call_df_9001.append(merged_call_df_9364, ignore_index=True, sort=False)
-    cdf = cdf.drop_duplicates(subset=[const.COMMERCIAL_RSSD9001, const.YEAR], keep='last')
+    cdf = cdf.drop_duplicates(subset=[const.COMMERCIAL_RSSD9001, const.YEAR_MERGE], keep='last')
     cdf = generate_2015_2016_data(cdf)
 
     cdf.loc[:, const.REAL_ESTATE_LOANS] = (cdf[REAL_ESTATE_LOAN] - cdf[NON_RESIDENTiAL_PROP]) / cdf[TOTAL_ASSETS]
@@ -93,7 +93,7 @@ if __name__ == '__main__':
                       const.CONSUMER_LOANS, const.C_AND_I_LOAN_PROFITABILITY, const.REAL_ESTATE_LOAN_PROFITABILITY,
                       const.PROFITABILITY_RATIO]
     keep_keys = keys_to_attach[:]
-    keep_keys.append(const.YEAR)
+    keep_keys.append(const.YEAR_MERGE)
     keep_keys.append(const.COMMERCIAL_RSSD9001)
     cdf_useful = cdf[keep_keys]
 
@@ -103,7 +103,7 @@ if __name__ == '__main__':
         for data_key in keys_to_attach:
             bhcf_rename_dict[data_key] = '{}_{}'.format(prefix, data_key)
         data_to_merge = cdf_useful.rename(index=str, columns=bhcf_rename_dict)
-        data_df = data_df.merge(data_to_merge, on=[match_key, const.YEAR], how='left')
+        data_df = data_df.merge(data_to_merge, on=[match_key, const.YEAR_MERGE], how='left')
 
     data_df.to_pickle(os.path.join(const.TEMP_PATH, '20181004_third_part_concise_3018_add_some_vars.pkl'))
     data_df = data_df.replace({np.inf: np.nan})

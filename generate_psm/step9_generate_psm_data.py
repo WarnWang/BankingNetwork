@@ -128,7 +128,7 @@ def merge_id_with_link(id_df, rssd9364_data_df, rssd9001_data_df, cov_list):
 
 
 def get_pscore_match(df_to_match):
-    year = df_to_match[const.YEAR].iloc[0]
+    year = df_to_match[const.YEAR_MERGE].iloc[0]
     quarter = df_to_match[const.QUARTER].iloc[0]
 
     tmp_save_file_path = os.path.join(TMP_SAVE_PATH, '{}_{}_data_file.pkl'.format(year, quarter))
@@ -264,7 +264,7 @@ def get_pscore_match(df_to_match):
         dfs.append(temp_df)
 
     generated_index_file = pd.concat(dfs, axis=0, ignore_index=True, sort=False)
-    generated_index_file.loc[:, const.YEAR] = year
+    generated_index_file.loc[:, const.YEAR_MERGE] = year
     generated_index_file.loc[:, const.QUARTER] = quarter
 
     generated_index_file.to_pickle(os.path.join(TMP_SAVE_PATH, '{}_{}_id_file.pkl'.format(year, quarter)))
@@ -282,7 +282,7 @@ if __name__ == '__main__':
     psm_data = pd.read_stata(os.path.join(const.DATA_PATH, '20180908_revision', '20180908_psm_add_missing_rssd.dta'))
     real_psm_data = psm_data[(psm_data['Target_real'] == 1) & (psm_data['Acquirer_real'] == 1)]
 
-    psm_group = real_psm_data.groupby([const.YEAR, const.QUARTER])
+    psm_group = real_psm_data.groupby([const.YEAR_MERGE, const.QUARTER])
 
     result_dfs = []
     for key, sub_df in psm_group:

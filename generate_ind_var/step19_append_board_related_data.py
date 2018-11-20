@@ -26,7 +26,7 @@ def find_key_info(row, key, data_df):
     acq_ticker = row[const.ACQUIRER_TICKER]
     tar_ticker = row[const.TARGET_TICKER]
     ann_date = row[const.ANNOUNCED_DATE]
-    year = row[const.YEAR]
+    year = row[const.YEAR_MERGE]
     tmp_df = data_df[data_df[key].notnull()]
     if hasattr(acq_cusip, 'upper'):
         tmp_df = tmp_df[tmp_df[const.ACQUIRER_CUSIP] == acq_cusip]
@@ -36,7 +36,7 @@ def find_key_info(row, key, data_df):
     if hasattr(acq_ticker, 'upper'):
         tmp_df = tmp_df[tmp_df[const.ACQUIRER_TICKER] == acq_ticker]
 
-    tmp_df = tmp_df[tmp_df[const.YEAR] == year]
+    tmp_df = tmp_df[tmp_df[const.YEAR_MERGE] == year]
     if tmp_df.empty:
         return np.nan
 
@@ -69,7 +69,7 @@ if __name__ == '__main__':
     ni2_df = pd.read_pickle(os.path.join(const.TEMP_PATH, '20170813_SDC_MnA_fill_in_NI_Ratio2.p'))
     clean_df = pd.read_pickle(os.path.join(const.DATA_PATH, '20170814_dr_wang_previous_result.p'))
     keys_reserved = keys_to_add.copy()
-    keys_reserved.append(const.YEAR)
+    keys_reserved.append(const.YEAR_MERGE)
     keys_reserved.append(const.ANNOUNCED_DATE)
     keys_reserved.append(const.ACQUIRER_CUSIP)
     keys_reserved.append(const.TARGET_CUSIP)

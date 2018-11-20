@@ -33,7 +33,7 @@ TOTAL_DEPOSITES = ['BHCKF252', 'BHCP2200']
 if __name__ == '__main__':
     part3_df = pd.read_stata(os.path.join(const.DATA_PATH, '20180908_revision',
                                           '20180908_third_part_concise_3118.dta'))
-    part3_df = part3_df[part3_df[const.YEAR] >= 1986].reset_index(drop=True)
+    part3_df = part3_df[part3_df[const.YEAR_MERGE] >= 1986].reset_index(drop=True)
 
     for key in [ACQ_9001, TAR_9001]:
         part3_df.loc[:, key] = part3_df[key].dropna().apply(lambda x: str(int(x)))
@@ -46,7 +46,7 @@ if __name__ == '__main__':
     for year in range(1986, 2015):
         data_file = pd.read_csv(os.path.join(const.DATA_PATH, '20180908_revision', 'bhc_csv_all_yearly',
                                              'bhcf{}.csv'.format(year))).rename(lambda x: x.upper(), axis='columns')
-        data_file.loc[:, const.YEAR] = year
+        data_file.loc[:, const.YEAR_MERGE] = year
         for key in [const.COMMERCIAL_RSSD9364, const.COMMERCIAL_RSSD9001]:
             data_file.loc[:, key] = data_file[key].dropna().apply(lambda x: str(int(x)))
         data_file = data_file.drop_duplicates(subset=[const.COMMERCIAL_RSSD9001], keep='last')
@@ -57,7 +57,7 @@ if __name__ == '__main__':
     # calculate bank type
     last_year_data_file = pd.read_pickle(os.path.join(bhc_save_path, 'bhcf{}.pkl'.format(1986)))
     data_dfs = [last_year_data_file.copy()]
-    useful_key_list = [const.COMMERCIAL_RSSD9001, const.COMMERCIAL_RSSD9364, const.YEAR]
+    useful_key_list = [const.COMMERCIAL_RSSD9001, const.COMMERCIAL_RSSD9364, const.YEAR_MERGE]
 
     for year in range(1987, 2015):
         current_year_data_file = pd.read_pickle(os.path.join(bhc_save_path, 'bhcf{}.pkl'.format(year)))
@@ -109,11 +109,11 @@ if __name__ == '__main__':
     all_data_df.to_pickle(os.path.join(bhc_save_path, '1986_2014_all_bhcf_data_append_variables.pkl'))
 
     useful_data_df = all_data_df[useful_key_list].copy()
-    useful_data_df_2014 = useful_data_df[useful_data_df[const.YEAR] == 2014].copy()
+    useful_data_df_2014 = useful_data_df[useful_data_df[const.YEAR_MERGE] == 2014].copy()
 
     for i in [2015, 2016]:
         copy_df = useful_data_df_2014.copy()
-        copy_df.loc[:, const.YEAR] = i
+        copy_df.loc[:, const.YEAR_MERGE] = i
         useful_data_df = useful_data_df.append(copy_df, ignore_index=True)
 
     for prefix in [const.TARGET, const.ACQUIRER]:
@@ -121,12 +121,12 @@ if __name__ == '__main__':
 
         rename_dict = {const.COMMERCIAL_RSSD9001: match_id}
         for i in useful_key_list:
-            if i in {const.YEAR, const.COMMERCIAL_RSSD9001}:
+            if i in {const.YEAR_MERGE, const.COMMERCIAL_RSSD9001}:
                 continue
             rename_dict[i] = '{}_{}'.format(prefix, i)
 
         current_data_df = useful_data_df.rename(index=str, columns=rename_dict)
-        part3_df = part3_df.merge(current_data_df, on=[match_id, const.YEAR], how='left')
+        part3_df = part3_df.merge(current_data_df, on=[match_id, const.YEAR_MERGE], how='left')
 
     part3_df.to_pickle(os.path.join(const.TEMP_PATH, '20180911_third_part_concise_3018.pkl'))
     part3_df = part3_df.replace({float('inf'): np.nan})

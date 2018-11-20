@@ -36,7 +36,7 @@ class Constants(PathInfo):
     FF_MOM = 'Mom'
 
     ANNOUNCED_DATE = 'Date_Announced'
-    YEAR = 'Year_Announced'
+    YEAR_MERGE = 'Year_Announced'
     QUARTER = 'Quarter'
     STATUS = 'Status'
 
@@ -156,3 +156,5 @@ class Constants(PathInfo):
     TAR_9001 = '{}_{}'.format(TAR, LINK_TABLE_RSSD9001)
     EXCLUDE_CURRENT_AT_BANK = 'ECB'
     EXCLUDE_ALL_AT_BANK = 'EAB'
+    RSSD9001 = 'rssd9001'
+    YEAR = 'year'

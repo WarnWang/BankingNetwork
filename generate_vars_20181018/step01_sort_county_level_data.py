@@ -87,7 +87,7 @@ def sort_county_level_data(year: int):
         county_df: DataFrame = _calculate_fdic_data(year)
 
     if not county_df.empty:
-        county_df.loc[:, const.YEAR] = year
+        county_df.loc[:, const.YEAR_MERGE] = year
 
     return county_df
 

@@ -66,11 +66,11 @@ if __name__ == '__main__':
         merged_key = TAR_9001 if key == const.TAR else ACQ_9001
         merged_df_renamed = merged_df.rename(index=str, columns={RSSD9001: merged_key,
                                                                  const.FIPS: '{}_{}'.format(key, const.FIPS),
-                                                                 YEAR: const.YEAR})
-        merge_fips_df = data_df_drop_fips.merge(merged_df_renamed, on=[const.YEAR, merged_key], how='left')
+                                                                 YEAR: const.YEAR_MERGE})
+        merge_fips_df = data_df_drop_fips.merge(merged_df_renamed, on=[const.YEAR_MERGE, merged_key], how='left')
 
-        county_df_renamed = county_df.rename(lambda x: '{}_{}'.format(key, x) if x != const.YEAR else x, axis=1)
-        merge_county_df = merge_fips_df.merge(county_df_renamed, on=[const.YEAR, '{}_{}'.format(key, const.FIPS)],
+        county_df_renamed = county_df.rename(lambda x: '{}_{}'.format(key, x) if x != const.YEAR_MERGE else x, axis=1)
+        merge_county_df = merge_fips_df.merge(county_df_renamed, on=[const.YEAR_MERGE, '{}_{}'.format(key, const.FIPS)],
                                               how='left')
         merge_county_df.to_pickle(
             os.path.join(const.TEMP_PATH, '20181119_third_part_{}_county_information_data.pkl'.format(key)))
