@@ -45,7 +45,8 @@ if __name__ == '__main__':
 
     bhcf_data_df_acq = bhcf_data_df[[const.COMMERCIAL_RSSD9001, const.YEAR_MERGE, const.FIPS]].rename(
         columns={const.FIPS: '{}_{}'.format(const.ACQ, const.FIPS), const.COMMERCIAL_RSSD9001: ACQ_9001})
-    data_df_append_tar_fips1 = data_df_append_tar_fips1.merge(bhcf_data_df_acq, on=[const.YEAR_MERGE, ACQ_9001], how='left')
+    data_df_append_tar_fips1 = data_df_append_tar_fips1.merge(bhcf_data_df_acq, on=[const.YEAR_MERGE, ACQ_9001],
+                                                              how='left')
 
     # try call report
     call_dfs = []
@@ -71,7 +72,8 @@ if __name__ == '__main__':
                                                columns={TAR_9001: ACQ_9001,
                                                         '{}_{}'.format(const.TAR, const.FIPS):
                                                             '{}_{}'.format(const.ACQ, const.FIPS)})
-    data_df_append_tar_fips = data_df_append_tar_fips.merge(merged_call_df_acq, on=[const.YEAR_MERGE, ACQ_9001], how='left')
+    data_df_append_tar_fips = data_df_append_tar_fips.merge(merged_call_df_acq, on=[const.YEAR_MERGE, ACQ_9001],
+                                                            how='left')
 
     fips_seris = data_df_append_tar_fips1['Tar_FIPS'].fillna(data_df_append_tar_fips['Tar_FIPS'])
     data_df_append_tar_fips.loc[:, 'Tar_FIPS'] = fips_seris
