@@ -168,3 +168,8 @@ class Constants(PathInfo):
     EXIT_BRANCH_PCT_CHANGE = 'br_exit_pctchg'
     NET_INCREASE_BRANCH_NUM = 'br_net_inc_num'
     NET_INCREASE_PCT_CHANGE = 'br_net_inc_pctchg'
+
+    # New Variables
+    TOTAL_SALES = 'TotalSales'
+    TOTAL_SALARIES = 'TotalSalaries'
+
