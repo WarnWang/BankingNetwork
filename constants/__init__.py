@@ -154,8 +154,7 @@ class Constants(PathInfo):
     # The following would be used in 20181120 project
     ACQ_9001 = '{}_{}'.format(ACQ, LINK_TABLE_RSSD9001)
     TAR_9001 = '{}_{}'.format(TAR, LINK_TABLE_RSSD9001)
-    EXCLUDE_CURRENT_AT_BANK = 'ECB'
-    EXCLUDE_ALL_AT_BANK = 'EAB'
+    EXCLUDE_AT_BANK = 'EAB'
     RSSD9001 = 'rssd9001'
     YEAR = 'year'
     BRANCH_ID = 'sumd9021'
@@ -164,5 +163,5 @@ class Constants(PathInfo):
     TOTAL_DEPOSITS_HHI = 'TOTAL_DEPOSITS_HHI'
 
     ENTRY_BRANCH_NUM = 'br_entry_num'
-    EXIST_BRANCH_NUM = 'br_exist_num'
+    EXIT_BRANCH_NUM = 'br_exit_num'
     NET_INCREASE_BRANCH_NUM = 'br_net_inc_num'
