@@ -163,5 +163,8 @@ class Constants(PathInfo):
     TOTAL_DEPOSITS_HHI = 'TOTAL_DEPOSITS_HHI'
 
     ENTRY_BRANCH_NUM = 'br_entry_num'
+    ENTRY_BRANCH_PCT_CHANGE = 'br_entry_pctchg'
     EXIT_BRANCH_NUM = 'br_exit_num'
+    EXIT_BRANCH_PCT_CHANGE = 'br_exit_pctchg'
     NET_INCREASE_BRANCH_NUM = 'br_net_inc_num'
+    NET_INCREASE_PCT_CHANGE = 'br_net_inc_pctchg'
