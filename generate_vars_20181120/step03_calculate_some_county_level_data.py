@@ -151,3 +151,4 @@ if __name__ == '__main__':
     result_dfs = pool.map(calculate_county_related_information, county_dfs)
 
     final_result_df = pd.concat(result_dfs, ignore_index=True)
+    final_result_df.to_pickle(os.path.join(const.TEMP_PATH, '20181121_county_level_entry_info.pkl'))
