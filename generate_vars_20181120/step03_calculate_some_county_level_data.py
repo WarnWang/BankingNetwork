@@ -11,6 +11,7 @@ generate_vars_20181120.step03_calculate_some_county_level_data
 """
 
 import os
+import multiprocessing
 
 import numpy as np
 import pandas as pd
@@ -23,6 +24,9 @@ if __name__ == '__main__':
         os.path.join(const.TEMP_PATH, '20181120_branch_location_total_deposit_info.pkl'))
     branch_county_df.loc[:, const.FIPS] = branch_county_df[const.FIPS].apply(int)
     branch_county_df.loc[:, const.RSSD9001] = branch_county_df[const.RSSD9001].apply(lambda x: str(int(x)))
+    branch_county_df.loc[:, const.TOTAL_DEPOSITS_REAL] = branch_county_df[const.TOTAL_DEPOSITS_REAL].apply(
+        lambda x: float(x.replace(',', '') if hasattr(x, 'replace') else x))
+    branch_county_df = branch_county_df[branch_county_df[const.FIPS] != 0].copy()
     branch_county_group = branch_county_df.groupby(const.FIPS, group_keys=True)
 
     common_county_event_rssd = pd.read_pickle(os.path.join(const.TEMP_PATH, '20181120_common_county_event_rssd.pkl'))
@@ -49,11 +53,17 @@ if __name__ == '__main__':
             last_year = year - 1
 
             county_summary_row = county_summary_df[(county_summary_df[const.FIPS] == county_fips) &
-                                                   (county_summary_df[const.YEAR] == year)].iloc[0]
-
-            result_dict = {const.YEAR: year, const.BRANCH_NUM: county_summary_row[const.BRANCH_NUM],
-                           const.TOTAL_DEPOSITS_REAL: county_summary_row[const.TOTAL_DEPOSITS_REAL],
-                           const.TOTAL_DEPOSITS_HHI: county_summary_row[const.TOTAL_DEPOSITS_HHI]}
+                                                   (county_summary_df[const.YEAR_MERGE] == year)]
+            if county_summary_row.empty:
+                result_dict = {const.YEAR: year, const.BRANCH_NUM: 0, const.FIPS: county_fips,
+                               const.TOTAL_DEPOSITS_REAL: 0,
+                               const.TOTAL_DEPOSITS_HHI: np.nan}
+            else:
+                county_summary_row = county_summary_row.iloc[0]
+                result_dict = {const.YEAR: year, const.BRANCH_NUM: current_year_sub_sample.shape[0],
+                               const.FIPS: county_fips,
+                               const.TOTAL_DEPOSITS_REAL: county_summary_row[const.TOTAL_DEPOSITS_REAL],
+                               const.TOTAL_DEPOSITS_HHI: county_summary_row[const.TOTAL_DEPOSITS_HHI]}
 
             county_rssd_df = common_county_event_rssd[(common_county_event_rssd[const.YEAR] == year) &
                                                       (common_county_event_rssd[const.FIPS] == county_fips)]
@@ -133,4 +143,11 @@ if __name__ == '__main__':
 
     county_dfs = [df for _, df in branch_county_group]
 
-    result_dfs = list(map(calculate_county_related_information, county_dfs))
+    # result_dfs = []
+    # for df in county_dfs:
+    #     result_dfs.append(calculate_county_related_information(df))
+
+    pool = multiprocessing.Pool(multiprocessing.cpu_count() - 3)
+    result_dfs = pool.map(calculate_county_related_information, county_dfs)
+
+    final_result_df = pd.concat(result_dfs, ignore_index=True)
