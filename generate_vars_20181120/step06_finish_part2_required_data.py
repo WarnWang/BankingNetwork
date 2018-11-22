@@ -12,6 +12,7 @@ generate_vars_20181120.step06_finish_part2_required_data.py
 
 import os
 
+import numpy as np
 import pandas as pd
 from pandas import DataFrame
 
