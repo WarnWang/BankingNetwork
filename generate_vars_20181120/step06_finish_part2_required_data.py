@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# @Filename: step05_finish_part2_required_data
+# @Filename: step06_finish_part2_required_data.py
 # @Date: 2018/11/22
 # @Author: Mark Wang
 # @Email: wangyouan@gamil.com
 
 """
-generate_vars_20181120.step05_finish_part2_required_data
+generate_vars_20181120.step06_finish_part2_required_data.py
 """
 
 import os
