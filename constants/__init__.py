@@ -172,4 +172,4 @@ class Constants(PathInfo):
     # New Variables
     TOTAL_SALES = 'TotalSales'
     TOTAL_SALARIES = 'TotalSalaries'
-
+    SB_LOAN_RATE = 'SBLoanRate'
