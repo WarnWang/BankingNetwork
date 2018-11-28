@@ -66,9 +66,13 @@ if __name__ == '__main__':
         os.path.join(const.TEMP_PATH, '20181120_branch_location_total_deposit_info.pkl'))
 
     bank_branch_df = bank_branch_df[bank_branch_df[const.RSSD9001] != 0].copy()
+    bank_branch_df.loc[:, const.TOTAL_DEPOSITS_REAL] = bank_branch_df[const.TOTAL_DEPOSITS_REAL].apply(
+        lambda x: float(x.replace(',', '') if hasattr(x, 'replace') else x))
+    bank_branch_df.to_pickle(
+        os.path.join(const.TEMP_PATH, '20181128_branch_location_total_deposit_info.pkl'))
 
     county_branch_df: DataFrame = bank_branch_df.groupby(const.RSSD9001).apply(calculate_bank_county_info).reset_index(
         drop=False)[[const.RSSD9001, const.FIPS, const.YEAR, const.EXIT_BRANCH_NUM, const.ENTRY_BRANCH_NUM,
                      const.BRANCH_NUM, const.TOTAL_DEPOSITS_REAL]].copy()
     county_branch_df = county_branch_df[county_branch_df[const.RSSD9001] != 0]
-    county_branch_df.to_pickle(os.path.join(const.TEMP_PATH, '20181127_county_branch_status_count.pkl'))
+    county_branch_df.to_pickle(os.path.join(const.TEMP_PATH, '20181128_county_branch_status_count.pkl'))
