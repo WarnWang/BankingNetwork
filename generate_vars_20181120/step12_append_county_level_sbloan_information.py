@@ -42,11 +42,15 @@ if __name__ == '__main__':
         for key in useful_cols:
             if key in rename_dict:
                 continue
-            rename_dict[key] = '{}_{}'.format(prefix, key)
+            if key == const.SB_LOAN:
+                rename_dict[key] = '{}_{}_ct'.format(prefix, key)
+            else:
+                rename_dict[key] = '{}_{}'.format(prefix, key)
 
         county_branch_renamed = useful_cra_df.rename(index=str, columns=rename_dict)
 
         event_df = event_df.merge(county_branch_renamed, on=[const.YEAR_MERGE, const.FIPS, merge_key], how='left')
 
     event_df.to_pickle(os.path.join(const.TEMP_PATH, '20181128_third_part_branch_county_data.pkl'))
-    event_df.to_stata(os.path.join(const.RESULT_PATH, '20181128_third_part_branch_county_data.dta'), write_index=False)
+    event_df.to_stata(os.path.join(const.RESULT_PATH, '20181128_third_part_branch_county_data.dta'),
+                      write_index=False)
