@@ -7,7 +7,7 @@
 # @Email: wangyouan@gamil.com
 
 """
-python3 -m generate_vars_20181120.step11_setup_event_count_list
+python3 -m generate_vars_20181120.step12_append_county_level_sbloan_information
 """
 
 import os
