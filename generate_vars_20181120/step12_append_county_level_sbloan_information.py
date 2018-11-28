@@ -51,6 +51,11 @@ if __name__ == '__main__':
 
         event_df = event_df.merge(county_branch_renamed, on=[const.YEAR_MERGE, const.FIPS, merge_key], how='left')
 
+    drop_keys = ['Tar_num_orig_rev1m', 'Tar_amt_orig_rev1m', 'Tar_num_orig_aff', 'Tar_amt_orig_aff',
+                 'Acq_num_orig_rev1m', 'Acq_amt_orig_rev1m', 'Acq_num_orig_aff', 'Acq_amt_orig_aff']
+
+    event_df = event_df.drop(drop_keys, axis=1)
+
     event_df.to_pickle(os.path.join(const.TEMP_PATH, '20181128_third_part_branch_county_data.pkl'))
     event_df.to_stata(os.path.join(const.RESULT_PATH, '20181128_third_part_branch_county_data.dta'),
                       write_index=False)
