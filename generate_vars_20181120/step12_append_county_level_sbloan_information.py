@@ -29,8 +29,8 @@ if __name__ == '__main__':
     cra_valid_df: DataFrame = cra_df[cra_df[const.RSSD9001].notnull()].copy()
     cra_valid_df = cra_valid_df[cra_valid_df[const.RSSD9001] != '0'].copy()
     useful_cols = ['activity_year', 'num_orig_lt100k', 'amt_orig_lt100k', 'num_orig_100_250k', 'amt_orig_100_250k',
-                   'num_orig_gt250k', 'amt_orig_gt250k', 'num_orig_rev1m', 'amt_orig_rev1m', 'num_orig_aff',
-                   'amt_orig_aff', const.RSSD9001, const.FIPS, const.SB_LOAN, '{}Num'.format(const.SB_LOAN)]
+                   'num_orig_gt250k', 'amt_orig_gt250k', const.RSSD9001, const.FIPS, const.SB_LOAN,
+                   '{}Num'.format(const.SB_LOAN)]
 
     event_df: DataFrame = pd.read_pickle(os.path.join(const.TEMP_PATH, '20181128_event_count_list_county_info.pkl'))
     for prefix in [const.TAR, const.ACQ]:
