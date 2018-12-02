@@ -89,19 +89,3 @@ if __name__ == '__main__':
 
     bhc_county_df2.to_pickle(os.path.join(const.TEMP_PATH, '20181202_bhc_county_count_td.pkl'))
 
-    cra_df: DataFrame = pd.read_stata(os.path.join(const.DATA_PATH, 'CRA_Data', '9616exp_discl_table_d11_bankcnty.dta'))
-    cra_df.loc[:, const.FIPS] = cra_df.apply(lambda x: int(x['state']) * 1000 + int(x['county']), axis=1)
-    cra_df.loc[:, const.SB_LOAN] = cra_df.apply(
-        lambda x: x['amt_orig_lt100k'] + x['amt_orig_100_250k'] + x['amt_orig_gt250k'], axis=1)
-    cra_df.loc[:, '{}Num'.format(const.SB_LOAN)] = cra_df.apply(
-        lambda x: x['num_orig_lt100k'] + x['num_orig_100_250k'] + x['num_orig_gt250k'], axis=1)
-    cra_df.loc[:, const.RSSD9001] = cra_df['rssdid'].apply(lambda x: int(x.strip()) if x.isdigit() else np.nan)
-    cra_valid_df: DataFrame = cra_df[cra_df[const.RSSD9001].notnull()].copy()
-    cra_valid_df = cra_valid_df[cra_valid_df[const.RSSD9001] != '0'].copy()
-
-    useful_cols = ['activity_year', const.RSSD9001, const.FIPS, 'num_orig_lt100k', 'amt_orig_lt100k',
-                   'num_orig_100_250k', 'amt_orig_100_250k', 'num_orig_gt250k', 'amt_orig_gt250k', const.SB_LOAN,
-                   '{}Num'.format(const.SB_LOAN)]
-    cra_useful_df = cra_valid_df[useful_cols].rename(index=str, columns={'activity_year': const.YEAR})
-    bhc_county_df_loan = bhc_county_df2.merge(cra_useful_df, on=[const.RSSD9001, const.FIPS, const.YEAR], how='left')
-    bhc_county_df_loan.to_pickle(os.path.join(const.TEMP_PATH, '20181202_bhc_county_count_td_sbl.pkl'))
