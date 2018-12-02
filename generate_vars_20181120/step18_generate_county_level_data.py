@@ -6,6 +6,10 @@
 # @Author: Mark Wang
 # @Email: wangyouan@gamil.com
 
+"""
+python3 -m generate_vars_20181120.step18_generate_county_level_data
+"""
+
 import os
 import multiprocessing
 
