@@ -74,14 +74,18 @@ def calculate_county_related_branch_data(tmp_df):
             entry_num = len(current_year_branch.difference(last_year_branch))
             exit_num = len(last_year_branch.difference(current_year_branch))
             net_num = len(current_year_branch) - len(last_year_branch)
+            last_branch_num = float(last_year_df.shape[0])
+            net_pctchg = net_num / last_branch_num if last_branch_num > 0 else np.nan
+            entry_pctchg = entry_num / last_branch_num if last_branch_num > 0 else np.nan
+            exit_pctchg = exit_num / last_branch_num if last_branch_num > 0 else np.nan
 
             result_dict = {const.YEAR: year, const.TOTAL_DEPOSITS_REAL: total_deposit, const.FIPS: fips,
                            const.TOTAL_DEPOSITS_HHI: total_deposit_hhi, const.BRANCH_NUM: branch_num,
                            const.ENTRY_BRANCH_NUM: entry_num, const.EXIT_BRANCH_NUM: exit_num,
                            const.NET_INCREASE_BRANCH_NUM: net_num, TOTAL_DEPOSIT_EAT: total_deposit_eat,
-                           const.NET_INCREASE_PCT_CHANGE: float(net_num) / branch_num,
-                           const.ENTRY_BRANCH_PCT_CHANGE: float(entry_num) / branch_num,
-                           const.EXIT_BRANCH_PCT_CHANGE: float(exit_num) / branch_num,
+                           const.NET_INCREASE_PCT_CHANGE: net_pctchg,
+                           const.ENTRY_BRANCH_PCT_CHANGE: entry_pctchg,
+                           const.EXIT_BRANCH_PCT_CHANGE: exit_pctchg,
                            }
 
         result_df = result_df.append(result_dict, ignore_index=True)
