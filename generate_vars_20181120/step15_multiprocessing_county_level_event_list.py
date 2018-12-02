@@ -71,4 +71,8 @@ if __name__ == '__main__':
     pool = multiprocessing.Pool(38)
     result_dfs = pool.map(acquire_row_info_list, row_list)
     event_df: DataFrame = pd.concat(result_dfs, ignore_index=True, sort=False)
-    event_df.to_pickle(os.path.join(const.TEMP_PATH, '20181202_common_county_event_rssd9001.pkl'))
+    # event_df.to_pickle(os.path.join(const.TEMP_PATH, '20181202_common_county_event_rssd9001.pkl')) matched with 9001
+    # event_df.to_pickle(os.path.join(const.TEMP_PATH, '20181202_common_county_event_rssd.pkl')) matched with 9364
+
+    # merged version
+    event_df.to_pickle(os.path.join(const.TEMP_PATH, '20181202_common_county_event.pkl'))
