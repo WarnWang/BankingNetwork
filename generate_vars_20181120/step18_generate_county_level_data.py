@@ -119,4 +119,15 @@ if __name__ == '__main__':
     cra_county_df: DataFrame = cra_9364_df.drop([const.RSSD9001, const.COMMERCIAL_RSSD9364], axis=1).groupby(
         [const.FIPS, const.YEAR], group_keys=False).sum().reset_index(drop=False)
     county_df: DataFrame = fips_county_df.merge(cra_county_df, on=[const.FIPS, const.YEAR], how='left')
+    county_df = county_df[county_df[const.FIPS] > 0].copy()
     county_df.to_pickle(os.path.join(const.TEMP_PATH, '20181202_county_branch_td_sbl.pkl'))
+    event_count: DataFrame = event_df.groupby([const.FIPS, const.YEAR], group_keys=False).count().reset_index(
+        drop=False).rename(index=str, columns={const.COMMERCIAL_RSSD9364: 'AT_merge_count'})
+    event_count.loc[:, 'AT_merge_count'] = event_count['AT_merge_count'] / 2
+
+    county_df_at = county_df.merge(event_count, on=[const.FIPS, const.YEAR], how='left')
+    county_df_at.loc[:, 'AT_merge_count'] = county_df_at['AT_merge_count'].fillna(0)
+    county_df_at.to_pickle(os.path.join(const.TEMP_PATH, '20181202_county_branch_td_sbl_at_merge_count.pkl'))
+    county_df_at = county_df_at.replace({np.inf: np.nan})
+    county_df_at.to_stata(os.path.join(const.RESULT_PATH, '20181202_county_branch_td_sbl_at_merge_count.dta'),
+                          write_index=False)
