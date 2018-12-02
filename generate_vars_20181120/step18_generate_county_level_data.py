@@ -127,7 +127,8 @@ if __name__ == '__main__':
 
     county_df_at = county_df.merge(event_count, on=[const.FIPS, const.YEAR], how='left')
     county_df_at.loc[:, 'AT_merge_count'] = county_df_at['AT_merge_count'].fillna(0)
-    county_df_at.to_pickle(os.path.join(const.TEMP_PATH, '20181202_county_branch_td_sbl_at_merge_count.pkl'))
+    county_df_at = county_df_at[county_df_at[const.FIPS] > 0]
+    county_df_at.to_pickle(os.path.join(const.TEMP_PATH, '20181202_county_branch_dataset.pkl'))
     county_df_at = county_df_at.replace({np.inf: np.nan})
-    county_df_at.to_stata(os.path.join(const.RESULT_PATH, '20181202_county_branch_td_sbl_at_merge_count.dta'),
+    county_df_at.to_stata(os.path.join(const.RESULT_PATH, '20181202_county_branch_dataset.dta'),
                           write_index=False)
