@@ -21,12 +21,6 @@ from pandas import DataFrame
 from constants import Constants as const
 
 
-def _calculate_total_deposit_hhi(deposit_series):
-    total_deposit = sum(deposit_series)
-    square_share_series = list(map(lambda x: (x / total_deposit) ** 2, deposit_series))
-    return sum(square_share_series)
-
-
 def calculate_bhc_county_annual_change(tmp_df):
     result_df = pd.DataFrame(columns=[const.ENTRY_BRANCH_NUM, const.EXIT_BRANCH_NUM, const.NET_INCREASE_BRANCH_NUM,
                                       const.YEAR, const.FIPS, const.COMMERCIAL_RSSD9364])
@@ -88,4 +82,3 @@ if __name__ == '__main__':
                                                            bhc_county_df2[const.BRANCH_NUM]
 
     bhc_county_df2.to_pickle(os.path.join(const.TEMP_PATH, '20181202_bhc_county_count_td.pkl'))
-
