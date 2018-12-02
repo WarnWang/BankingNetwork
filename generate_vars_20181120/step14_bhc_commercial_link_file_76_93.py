@@ -12,6 +12,7 @@ python3 -m generate_vars_20181120.step14_bhc_commercial_link_file_76_93
 
 import os
 
+import numpy as np
 import pandas as pd
 from pandas import DataFrame
 
@@ -85,6 +86,6 @@ if __name__ == '__main__':
                      const.BRANCH_ID]].copy())
 
     bc_branch_link_7616_df: DataFrame = pd.concat(fdic_dfs, ignore_index=True, sort=False)
-    bc_branch_link_7616_df.loc[:, const.COMMERCIAL_RSSD9364] = bc_branch_link_7616_df[const.COMMERCIAL_RSSD9364].fillna(
-        bc_branch_link_7616_df[const.RSSD9001])
+    bc_branch_link_7616_df.loc[:, const.COMMERCIAL_RSSD9364] = bc_branch_link_7616_df[
+        const.COMMERCIAL_RSSD9364].replace({0: np.nan}).fillna(bc_branch_link_7616_df[const.RSSD9001])
     bc_branch_link_7616_df.to_pickle(os.path.join(const.TEMP_PATH, '20181202_bhc_commercial_branch_link_76_16.pkl'))
