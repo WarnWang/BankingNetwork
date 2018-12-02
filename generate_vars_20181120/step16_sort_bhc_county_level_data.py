@@ -23,7 +23,8 @@ from constants import Constants as const
 
 def calculate_bhc_county_annual_change(tmp_df):
     result_df = pd.DataFrame(columns=[const.ENTRY_BRANCH_NUM, const.EXIT_BRANCH_NUM, const.NET_INCREASE_BRANCH_NUM,
-                                      const.YEAR, const.FIPS, const.COMMERCIAL_RSSD9364])
+                                      const.YEAR, const.FIPS, const.COMMERCIAL_RSSD9364, const.EXIT_BRANCH_PCT_CHANGE,
+                                      const.ENTRY_BRANCH_PCT_CHANGE, const.NET_INCREASE_PCT_CHANGE])
     start_year = tmp_df[const.YEAR].min()
     end_year = tmp_df[const.YEAR].max()
     rssd9364 = tmp_df[const.COMMERCIAL_RSSD9364].iloc[0]
@@ -36,6 +37,7 @@ def calculate_bhc_county_annual_change(tmp_df):
     for year in range(start_year + 1, end_year + 1):
         current_year_df: DataFrame = tmp_df[tmp_df[const.YEAR] == year]
         last_year_df: DataFrame = tmp_df[tmp_df[const.YEAR] == (year - 1)]
+        last_branch_num: float = float(last_year_df.shape[0])
 
         current_year_branch_id = set(current_year_df['branch_id'])
         last_year_branch_id = set(last_year_df['branch_id'])
@@ -45,7 +47,10 @@ def calculate_bhc_county_annual_change(tmp_df):
         net_num = len(current_year_branch_id) - len(last_year_branch_id)
         result_df = result_df.append({const.YEAR: year, const.ENTRY_BRANCH_NUM: entry_num,
                                       const.NET_INCREASE_BRANCH_NUM: net_num, const.EXIT_BRANCH_NUM: exit_num,
-                                      const.COMMERCIAL_RSSD9364: rssd9364, const.FIPS: fips},
+                                      const.COMMERCIAL_RSSD9364: rssd9364, const.FIPS: fips,
+                                      const.NET_INCREASE_PCT_CHANGE: net_num / last_branch_num,
+                                      const.ENTRY_BRANCH_PCT_CHANGE: entry_num / last_branch_num,
+                                      const.EXIT_BRANCH_PCT_CHANGE: exit_num / last_branch_num},
                                      ignore_index=True)
 
     return result_df
@@ -74,11 +79,5 @@ if __name__ == '__main__':
 
     bhc_county_df = bhc_net_change_df.merge(branch_bank_count, on=[const.FIPS, const.COMMERCIAL_RSSD9364, const.YEAR])
     bhc_county_df2 = bhc_county_df.merge(branch_bank_td, on=[const.FIPS, const.COMMERCIAL_RSSD9364, const.YEAR])
-    bhc_county_df2.loc[:, const.ENTRY_BRANCH_PCT_CHANGE] = bhc_county_df2[const.ENTRY_BRANCH_NUM] / bhc_county_df2[
-        const.BRANCH_NUM]
-    bhc_county_df2.loc[:, const.EXIT_BRANCH_PCT_CHANGE] = bhc_county_df2[const.EXIT_BRANCH_NUM] / bhc_county_df2[
-        const.BRANCH_NUM]
-    bhc_county_df2.loc[:, const.NET_INCREASE_PCT_CHANGE] = bhc_county_df2[const.NET_INCREASE_BRANCH_NUM] / \
-                                                           bhc_county_df2[const.BRANCH_NUM]
 
     bhc_county_df2.to_pickle(os.path.join(const.TEMP_PATH, '20181202_bhc_county_count_td.pkl'))
