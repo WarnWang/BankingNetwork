@@ -66,7 +66,7 @@ if __name__ == '__main__':
         return common_county_event
 
 
-    row_list = [i for i in data_df.iterrows()]
+    row_list = [i for _, i in data_df.iterrows()]
 
     pool = multiprocessing.Pool(38)
     result_dfs = pool.map(acquire_row_info_list, row_list)
