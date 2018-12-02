@@ -88,4 +88,6 @@ if __name__ == '__main__':
     bc_branch_link_7616_df: DataFrame = pd.concat(fdic_dfs, ignore_index=True, sort=False)
     bc_branch_link_7616_df.loc[:, const.COMMERCIAL_RSSD9364] = bc_branch_link_7616_df[
         const.COMMERCIAL_RSSD9364].replace({0: np.nan}).fillna(bc_branch_link_7616_df[const.RSSD9001])
+    bc_branch_link_7616_df.loc[:, const.TOTAL_DEPOSITS_REAL] = bc_branch_link_7616_df[const.TOTAL_DEPOSITS_REAL].apply(
+        lambda x: float(x.replace(',', '')) if hasattr(x, 'replace') else x)
     bc_branch_link_7616_df.to_pickle(os.path.join(const.TEMP_PATH, '20181202_bhc_commercial_branch_link_76_16.pkl'))
