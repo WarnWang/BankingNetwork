@@ -46,8 +46,8 @@ if __name__ == '__main__':
 
         current_branch_df = branch_bank_df[branch_bank_df[const.YEAR] == year]
 
-        acq_branch = current_branch_df[current_branch_df[const.COMMERCIAL_RSSD9364] == acq_9001]
-        tar_branch = current_branch_df[current_branch_df[const.COMMERCIAL_RSSD9364] == tar_9001]
+        acq_branch = current_branch_df[current_branch_df[const.RSSD9001] == acq_9001]
+        tar_branch = current_branch_df[current_branch_df[const.RSSD9001] == tar_9001]
 
         if tar_branch.empty or acq_branch.empty:
             return common_county_event
@@ -71,4 +71,4 @@ if __name__ == '__main__':
     pool = multiprocessing.Pool(38)
     result_dfs = pool.map(acquire_row_info_list, row_list)
     event_df: DataFrame = pd.concat(result_dfs, ignore_index=True, sort=False)
-    event_df.to_pickle(os.path.join(const.TEMP_PATH, '20181202_common_county_event_rssd.pkl'))
+    event_df.to_pickle(os.path.join(const.TEMP_PATH, '20181202_common_county_event_rssd9001.pkl'))
