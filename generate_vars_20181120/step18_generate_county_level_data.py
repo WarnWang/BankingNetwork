@@ -13,6 +13,7 @@ python3 -m generate_vars_20181120.step18_generate_county_level_data
 import os
 import multiprocessing
 
+import numpy as np
 import pandas as pd
 from pandas import DataFrame
 
@@ -24,8 +25,12 @@ TOTAL_DEPOSIT_EAT = '{}_{}'.format(const.TOTAL_DEPOSITS_REAL, const.EXCLUDE_AT_B
 
 def _calculate_total_deposit_hhi(deposit_series):
     total_deposit = sum(deposit_series)
-    square_share_series = list(map(lambda x: (x / total_deposit) ** 2, deposit_series))
-    return sum(square_share_series)
+    try:
+        square_share_series = list(map(lambda x: (x / total_deposit) ** 2, deposit_series))
+    except ZeroDivisionError:
+        return np.nan
+    else:
+        return sum(square_share_series)
 
 
 def get_pct_change_variables(df):
