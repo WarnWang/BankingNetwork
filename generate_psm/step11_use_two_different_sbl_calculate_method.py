@@ -7,7 +7,7 @@
 # @Email: wangyouan@gamil.com
 
 """
-python3 -m generate_psm.step9_generate_psm_data
+python3 -m generate_psm.step11_use_two_different_sbl_calculate_method
 """
 
 import os
@@ -82,7 +82,7 @@ def get_psm_index_file(df, match_file, match_type, cov_list=None):
         use_cov_list.append(const.COMMERCIAL_ID)
         return pd.DataFrame(columns=use_cov_list)
 
-    covariates = match_file[cov_list]
+    covariates = match_file[cov_list].copy()
     pscore = pd.Series(PropensityScore(treatment, covariates).compute('probit'))
     columns = [const.COMMERCIAL_ID, 'pscore']
     for i in range(5):
@@ -107,8 +107,8 @@ def get_psm_index_file(df, match_file, match_type, cov_list=None):
 def merge_id_with_link(id_df, rssd9364_data_df, rssd9001_data_df, cov_list):
     use_cov_list = cov_list[:]
     use_cov_list.append(const.COMMERCIAL_ID)
-    rssd9001_tmp_df = rssd9001_data_df[use_cov_list]
-    rssd9364_tmp_df = rssd9364_data_df[use_cov_list]
+    rssd9001_tmp_df = rssd9001_data_df[use_cov_list].copy()
+    rssd9364_tmp_df = rssd9364_data_df[use_cov_list].copy()
 
     for i in [const.ACQUIRER, const.TARGET]:
         rename_dict = {}
@@ -156,6 +156,7 @@ def get_pscore_match(df_to_match):
         match_file = pd.read_pickle(os.path.join(const.COMMERCIAL_QUARTER_PATH,
                                                  'call{}{:02d}.pkl'.format(year, quarter * 3)))
 
+    match_file.loc[:, const.SB_LOAN] = calculate_sbl_ratio(match_file)
     useful_col_list = list(set(useful_col_list).intersection(set(match_file.keys())))
     match_file = match_file.dropna(subset=useful_col_list, how='any').drop_duplicates(
         subset=[const.COMMERCIAL_RSSD9001], keep='last')
@@ -168,14 +169,12 @@ def get_pscore_match(df_to_match):
 
         rssd9364_match_file = rssd9364_sum_df.copy()
         rssd9364_match_file.loc[:, const.COMMERCIAL_ID] = rssd9364_match_file[const.COMMERCIAL_RSSD9364].apply(
-            lambda x: str(int(x))
-        )
+            lambda x: str(int(x)))
         matched_result_9364 = get_psm_index_file(df=df_to_match, match_file=rssd9364_match_file,
                                                  match_type=const.ACQUIRER, cov_list=useful_col_list)
         rssd9001_match_file = match_file[match_file[const.COMMERCIAL_RSSD9001] > 0]
         rssd9001_match_file.loc[:, const.COMMERCIAL_ID] = rssd9001_match_file[const.COMMERCIAL_RSSD9001].apply(
-            lambda x: str(int(x))
-        )
+            lambda x: str(int(x)))
         matched_result_9001 = get_psm_index_file(df=df_to_match, match_file=rssd9001_match_file,
                                                  match_type=const.ACQUIRER, cov_list=useful_col_list)
 
@@ -288,7 +287,7 @@ def get_pscore_match(df_to_match):
 
 if __name__ == '__main__':
     psm_data = pd.read_stata(os.path.join(const.DATA_PATH, '20180908_revision', '20180908_psm_add_missing_rssd.dta'))
-    real_psm_data = psm_data[(psm_data['Target_real'] == 1) & (psm_data['Acquirer_real'] == 1)]
+    real_psm_data = psm_data[(psm_data['Target_real'] == 1) & (psm_data['Acquirer_real'] == 1)].copy()
 
     psm_group = real_psm_data.groupby([const.YEAR_MERGE, const.QUARTER])
 
@@ -309,7 +308,7 @@ if __name__ == '__main__':
     psm_col_set = set(final_result_df.keys())
 
     psm_data = pd.read_stata(os.path.join(const.DATA_PATH, '20180908_revision', '20180908_psm_add_missing_rssd.dta'))
-    data_df = psm_data[(psm_data['Target_real'] == 1) & (psm_data['Acquirer_real'] == 1)]
+    data_df = psm_data[(psm_data['Target_real'] == 1) & (psm_data['Acquirer_real'] == 1)].copy()
     data_df = data_df.drop(['Acquirer_real', 'Target_real'], axis=1)
     data_df.loc[:, 'Acquirer_link_table_rssd9001'] = data_df['Acquirer_link_table_rssd9001'].apply(int).apply(str)
     data_df.loc[:, 'Target_link_table_rssd9001'] = data_df['Target_link_table_rssd9001'].apply(int).apply(str)
