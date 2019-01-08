@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# @Filename: step9_generate_psm_data
-# @Date: 10/9/2018
+# @Filename: step11_use_two_different_sbl_calculate_method
+# @Date: 2019-01-08
 # @Author: Mark Wang
 # @Email: wangyouan@gamil.com
 
@@ -15,6 +15,7 @@ import datetime
 
 import numpy as np
 import pandas as pd
+from pandas import DataFrame
 from pscore_match.pscore import PropensityScore
 
 from constants import Constants as const
@@ -23,10 +24,17 @@ PSM_COV_LIST = [const.INTEREST_INCOME_RATIO, const.TOTAL_ASSETS, const.NET_INCOM
                 const.MORTGAGE_LENDING_RATIO, const.BANK_TYPE, const.BANK_EFFICIENCY, const.BUSINESS_FOCUS,
                 const.SBL_RATIO, const.MORTGAGE_LENDING_RATIO]
 
-DATE_STRING = '20180910'
-TMP_SAVE_PATH = os.path.join(const.TEMP_PATH, '{}_temp_result'.format(DATE_STRING))
+DATE_STRING = '20190108'
+TMP_SAVE_PATH = os.path.join(const.TEMP_PATH, '{}_temp_result_3_sbl'.format(DATE_STRING))
 if not os.path.isdir(TMP_SAVE_PATH):
     os.makedirs(TMP_SAVE_PATH)
+
+
+def calculate_sbl_ratio(data_df, sbl_type=1):
+    if sbl_type == 1:
+        return (data_df['RCON5571'] + data_df['RCON5573'] + data_df['RCON5575']) / data_df[const.TOTAL_ASSETS]
+    else:
+        return data_df['RCON5571'] / data_df[const.TOTAL_ASSETS]
 
 
 def generate_rssd9364_data(rssd9364_group, cov_list):
@@ -47,7 +55,7 @@ def generate_rssd9364_data(rssd9364_group, cov_list):
             sum_df.loc[:, key] = sum_df[const.MORTGAGE_LENDING] / sum_df[const.TOTAL_ASSETS]
 
         elif key == const.SBL_RATIO:
-            sum_df.loc[:, key] = sum_df[const.SMALL_BUSINESS_LENDING] / sum_df[const.TOTAL_ASSETS]
+            sum_df.loc[:, key] = calculate_sbl_ratio(sum_df)
 
         elif key == const.BANK_EFFICIENCY:
             sum_df.loc[:, key] = sum_df[const.TOTAL_LOANS] / sum_df[const.EMPLOYEE_NUMBER]
@@ -289,6 +297,37 @@ if __name__ == '__main__':
         print('{} Start to handle {} - {} data'.format(datetime.datetime.now(), key[0], key[1]))
         result_dfs.append(get_pscore_match(sub_df))
 
-    result_df = pd.concat(result_dfs, ignore_index=True, sort=False)
-    result_df.drop_duplicates().to_pickle(
-        os.path.join(const.TEMP_PATH, '{}_CAR_real_fault_file.pkl'.format(DATE_STRING)))
+    final_result_df: DataFrame = pd.concat(result_dfs, ignore_index=True, sort=False).drop_duplicates()
+    final_result_df.to_pickle(
+        os.path.join(const.TEMP_PATH, '{}_psm_match_use_rcon5571_5573_5575.pkl'.format(DATE_STRING)))
+
+    for prefix in [const.TARGET, const.ACQUIRER]:
+        for col in [const.COMMERCIAL_ID, const.LINK_TABLE_RSSD9001]:
+            key = '{}_{}'.format(prefix, col)
+            final_result_df.loc[:, key] = final_result_df[key].apply(int).apply(str)
+
+    psm_col_set = set(final_result_df.keys())
+
+    psm_data = pd.read_stata(os.path.join(const.DATA_PATH, '20180908_revision', '20180908_psm_add_missing_rssd.dta'))
+    data_df = psm_data[(psm_data['Target_real'] == 1) & (psm_data['Acquirer_real'] == 1)]
+    data_df = data_df.drop(['Acquirer_real', 'Target_real'], axis=1)
+    data_df.loc[:, 'Acquirer_link_table_rssd9001'] = data_df['Acquirer_link_table_rssd9001'].apply(int).apply(str)
+    data_df.loc[:, 'Target_link_table_rssd9001'] = data_df['Target_link_table_rssd9001'].apply(int).apply(str)
+
+    data_col_set = set(data_df.keys())
+
+    intersection_keys = psm_col_set.intersection(data_col_set)
+    intersection_keys.difference_update(['{}_{}'.format(const.ACQUIRER, const.LINK_TABLE_RSSD9001),
+                                         '{}_{}'.format(const.TARGET, const.LINK_TABLE_RSSD9001),
+                                         const.YEAR_MERGE, const.QUARTER])
+
+    data_df = data_df.drop(list(intersection_keys), axis=1)
+
+    merged_psm_data_df = pd.merge(data_df, final_result_df, how='right',
+                                  on=['{}_{}'.format(const.ACQUIRER, const.LINK_TABLE_RSSD9001),
+                                      '{}_{}'.format(const.TARGET, const.LINK_TABLE_RSSD9001),
+                                      const.YEAR_MERGE, const.QUARTER])
+
+    merged_psm_data_df.to_pickle(os.path.join(const.TEMP_PATH, '20180910_merged_psm_data_file_rcon5571_5573_5575.pkl'))
+    merged_psm_data_df.to_csv(os.path.join(const.RESULT_PATH, '20180910_merged_psm_data_file_rcon5571_5573_5575.csv'),
+                              index=False)
