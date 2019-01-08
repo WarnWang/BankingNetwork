@@ -12,6 +12,7 @@ python3 -m generate_psm.step11_use_two_different_sbl_calculate_method
 
 import os
 import datetime
+import multiprocessing
 
 import numpy as np
 import pandas as pd
@@ -291,10 +292,12 @@ if __name__ == '__main__':
 
     psm_group = real_psm_data.groupby([const.YEAR_MERGE, const.QUARTER])
 
-    result_dfs = []
-    for key, sub_df in psm_group:
-        print('{} Start to handle {} - {} data'.format(datetime.datetime.now(), key[0], key[1]))
-        result_dfs.append(get_pscore_match(sub_df))
+    # result_dfs = []
+    pool = multiprocessing.Pool(38)
+    result_dfs = pool.map(get_pscore_match, [df for _, df in psm_group])
+    # for key, sub_df in psm_group:
+    #     print('{} Start to handle {} - {} data'.format(datetime.datetime.now(), key[0], key[1]))
+    #     result_dfs.append(get_pscore_match(sub_df))
 
     final_result_df: DataFrame = pd.concat(result_dfs, ignore_index=True, sort=False).drop_duplicates()
     final_result_df.to_pickle(
