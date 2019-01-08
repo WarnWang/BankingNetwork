@@ -122,17 +122,24 @@ def merge_id_with_link(id_df, rssd9364_data_df, rssd9001_data_df, cov_list):
         id_df.loc[:, id_key] = id_df[id_key].apply(lambda x: str(int(x)))
         id_rssd_9364 = id_df[id_df[id_key].isin(set(rssd9364_tmp_df[const.COMMERCIAL_ID]))]
         id_rssd_9001 = id_df.drop(id_rssd_9364.index, errors='ignore')
-        rssd9364_tmp_df2 = rssd9364_tmp_df.rename(index=str, columns=rename_dict)
-        rssd9364_tmp_df2.loc[:, id_key] = rssd9364_tmp_df2[id_key].apply(lambda x: str(int(x)))
-        id_rssd_9364.loc[:, id_key] = id_rssd_9364[id_key].apply(lambda x: str(int(x)))
-        id_9364 = id_rssd_9364.merge(rssd9364_tmp_df2, on=id_key, how='left')
+
+        if not id_rssd_9364.empty:
+            rssd9364_tmp_df2 = rssd9364_tmp_df.rename(index=str, columns=rename_dict)
+            rssd9364_tmp_df2.loc[:, id_key] = rssd9364_tmp_df2[id_key].apply(lambda x: str(int(x)))
+            id_rssd_9364.loc[:, id_key] = id_rssd_9364[id_key].apply(lambda x: str(int(x)))
+            id_9364 = id_rssd_9364.merge(rssd9364_tmp_df2, on=id_key, how='left')
+        else:
+            id_9364 = None
 
         rssd9001_tmp_df2 = rssd9001_tmp_df.rename(index=str, columns=rename_dict)
         rssd9001_tmp_df2.loc[:, id_key] = rssd9001_tmp_df2[id_key].apply(lambda x: str(int(x)))
         id_rssd_9001.loc[:, id_key] = id_rssd_9001[id_key].apply(lambda x: str(int(x)))
         id_9001 = id_rssd_9001.merge(rssd9001_tmp_df2, on=id_key, how='left')
 
-        id_df = pd.concat([id_9364, id_9001], axis=0, ignore_index=True, sort=False)
+        if id_9364 is not None:
+            id_df = pd.concat([id_9364, id_9001], axis=0, ignore_index=True, sort=False)
+        else:
+            id_df = id_9001.copy()
 
     return id_df
 
