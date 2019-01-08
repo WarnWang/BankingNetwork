@@ -26,12 +26,12 @@ PSM_COV_LIST = [const.INTEREST_INCOME_RATIO, const.TOTAL_ASSETS, const.NET_INCOM
                 const.SBL_RATIO, const.MORTGAGE_LENDING_RATIO]
 
 DATE_STRING = '20190108'
-TMP_SAVE_PATH = os.path.join(const.TEMP_PATH, '{}_temp_result_3_sbl'.format(DATE_STRING))
+TMP_SAVE_PATH = os.path.join(const.TEMP_PATH, '{}_temp_result_1_sbl'.format(DATE_STRING))
 if not os.path.isdir(TMP_SAVE_PATH):
     os.makedirs(TMP_SAVE_PATH)
 
 
-def calculate_sbl_ratio(call_data_df, sbl_type=1):
+def calculate_sbl_ratio(call_data_df, sbl_type=2):
     if sbl_type == 1:
         return (call_data_df['RCON5571'] + call_data_df['RCON5573'] + call_data_df['RCON5575']) / call_data_df[
             const.TOTAL_ASSETS]
@@ -293,7 +293,7 @@ def get_pscore_match(df_to_match):
 
     merged_data_df.to_pickle(tmp_save_file_path)
 
-    print('{}: {} - {} data finished'.format(datetime.datetime.now(), year, quarter))
+    # print('{}: {} - {} data finished'.format(datetime.datetime.now(), year, quarter))
     return merged_data_df
 
 
@@ -305,12 +305,12 @@ if __name__ == '__main__':
 
     psm_group = real_psm_data.groupby([const.YEAR_MERGE, const.QUARTER])
 
-    # pool = multiprocessing.Pool(38)
-    # result_dfs = pool.map(get_pscore_match, [df for _, df in psm_group])
-    result_dfs = []
-    for key, sub_df in psm_group:
-        print('{} Start to handle {} - {} data'.format(datetime.datetime.now(), key[0], key[1]))
-        result_dfs.append(get_pscore_match(sub_df))
+    pool = multiprocessing.Pool(38)
+    result_dfs = pool.map(get_pscore_match, [df for _, df in psm_group])
+    # result_dfs = []
+    # for key, sub_df in psm_group:
+    #     print('{} Start to handle {} - {} data'.format(datetime.datetime.now(), key[0], key[1]))
+    #     result_dfs.append(get_pscore_match(sub_df))
 
     final_result_df: DataFrame = pd.concat(result_dfs, ignore_index=True, sort=False).drop_duplicates()
     final_result_df.to_pickle(
@@ -343,6 +343,10 @@ if __name__ == '__main__':
                                       '{}_{}'.format(const.TARGET, const.LINK_TABLE_RSSD9001),
                                       const.YEAR_MERGE, const.QUARTER])
 
-    merged_psm_data_df.to_pickle(os.path.join(const.TEMP_PATH, '20180910_merged_psm_data_file_rcon5571_5573_5575.pkl'))
-    merged_psm_data_df.to_csv(os.path.join(const.RESULT_PATH, '20180910_merged_psm_data_file_rcon5571_5573_5575.csv'),
+    # merged_psm_data_df.to_pickle(os.path.join(const.TEMP_PATH, '20180910_merged_psm_data_file_rcon5571_5573_5575.pkl'))
+    # merged_psm_data_df.to_csv(os.path.join(const.RESULT_PATH, '20180910_merged_psm_data_file_rcon5571_5573_5575.csv'),
+    #                           index=False)
+
+    merged_psm_data_df.to_pickle(os.path.join(const.TEMP_PATH, '20180910_merged_psm_data_file_rcon5571.pkl'))
+    merged_psm_data_df.to_csv(os.path.join(const.RESULT_PATH, '20180910_merged_psm_data_file_rcon5571.csv'),
                               index=False)
