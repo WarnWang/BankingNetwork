@@ -158,6 +158,9 @@ def get_pscore_match(df_to_match):
         match_file = pd.read_pickle(os.path.join(const.COMMERCIAL_QUARTER_PATH,
                                                  'call{}{:02d}.pkl'.format(year, quarter * 3)))
 
+    if 'RCON5571' not in match_file.keys():
+        match_file = pd.read_pickle(os.path.join(const.COMMERCIAL_YEAR_PATH, 'call{}.pkl'.format(year)))
+
     match_file.loc[:, const.SBL_RATIO] = calculate_sbl_ratio(match_file)
     useful_col_list = list(set(useful_col_list).intersection(set(match_file.keys())))
     match_file = match_file.dropna(subset=useful_col_list, how='any').drop_duplicates(
@@ -290,7 +293,6 @@ def get_pscore_match(df_to_match):
 if __name__ == '__main__':
     psm_data = pd.read_stata(os.path.join(const.DATA_PATH, '20180908_revision', '20180908_psm_add_missing_rssd.dta'))
     psm_data = psm_data[psm_data[const.YEAR_MERGE] >= 1993].copy()
-    psm_data = psm_data[(psm_data[const.YEAR_MERGE] != 1993) | (psm_data[const.QUARTER] != 1)]
 
     real_psm_data = psm_data[(psm_data['Target_real'] == 1) & (psm_data['Acquirer_real'] == 1)].copy()
 
