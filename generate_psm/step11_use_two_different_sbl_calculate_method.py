@@ -31,11 +31,12 @@ if not os.path.isdir(TMP_SAVE_PATH):
     os.makedirs(TMP_SAVE_PATH)
 
 
-def calculate_sbl_ratio(data_df, sbl_type=1):
+def calculate_sbl_ratio(call_data_df, sbl_type=1):
     if sbl_type == 1:
-        return (data_df['RCON5571'] + data_df['RCON5573'] + data_df['RCON5575']) / data_df[const.TOTAL_ASSETS]
+        return (call_data_df['RCON5571'] + call_data_df['RCON5573'] + call_data_df['RCON5575']) / call_data_df[
+            const.TOTAL_ASSETS]
     else:
-        return data_df['RCON5571'] / data_df[const.TOTAL_ASSETS]
+        return call_data_df['RCON5571'] / call_data_df[const.TOTAL_ASSETS]
 
 
 def generate_rssd9364_data(rssd9364_group, cov_list):
@@ -140,6 +141,9 @@ def get_pscore_match(df_to_match):
     year = df_to_match[const.YEAR_MERGE].iloc[0]
     quarter = df_to_match[const.QUARTER].iloc[0]
 
+    if year < 1993 or (year == 1993 and quarter == 1):
+        return df_to_match
+
     tmp_save_file_path = os.path.join(TMP_SAVE_PATH, '{}_{}_data_file.pkl'.format(year, quarter))
 
     # print('{} Start to handle {} - {} data'.format(datetime.datetime.now(), year, quarter))
@@ -157,7 +161,7 @@ def get_pscore_match(df_to_match):
         match_file = pd.read_pickle(os.path.join(const.COMMERCIAL_QUARTER_PATH,
                                                  'call{}{:02d}.pkl'.format(year, quarter * 3)))
 
-    match_file.loc[:, const.SB_LOAN] = calculate_sbl_ratio(match_file)
+    match_file.loc[:, const.SBL_RATIO] = calculate_sbl_ratio(match_file)
     useful_col_list = list(set(useful_col_list).intersection(set(match_file.keys())))
     match_file = match_file.dropna(subset=useful_col_list, how='any').drop_duplicates(
         subset=[const.COMMERCIAL_RSSD9001], keep='last')
