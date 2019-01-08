@@ -141,9 +141,6 @@ def get_pscore_match(df_to_match):
     year = df_to_match[const.YEAR_MERGE].iloc[0]
     quarter = df_to_match[const.QUARTER].iloc[0]
 
-    if year < 1993 or (year == 1993 and quarter == 1):
-        return df_to_match
-
     tmp_save_file_path = os.path.join(TMP_SAVE_PATH, '{}_{}_data_file.pkl'.format(year, quarter))
 
     # print('{} Start to handle {} - {} data'.format(datetime.datetime.now(), year, quarter))
@@ -292,16 +289,19 @@ def get_pscore_match(df_to_match):
 
 if __name__ == '__main__':
     psm_data = pd.read_stata(os.path.join(const.DATA_PATH, '20180908_revision', '20180908_psm_add_missing_rssd.dta'))
+    psm_data = psm_data[psm_data[const.YEAR_MERGE] >= 1993].copy()
+    psm_data = psm_data[(psm_data[const.YEAR_MERGE] != 1993) | (psm_data[const.QUARTER] != 1)]
+
     real_psm_data = psm_data[(psm_data['Target_real'] == 1) & (psm_data['Acquirer_real'] == 1)].copy()
 
     psm_group = real_psm_data.groupby([const.YEAR_MERGE, const.QUARTER])
 
-    # result_dfs = []
-    pool = multiprocessing.Pool(38)
-    result_dfs = pool.map(get_pscore_match, [df for _, df in psm_group])
-    # for key, sub_df in psm_group:
-    #     print('{} Start to handle {} - {} data'.format(datetime.datetime.now(), key[0], key[1]))
-    #     result_dfs.append(get_pscore_match(sub_df))
+    # pool = multiprocessing.Pool(38)
+    # result_dfs = pool.map(get_pscore_match, [df for _, df in psm_group])
+    result_dfs = []
+    for key, sub_df in psm_group:
+        print('{} Start to handle {} - {} data'.format(datetime.datetime.now(), key[0], key[1]))
+        result_dfs.append(get_pscore_match(sub_df))
 
     final_result_df: DataFrame = pd.concat(result_dfs, ignore_index=True, sort=False).drop_duplicates()
     final_result_df.to_pickle(
